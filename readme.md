@@ -6,7 +6,23 @@ This guide will walk you through the creation of this application, and in the pr
 
 You will become comfortable with the following topics:
 
- << TOPICS HERE >>
+**A simple blogging site:**
+- [Getting Started with a new actionHero Project]()
+- [Creating Initializers]()
+- [Creating Actions]()
+- [Routes]()
+- [Data Persistence with api.cache]()
+- [Users & Authentication]()
+- [Public and Private actions with Middleware]()
+
+**Adding a chat room***
+- [Single Page Apps]()
+- [Websockets]()
+- [Tasks]()
+
+**creating a custom server (which will send tweets into your chatroom)**
+- [Custom Server]()
+- [Custom Clients]()
 
 ## Notes
 
@@ -14,7 +30,7 @@ You will become comfortable with the following topics:
 - It is assumed that you have basic familiarity with node.js and the command line.
 - This project uses redis as a database.  actionHero comes with 'fakeRedis', which is an in-process redis server, but it does not persist data.  If you want to use this process in a cluster or across multiple servers, you need to install and use a real redis server.  Change the appropriate `redis` sections in `config.js` to enable this.
 
-## Getting Started
+## Getting Started with a new actionHero Project
 
 actionHero is a node.js package.  Be sure you have node.js (a version > 8.0.0) installed.  Node now also comes with npm, the node package manager.  You can get node from [nodejs.org](http://nodejs.org/)
 
@@ -37,7 +53,7 @@ Use the actionHero generator to build your project
 
 Try to boot the actionHero server
 
-- `npm start`
+- `npm start` 
 
 You should see the default actionHero welcome page at `http://localhost:8080/public`
 
@@ -46,4 +62,8 @@ The port `8080` is defined in `config.js`, along with all other settings for act
 Restart your server by pressing `ctrl+c` in the terminal window running actionHero.  Now visit `http://localhost:8080/` and you should see the welcome page.  You will note that the setting we just changed was under the `servers.web` section.  This is because this setting is only relevant to HTTP clients, and not the others (socket, websocket, etc).  We will talk about these more later.
 
 Lets change one more thing in `config.js`: development mode.  Change `configData.general.developmentMode = true;`  Development mode is helpful while creating a new application as it will automatically restart your server on config changes, and watch and reload your actions and tasks as you change them.  Keep in mind that you will still need to manually restart your server if you make any changes to your initializers. 
+
+## Creating Initializers
+
+
 
