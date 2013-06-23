@@ -14,7 +14,8 @@
       "node": ">=0.8.0"
     },
     "dependencies": {
-      "actionHero": "6.1.0"
+      "actionHero": "6.1.0",
+      "bcrypt": "x"
     },
     "devDependencies": {},
     "scripts": {
