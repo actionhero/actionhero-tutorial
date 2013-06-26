@@ -10,10 +10,11 @@ You will become comfortable with the following topics:
 - [Getting Started with a new actionHero Project]()
 - [Creating Initializers]()
 - [Users & Authentication]()
+- [Public and Private actions with Middleware]()
 - [Creating Actions]()
 - [Routes]()
+- [Testing]()
 - [Creating Pages]()
-- [Public and Private actions with Middleware]()
 
 **Adding a chat room***
 - [Single Page Apps]()
@@ -23,6 +24,9 @@ You will become comfortable with the following topics:
 **creating a custom server (which will send tweets into your chatroom)**
 - [Custom Server]()
 - [Custom Clients]()
+
+**Next Steps**
+- [Next Steps]()
 
 ## Notes
 
@@ -108,8 +112,59 @@ Notes:
 - We are again storing all data in a redis hash 
 - If we delete a user, we should delete all the posts and comments from them
 
+## Public and Private actions with Middleware
+
+In the steps above, we created a `api.users.authenticate` method, but didn't user it anywhere.  There are clearly methods which should be protected (like adding a post, or deleting a user), but we need to safeguard them somehow.  
+
+In actionHero, we know that we will wrap our initializer's methods in actions, so we can create a middleware which we can later apply to actions.  
+
+Let's create a new initializer for this:
+
+- `node ./node_modules/.bin/actionHero generateInitializer --name=middleware`
+
+There are arrays of functions in actionHero which will be run before an after every action.  Here, we only need a check before to see if an action should be run.  You have access to the action itself, along with the connection.  
+
+The middleware we created allows us to simply append `action.authenticated = true` to the action, and the middleware will be invoked.
+
+```javascripot
+<< FILL IN >>
+```
+
 ## Creating Actions
 
 Now that we have our helpers for getting and setting blog posts, how can we allow users to use them?  Actions!
 
 Action files can define a few actions each, so lets create one for comments and one for posts.
+
+- `./node_modules/.bin/actionHero generateAction --name=users`
+- `./node_modules/.bin/actionHero generateAction --name=blog`
+
+And here are our actions:
+
+```javascripot
+<< FILL IN >>
+```
+
+```javascripot
+<< FILL IN >>
+```
+
+Note how we added `action.authenticated = true` on the actions which required security.   
+
+Now we can use CURL to test out our API!  Note that right now, all HTTP methods will work (get, post, etc).  We'll be setting up routing next.  Be sure to URL-encode all your input.
+
+- Add a user: `curl -X POST -d "userName=evan" -d "password=password" "http://localhost:8080/api/userAdd"`
+- Check that you can log in: `curl -X POST -d "userName=evan" -d "password=password" "http://localhost:8080/api/authenticate"`
+- Add a post: `curl -X POST -d "userName=evan" -d "password=password" -d "title=first%20post" -d "content=My%20first%20post.%20%20Yay." "http://localhost:8080/api/addPost"`
+- View the post `curl -X POST -d "userName=evan" -d "title=first%20post" "http://localhost:8080/api/viewPost"`
+- Add a comment `curl -X POST -d "userName=evan" -d "title=first%20post" -d "comment=cool%20post" -d "commenterName=someoneElse" "http://localhost:8080/api/addComment"`
+- View the comments `curl -X POST -d "userName=evan" -d "title=first%20post" "http://localhost:8080/api/viewComments"`
+
+## Routes
+
+## Testing
+
+## Next Steps
+
+- Use cookie-based authentication rather than requiring the password and userName to be sent with each request
+- migrate to another database 

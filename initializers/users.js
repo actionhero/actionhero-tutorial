@@ -12,7 +12,7 @@ exports.users = function(api, next){
 
     add: function(userName, password, next){
       var self = this;
-      redis.hget(usersHash, userName, function(error, data){
+      redis.hget(self.usersHash, userName, function(error, data){
         if(error != null){
           next(error);
         }else if(data != null){
@@ -27,7 +27,7 @@ exports.users = function(api, next){
                 hashedPassword: hashedPassword,
                 createdAt: new Date().getTime(),
               }
-              redis.hset(usersHash, userName, data, function(error){
+              redis.hset(self.usersHash, userName, JSON.stringify(data), function(error){
                 next(error);
               });
             }
@@ -38,10 +38,11 @@ exports.users = function(api, next){
 
     authenticate: function(userName, password, next){
       var self = this;
-      redis.hget(usersHash, userName, function(error, data){
+      redis.hget(self.usersHash, userName, function(error, data){
         if(error != null){
           next(error);
         }else{
+          data = JSON.parse(data);
           self.comparePassword(data.hashedPassword, password, function(error, match){
             next(error, match);
           });
@@ -50,7 +51,8 @@ exports.users = function(api, next){
     },
 
     delete: function(userName, password, next){
-      redis.del(usersHash, userName, function(error){
+      var self = this;
+      redis.del(self.usersHash, userName, function(error){
         api.blog.listUserPosts(userName, function(error, titles){
           if(titles.length == 0 || error != null){
             next(error);
@@ -85,7 +87,7 @@ exports.users = function(api, next){
     },
 
     comparePassword: function(hashedPassword, userPassword, next) {
-       bcrypt.compare(hashedPassword, userPassword, function(error, match){
+       bcrypt.compare(userPassword, hashedPassword, function(error, match){
           return next(error, match);
        });
     },

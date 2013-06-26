@@ -28,7 +28,7 @@ exports.blog = function(api, next){
 
     viewPost: function(userName, title, next){
       var key = this.buildTitleKey(userName, title);
-      redis.hgetAll(key, function(error, data){
+      redis.hgetall(key, function(error, data){
         next(error, data);
       });
     },
@@ -82,30 +82,34 @@ exports.blog = function(api, next){
 
     // comments
 
-    addComment: function(userName, tite, posterName, comment, next){
+    addComment: function(userName, title, commenterName, comment, next){
       var key = this.buildCommentKey(userName, title);
-      var commentId = this.buildCommentId(posterName);
+      var commentId = this.buildCommentId(commenterName);
       var data = {
         comment: comment,
-        createdAt: data.createdAt,
+        createdAt: new Date().getTime(),
         commentId: commentId
       }
-      redis.hset(key, commentId, data, function(error){
+      redis.hset(key, commentId, JSON.stringify(data), function(error){
         next(error);
       })
     }, 
 
-    viewComments: function(userName, tite, next){
+    viewComments: function(userName, title, next){
       var key = this.buildCommentKey(userName, title);
-      redis.hgetAll(key, function(error, data){
-        next(error, data);
+      redis.hgetall(key, function(error, data){
+        var comments = [];
+        for(var i in data){
+          comments.push( JSON.parse( data[i] ) );
+        }
+        next(error, comments);
       })
     },
     
     deleteComment: function(userName, title, commentId, next){
       var key = this.buildCommentKey(userName, title);
       redis.hdel(key, commentId, function(error){
-        data
+        next(error);
       })
     },
 
@@ -117,8 +121,8 @@ exports.blog = function(api, next){
     buildCommentKey: function(userName, title){
       return this.commentPrefix + this.seperator + userName + this.seperator + title // "comments:evan:my first post"
     },
-    buildCommentId: function(posterName){
-      return posterName + new Date().getTime();
+    buildCommentId: function(commenterName){
+      return commenterName + new Date().getTime();
     }
 
   }
