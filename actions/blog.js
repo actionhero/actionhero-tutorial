@@ -1,5 +1,5 @@
-exports.addPost = {
-  name: "addPost",
+exports.postAdd = {
+  name: "postAdd",
   description: "I add a post",
   inputs: {
     required: ["userName", "password", "title", "content"],
@@ -9,15 +9,15 @@ exports.addPost = {
   outputExample: {},
   version: 1.0,
   run: function(api, connection, next){
-    api.blog.addPost(connection.params.userName, connection.params.title, connection.params.content, function(error){
+    api.blog.postAdd(connection.params.userName, connection.params.title, connection.params.content, function(error){
       connection.error = error;
       next(connection, true);
     });
   }
 };
 
-exports.viewPost = {
-  name: "viewPost",
+exports.postView = {
+  name: "postView",
   description: "I view a post",
   inputs: {
     required: ["userName", "title"],
@@ -27,7 +27,7 @@ exports.viewPost = {
   outputExample: {},
   version: 1.0,
   run: function(api, connection, next){
-    api.blog.viewPost(connection.params.userName, connection.params.title, function(error, post){
+    api.blog.postView(connection.params.userName, connection.params.title, function(error, post){
       connection.error = error;
       connection.response.post = post;
       next(connection, true);
@@ -35,8 +35,8 @@ exports.viewPost = {
   }
 };
 
-exports.listUserPosts = {
-  name: "listUserPosts",
+exports.postsList = {
+  name: "postsList",
   description: "I list all of a user's posts",
   inputs: {
     required: ["userName"],
@@ -46,7 +46,7 @@ exports.listUserPosts = {
   outputExample: {},
   version: 1.0,
   run: function(api, connection, next){
-    api.blog.listUserPosts(connection.params.userName, function(error, posts){
+    api.blog.postsList(connection.params.userName, function(error, posts){
       connection.error = error;
       connection.response.posts = posts;
       next(connection, true);
@@ -54,8 +54,8 @@ exports.listUserPosts = {
   }
 };
 
-exports.editPost = {
-  name: "editPost",
+exports.postEdit = {
+  name: "postEdit",
   description: "I edit a post",
   inputs: {
     required: ["userName", "password", "title", "content"],
@@ -65,15 +65,15 @@ exports.editPost = {
   outputExample: {},
   version: 1.0,
   run: function(api, connection, next){
-    api.blog.editPost(connection.params.userName, connection.params.title, connection.params.content, function(error){
+    api.blog.postEdit(connection.params.userName, connection.params.title, connection.params.content, function(error){
       connection.error = error;
       next(connection, true);
     });
   }
 };
 
-exports.deletePost = {
-  name: "deletePost",
+exports.postDelete = {
+  name: "postDelete",
   description: "I delete a post",
   inputs: {
     required: ["userName", "password", "title"],
@@ -83,15 +83,15 @@ exports.deletePost = {
   outputExample: {},
   version: 1.0,
   run: function(api, connection, next){
-    api.blog.deletePost(connection.params.userName, connection.params.title, function(error){
+    api.blog.postDelete(connection.params.userName, connection.params.title, function(error){
       connection.error = error;
       next(connection, true);
     });
   }
 };
 
-exports.addComment = {
-  name: "addComment",
+exports.commentAdd = {
+  name: "commentAdd",
   description: "I add a comment",
   inputs: {
     required: ["userName", "title", "commenterName", "comment"],
@@ -101,15 +101,15 @@ exports.addComment = {
   outputExample: {},
   version: 1.0,
   run: function(api, connection, next){
-    api.blog.addComment(connection.params.userName, connection.params.title, connection.params.commenterName, connection.params.comment, function(error){
+    api.blog.commentAdd(connection.params.userName, connection.params.title, connection.params.commenterName, connection.params.comment, function(error){
       connection.error = error;
       next(connection, true);
     });
   }
 };
 
-exports.viewComments = {
-  name: "viewComments",
+exports.commentsView = {
+  name: "commentsView",
   description: "I show all comments for a post",
   inputs: {
     required: ["userName", "title"],
@@ -119,7 +119,7 @@ exports.viewComments = {
   outputExample: {},
   version: 1.0,
   run: function(api, connection, next){
-    api.blog.viewComments(connection.params.userName, connection.params.title, function(error, comments){
+    api.blog.commentsView(connection.params.userName, connection.params.title, function(error, comments){
       connection.error = error;
       connection.response.comments = comments;
       next(connection, true);
@@ -127,8 +127,8 @@ exports.viewComments = {
   }
 };
 
-exports.deleteComment = {
-  name: "deleteComment",
+exports.commentDelete = {
+  name: "commentDelete",
   description: "I add a comment",
   inputs: {
     required: ["userName", "password", "commentId", "title"],
@@ -138,7 +138,7 @@ exports.deleteComment = {
   outputExample: {},
   version: 1.0,
   run: function(api, connection, next){
-    api.blog.deleteComment(connection.params.userName, connection.params.title, connection.params.commentId, function(error){
+    api.blog.commentDelete(connection.params.userName, connection.params.title, connection.params.commentId, function(error){
       connection.error = error;
       next(connection, true);
     });

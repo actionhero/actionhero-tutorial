@@ -34,6 +34,25 @@ exports.userDelete = {
   }
 };
 
+exports.usersList = {
+  name: "usersList",
+  description: "I list all the users",
+  inputs: {
+    required: [],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {},
+  version: 1.0,
+  run: function(api, connection, next){
+    api.users.list(function(error, users){
+      connection.error = error;
+      connection.response.authenticated = users;
+      next(connection, true);
+    });
+  }
+};
+
 exports.authenticate = {
   name: "authenticate",
   description: "I authenticate a user",

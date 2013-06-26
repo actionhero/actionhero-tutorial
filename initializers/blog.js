@@ -12,7 +12,7 @@ exports.blog = function(api, next){
 
     // posts
     
-    addPost: function(userName, title, content, next){
+    postAdd: function(userName, title, content, next){
       var key = this.buildTitleKey(userName, title);
       var data = {
         content: content,
@@ -26,30 +26,30 @@ exports.blog = function(api, next){
       });
     },
 
-    viewPost: function(userName, title, next){
+    postView: function(userName, title, next){
       var key = this.buildTitleKey(userName, title);
       redis.hgetall(key, function(error, data){
         next(error, data);
       });
     },
 
-    listUserPosts: function(userName, next){
+    postsList: function(userName, next){
       var self = this;
       var search = self.postPrefix + self.seperator + userName + self.seperator;
       redis.keys(search+"*", function(error, keys){
         var titles = [];
         var started = 0;
         keys.forEach(function(key){
-          var parts = keys.split(self.seperator)
-          var key = parts[(parts.length - 1)];
-          titles.push(key);
+          var parts = key.split(self.seperator)
+          var k = parts[(parts.length - 1)];
+          titles.push(k);
         });
         titles.sort();
         next(error, titles)
       });
     },
     
-    editPost: function(userName, title, content, next){
+    postEdit: function(userName, title, content, next){
       var key = this.buildTitleKey(userName, title);
       this.viewPost(key, function(error, data){
         var newData = {
@@ -65,7 +65,7 @@ exports.blog = function(api, next){
       });
     },
     
-    deletePost: function(userName, title, next){
+    postDelete: function(userName, title, next){
       var self = this;
       var key = self.buildTitleKey(userName, title);
       redis.del(key, function(error){
@@ -82,7 +82,7 @@ exports.blog = function(api, next){
 
     // comments
 
-    addComment: function(userName, title, commenterName, comment, next){
+    commentAdd: function(userName, title, commenterName, comment, next){
       var key = this.buildCommentKey(userName, title);
       var commentId = this.buildCommentId(commenterName);
       var data = {
@@ -95,7 +95,7 @@ exports.blog = function(api, next){
       })
     }, 
 
-    viewComments: function(userName, title, next){
+    commentsView: function(userName, title, next){
       var key = this.buildCommentKey(userName, title);
       redis.hgetall(key, function(error, data){
         var comments = [];
@@ -106,7 +106,7 @@ exports.blog = function(api, next){
       })
     },
     
-    deleteComment: function(userName, title, commentId, next){
+    commentDelete: function(userName, title, commentId, next){
       var key = this.buildCommentKey(userName, title);
       redis.hdel(key, commentId, function(error){
         next(error);

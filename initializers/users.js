@@ -36,6 +36,17 @@ exports.users = function(api, next){
       });
     },
 
+    list: function(next){
+      var self = this;
+      redis.hgetall(self.usersHash, function(error, users){
+        var userData = [];
+        for(var i in users){
+          userData.push( JSON.parse( users[i] ) );
+        }
+        next(error, userData);
+      });
+    },
+
     authenticate: function(userName, password, next){
       var self = this;
       redis.hget(self.usersHash, userName, function(error, data){

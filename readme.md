@@ -16,12 +16,13 @@ You will become comfortable with the following topics:
 - [Testing]()
 - [Creating Pages]()
 
-**Adding a chat room***
+**Adding a chat room**
 - [Single Page Apps]()
+- [Sockets]()
 - [Websockets]()
 - [Tasks]()
 
-**creating a custom server (which will send tweets into your chatroom)**
+**Creating a Custom Server**
 - [Custom Server]()
 - [Custom Clients]()
 
@@ -155,16 +156,83 @@ Now we can use CURL to test out our API!  Note that right now, all HTTP methods 
 
 - Add a user: `curl -X POST -d "userName=evan" -d "password=password" "http://localhost:8080/api/userAdd"`
 - Check that you can log in: `curl -X POST -d "userName=evan" -d "password=password" "http://localhost:8080/api/authenticate"`
-- Add a post: `curl -X POST -d "userName=evan" -d "password=password" -d "title=first%20post" -d "content=My%20first%20post.%20%20Yay." "http://localhost:8080/api/addPost"`
-- View the post `curl -X POST -d "userName=evan" -d "title=first%20post" "http://localhost:8080/api/viewPost"`
-- Add a comment `curl -X POST -d "userName=evan" -d "title=first%20post" -d "comment=cool%20post" -d "commenterName=someoneElse" "http://localhost:8080/api/addComment"`
-- View the comments `curl -X POST -d "userName=evan" -d "title=first%20post" "http://localhost:8080/api/viewComments"`
+- Add a post: `curl -X POST -d "userName=evan" -d "password=password" -d "title=first-post" -d "content=My%20first%20post.%20%20Yay." "http://localhost:8080/api/postAdd"`
+- View the post `curl -X POST -d "userName=evan" -d "title=first-post" "http://localhost:8080/api/postView"`
+- Add a comment `curl -X POST -d "userName=evan" -d "title=first-post" -d "comment=cool%20post" -d "commenterName=someoneElse" "http://localhost:8080/api/commentAdd"`
+- View the comments `curl -X POST -d "userName=evan" -d "title=first-post" "http://localhost:8080/api/commentsView"`
 
 ## Routes
 
+Now that we have the basics of our API working, lets setup routes.  Routes allow different HTTP verbs to preform a different action on the same URL.  We'll create a `routes.js` file to transform our API into restful resources for users, comments, and posts.  You can derive input variables from the structure of URLs with routing as well.
+
+```javascripot
+<< FILL IN >>
+```
+Now we can get the list of posts for user `evan` with `curl -X GET "http://localhost:8080/api/posts/evan"` and we don't need to pass any parameters. 
+
 ## Testing
+
+## Creating Pages
+
+## Single Page Apps
+
+## Scokets
+
+While this application probably makes the most sense being used in a web browser, actionHero can still provide a TCP/Socket API for clients who wish to use it.   There is nothing new you need to do to enable it.  
+
+Let's add a comment with the socket API and Telnet.  We'll make some mistakes so you can see how error responses are handled.  You will also notice how with TCP clients, params are 'sticky' by default, and you only need to set them once per session.
+
+```bash
+> telnet localhost 5000
+
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+
+{"welcome":"Hello! Welcome to the actionHero api","room":"defaultRoom","context":"api"}
+paramAdd userName=evan
+{"status":"OK","context":"response","data":null,"messageCount":1}
+paramAdd title=first-post
+{"status":"OK","context":"response","data":null,"messageCount":2}
+paramsView
+{"status":"OK","context":"response","data":{"limit":100,"offset":0,"userName":"evan","title":"first-post"},"messageCount":3}
+postsList
+{"posts":["first-post"],"context":"response","messageCount":4}
+paramAdd comment=a-comment-from-tcp
+{"status":"OK","context":"response","data":null,"messageCount":5}
+commentAdd
+{"error":"Error: commenterName is a required parameter for this action","context":"response","messageCount":6}
+paramAdd commenterName=tcp-client
+{"status":"OK","context":"response","data":null,"messageCount":7}
+commentAdd
+{"context":"response","messageCount":8}
+commentsView
+{"comments":[{"comment":"a-comment-from-tcp","createdAt":1372223802362,"commentId":"tcp-client1372223802362"}],"context":"response","messageCount":9}
+exit
+```
+
+## Websockets
+
+## Tasks
+
+actionHero comes with a robust task system for delayed / recurring tasks.  For our example, we are going to create a task which will log some stats to the command line every 30 seconds.  
+
+`./node_modules/.bin/actionHero generateTask --name=stats`
+
+```javascripot
+<< FILL IN >>
+```
+
+- note how we set the `task.frequency` to run every 30 seconds
+- the scope of this task is `all`, as we want every server we might run this task on to display these stats
+- `configData.general.simultaniousActions` in `config.js` defines how many tasks will be run at once per server.  You can have some instances of your application running tasks while others won't.
+
+## Custom Server
+
+## Custom Clients
 
 ## Next Steps
 
 - Use cookie-based authentication rather than requiring the password and userName to be sent with each request
 - migrate to another database 
+- pagination for all the `*view` actions
