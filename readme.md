@@ -7,7 +7,7 @@
 
 ---
 
-This guide will walk you through the creation of the application in this repository, and in the process you will learn some of the basics of actionHero.
+This guide will walk you through the creation of the application in this repository, and in the process you will learn some of the basics of [actionHero](http://actionherojs.com).
 
 You will become comfortable with the following topics:
 
@@ -34,13 +34,22 @@ You will become comfortable with the following topics:
 
 **Next Steps**
 
+- [actionHero Links](#actionhero-links)
 - [Notes](#notes)
 - [Next Steps / TODO](#next-steps--todo)
 
+## actionHero Resources
+- [Public Site](http://www.actionherojs.com)
+- [NPM](https://npmjs.org/package/actionHero)
+- [Wiki](https://github.com/evantahler/actionHero/wiki)
+- [API Methods](https://github.com/evantahler/actionHero/wiki/API-Methods)
+- [GitHub](https://github.com/evantahler/actionHero)
+- [Mailing List](https://groups.google.com/forum/?fromgroups=#!forum/actionhero-js)
+
 ## Notes
 
-- You do not need to check out this repository to follow this guide
-- The code in this repository represents the final state of a project created with these instructions.  The code in this project should server as a reference.  
+- You are expected to have a basic familiarity with nodejs and the command line
+- You do not need to clone out this repository to follow this guide.  The code in this repository represents the final state of a project created with these instructions.  The code in this project should serve as a reference.  
 - You should also be able to run this project by:
   - `git clone https://github.com/evantahler/actionHero-tutorial.git`
   - `cd actionHero-tutorial`
