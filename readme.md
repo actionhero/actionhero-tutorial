@@ -31,7 +31,6 @@ You will become comfortable with the following topics:
 **Creating a Custom Server**
 
 - [Custom Server]()
-- [Custom Clients]()
 
 **Next Steps**
 
@@ -249,6 +248,12 @@ Note that we include bot the JS for faye and the wrapper around it, `actionHeroW
 
 The faye transport will degrade to long-polling and finally http if those features are not available to either your clients or server.
 
+```javascripot
+<< FILL IN >>
+```
+
+Note how we make use of the event libraries of `actionHeroWebsocket` and build our events around that
+
 ## Tasks
 
 actionHero comes with a robust task system for delayed / recurring tasks.  For our example, we are going to create a task which will log some stats to the command line every 30 seconds.  
@@ -265,7 +270,36 @@ actionHero comes with a robust task system for delayed / recurring tasks.  For o
 
 ## Custom Server
 
-## Custom Clients
+One of the powers of actionHero is that you can build your own servers and transports.  Think of a serer as any mechanism which creates a client which may then preform an action.  This might be anything from an interface to an Arduino to a rabbitMQ client.   
+
+We will add a server which connects to the public twitter firehouse for tweets matching "#nodejs".  We will take these tweets, and broadcast them to the chartroom we created above.
+
+We will also use the "ntwittter" package to help us with connecting to twitter
+`npm install ntwitter` (and add it to your `package.json`).  You will need to register a new twitter application at dev.twitter.com to generate the required access keys.
+
+We created a new section in `config.js` in the `configData.servers` section to hold our twitter credentials:
+
+```javascript
+"twitter" = {
+  hashtag: "tt",
+  twitter: {
+    consumer_key: "xxx",
+    consumer_secret: "xxx",
+    access_token_key: "xxx",
+    access_token_secret: "xxx",
+  }
+}
+```
+
+- Generate a new custom server `./node_modules/.bin/actionHero generateServer --name=twitter`
+
+```javascripot
+<< FILL IN >>
+```
+
+notes: 
+- we didn't actually allow these clients to join the chatroom (`attributes.canChat = false`) because we don't want them to really appear as members of the chat room.
+- we are however using the server-side chat api (`api.chatRoom.socketRoomBroadcast`) to send a custom message to the folks in the `twitter` chat room about the tweet
 
 ## Next Steps / TODO
 

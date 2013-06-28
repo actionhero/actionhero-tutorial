@@ -120,13 +120,11 @@ configData.servers = {
   "websocket" : {
   },
   "twitter": {
-    hashtag: "tt",
-    twitter: {
-      consumer_key: "xxx",        // <- fill me in with info from your own API keys
-      consumer_secret: "xxx",     // <- fill me in with info from your own API keys
-      access_token_key: "xxx",    // <- fill me in with info from your own API keys
-      access_token_secret: "xxx", // <- fill me in with info from your own API keys
-    }
+    hashtag: "nodejs",
+    consumer_key: "xxx",         // Be sure to fill these in with your own API keys
+    consumer_secret: "xxx",
+    access_token_key: "xxx",
+    access_token_secret: "xxxx",
   }
 }
 

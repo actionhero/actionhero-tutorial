@@ -15,7 +15,8 @@
     },
     "dependencies": {
       "actionHero": "6.1.0",
-      "bcrypt": "x"
+      "bcrypt": "x",
+      "ntwitter": "x"
     },
     "devDependencies": {
       "should": "x",
