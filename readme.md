@@ -172,6 +172,26 @@ Now we can get the list of posts for user `evan` with `curl -X GET "http://local
 
 ## Testing
 
+There are many testing tools and packages which exist for nodejs.  actionHero does come with a testing framework, but testing is important.  actionHero exposes a number of utilities to make it easy to boot up a server with configuration overrides to make testing easier.  
+
+Lets setup a test with the `mocha` and `should` packages.  We'll use the `request` package to make HTTP requests simpler
+
+`npm install mocha should request` (and add them to your `package.json` in the `devDependencies` section).
+
+First, lets create a spec helper in `test/_setup.js`
+
+```javascripot
+<< FILL IN >>
+```
+
+Now we can use our `_setup.js` in a test.  Let's create an integration test `/test/integration.js` for post creation and reading.  Note how we are using `fakeredis` so we have an isolated in-process test database to work with. 
+
+```javascripot
+<< FILL IN >>
+```
+
+We can now run the test with the `mocha` command.  In our `package.json` we can also setup `npm test` to run the test suite how we would like it: `"test": "node ./node_modules/.bin/mocha --reporter spec ./test"`
+
 ## Creating Pages
 
 ## Single Page Apps
@@ -235,4 +255,5 @@ actionHero comes with a robust task system for delayed / recurring tasks.  For o
 
 - Use cookie-based authentication rather than requiring the password and userName to be sent with each request
 - migrate to another database 
+- tests should be more inclusive, and test failure cases
 - pagination for all the `*view` actions

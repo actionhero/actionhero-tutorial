@@ -17,12 +17,17 @@
       "actionHero": "6.1.0",
       "bcrypt": "x"
     },
-    "devDependencies": {},
+    "devDependencies": {
+      "should": "x",
+      "mocha": "x",
+      "request": "x"
+    },
     "scripts": {
       "start": "node ./node_modules/.bin/actionHero start",
       "startCluster": "node ./node_modules/.bin/actionHero startCluster",
       "actionHero": "node ./node_modules/.bin/actionHero",
-      "help": "node ./node_modules/.bin/actionHero help"
+      "help": "node ./node_modules/.bin/actionHero help",
+      "test": "node ./node_modules/.bin/mocha --reporter spec ./test"
     }
   }
   

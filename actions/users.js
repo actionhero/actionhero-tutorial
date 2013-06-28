@@ -47,7 +47,10 @@ exports.usersList = {
   run: function(api, connection, next){
     api.users.list(function(error, users){
       connection.error = error;
-      connection.response.authenticated = users;
+      connection.response.users = [];
+      for(var i in users){
+        connection.response.users.push(users[i].userName)
+      }
       next(connection, true);
     });
   }
