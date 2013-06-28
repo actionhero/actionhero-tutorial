@@ -1,12 +1,18 @@
 # actionHero Tutorial
+
+<img src="https://raw.github.com/evantahler/actionHero/master/public/logo/actionHero.png" height="300"/>
+
 - created: June 22, 2013
 - updated: June 22, 2013
+
+---
 
 This guide will walk you through the creation of this application, and in the process you will learn some of the basics of actionHero.
 
 You will become comfortable with the following topics:
 
 **A simple Blogging API & site:**
+
 - [Getting Started with a new actionHero Project]()
 - [Creating Initializers]()
 - [Users & Authentication]()
@@ -14,27 +20,29 @@ You will become comfortable with the following topics:
 - [Creating Actions]()
 - [Routes]()
 - [Testing]()
-- [Creating Pages]()
+- [Consuming the API via the Web]()
 
 **Adding a chat room**
-- [Single Page Apps]()
+
 - [Sockets]()
 - [Websockets]()
 - [Tasks]()
 
 **Creating a Custom Server**
+
 - [Custom Server]()
 - [Custom Clients]()
 
 **Next Steps**
-- [Next Steps]()
+
+- [Next Steps / TODO]()
 
 ## Notes
 
 - The code in this repository represents the final state of a project created with these instructions.  The code in this project should server as a reference.  **You do not need to check out this repository to follow this guide**
 - It is assumed that you have basic familiarity with node.js and the command line.
 - This project uses redis as a database.  actionHero comes with 'fakeRedis', which is an in-process redis server, but it does not persist data.  If you want to use this process in a cluster or across multiple servers, you need to install and use a real redis server.  Change the appropriate `redis` sections in `config.js` to enable this.
-- Remember that actionHero is an API server, not an website framework.  We will be focusing on creating an API for bogging, and applying that to a website. 
+- Remember that actionHero is an API server, not an website framework.  We will be focusing on creating an API for bogging, and *applying* that to a website rather than creating a beautiful website. 
 
 ## Getting Started with a new actionHero Project
 
@@ -172,9 +180,9 @@ Now we can get the list of posts for user `evan` with `curl -X GET "http://local
 
 ## Testing
 
-There are many testing tools and packages which exist for nodejs.  actionHero does come with a testing framework, but testing is important.  actionHero exposes a number of utilities to make it easy to boot up a server with configuration overrides to make testing easier.  
+There are many testing tools and packages which exist for nodejs.  actionHero is not opinionated about which testing framework you should use, but nonetheless, testing is important!  actionHero exposes a number of utilities to make it easy to boot up a server with configuration overrides to make testing easier.  
 
-Lets setup a test with the `mocha` and `should` packages.  We'll use the `request` package to make HTTP requests simpler
+Lets setup a test with the `mocha` and `should` packages.  We'll use the `request` package to make HTTP requests simpler in our tests.
 
 `npm install mocha should request` (and add them to your `package.json` in the `devDependencies` section).
 
@@ -192,9 +200,11 @@ Now we can use our `_setup.js` in a test.  Let's create an integration test `/te
 
 We can now run the test with the `mocha` command.  In our `package.json` we can also setup `npm test` to run the test suite how we would like it: `"test": "node ./node_modules/.bin/mocha --reporter spec ./test"`
 
-## Creating Pages
+## Consuming the API via the Web
 
-## Single Page Apps
+actionHero is primarily an API server, but it can still serve static files for you.  In `config.js`, the `configData.general.flatFileDirectory` directive is where your web site's "root" is.  You can also use actions to manipulate file content with the `api.staticFile.get` method.  actionHero is also a great choice to power your front-end applications (angular.js, ember, etc).  The examples below are purposefully sparse and often eschew convention and best practices in favor of legibility.  No external JS (jQuery, etc) is required to use actionHero in your website.
+
+Provided in `index.html` is a simple page which demonstrates how simple it is to call an action from the web to document the API we have created.  
 
 ## Scokets
 
@@ -233,6 +243,12 @@ exit
 
 ## Websockets
 
+`/public/chat.js` demonstrates how to use actionHero's websockets.  The `websocket` is a first-class protocol in acitonHero and has all the capabilities of `web` and `socket`.  Like `socket`, it is a persistent connection which also enables actionHero's chat room features.  We will make use of them here.
+
+Note that we include bot the JS for faye and the wrapper around it, `actionHeroWebSocket.js`
+
+The faye transport will degrade to long-polling and finally http if those features are not available to either your clients or server.
+
 ## Tasks
 
 actionHero comes with a robust task system for delayed / recurring tasks.  For our example, we are going to create a task which will log some stats to the command line every 30 seconds.  
@@ -251,9 +267,10 @@ actionHero comes with a robust task system for delayed / recurring tasks.  For o
 
 ## Custom Clients
 
-## Next Steps
+## Next Steps / TODO
 
 - Use cookie-based authentication rather than requiring the password and userName to be sent with each request
-- migrate to another database 
-- tests should be more inclusive, and test failure cases
-- pagination for all the `*view` actions
+- Migrate to another database 
+- Implement a UI for the API 
+- Tests should be more inclusive, and test failure cases
+- Pagination for all the `*view` actions

@@ -1,4 +1,69 @@
-<h1>Hello from actionHero!</h1>
-  <p>If you are reading this, your actionHero project is working.</p>
-  <p><strong>Good Job!</strong></p>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="content-language" content="en" />
+  <meta name="description" content="actionHero.js" />
+  <link href='http://fonts.googleapis.com/css?family=Merriweather+Sans:400,700,800,300' rel='stylesheet' type='text/css'>
+  <link href='/public/css/actionhero.css' rel='stylesheet' type='text/css'>
+  <script type="text/javascript" src="/public/javascript/app.js"></script>
+  <link rel="icon" href="/public/favicon.ico">
+  <title>actionHero.js</title>
+
+  <script type="text/javascript">
+
+  var apiRequest = function(action, paramsHash, callback){
+    var xmlhttp = new XMLHttpRequest();
+    params = "";
+    for(var i in paramsHash){
+      params += i + "=" + paramsHash[i] + "&";
+    }
+    xmlhttp.onreadystatechange = function(){
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
+        var response = JSON.parse(xmlhttp.responseText);
+        callback(response);
+      }
+    }
+    xmlhttp.open("POST", "/api/" + action, true);
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send(params);
+  }
+
+  var populateServerInfo = function(){
+    apiRequest("actionsView", {}, function(data){
+      document.getElementById("serverVersion").innerHTML = data.serverInformation.apiVersion;
+      document.getElementById("serverName").innerHTML = data.serverInformation.serverName;
+      data.actions.forEach(function(action){
+        var row = "";
+        row += "<div class=\"box\"><div class=\"left\">";
+        row += "<a href=\"/api/" + action.name + "\" >" + action.name + "</a></div><div class=\"right\">" + action.description + "</br>";
+        row += "<br><strong>required: </strong>" + action.inputs.required.join(", ");
+        row += "<br><strong>optional:</strong>" + action.inputs.optional.join(", ");
+        row += "</div></div>";
+        document.getElementById("actions").innerHTML += row + "<div class=\"box\"></div>";
+      });
+    });
+  }
+
+  </script>
   
+</head>
+
+<body onload="populateServerInfo()">
+
+  <div class="body_container">
+    <h2>Server Information:</h2>
+    <div class="server_info">
+      <div class="box"><div class="left">Server Name:</div><div class="right" id="serverName"></div></div>
+      <div class="box"><div class="left">Server Version:</div><div class="right" id="serverVersion"></div></div>
+    </div>
+  </div>
+
+  <div class="body_container">
+    <h2>Actions:</h2>
+    <div class="server_info" id="actions">
+      
+    </div>
+  </div>
+
+</body>
+</html>
