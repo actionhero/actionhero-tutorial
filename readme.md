@@ -833,6 +833,10 @@ describe('integration', function(){
 
 We can now run the test with the `mocha` command.  In our `package.json` we can also setup `npm test` to run the test suite how we would like it: `"test": "node ./node_modules/.bin/mocha --reporter spec ./test"`
 
+A successfull test run looks like this:
+
+<img src="https://raw.github.com/evantahler/actionHero-tutorial/master/images/mocha.jpg"/>
+
 ## Consuming the API via the Web
 
 <img src="https://raw.github.com/evantahler/actionHero-tutorial/master/images/index.html.jpg"/>
