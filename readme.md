@@ -3,7 +3,7 @@
 <img src="https://raw.github.com/evantahler/actionHero/master/public/logo/actionHero.png" height="300"/>
 
 - created: June 22, 2013
-- updated: June 27, 2013
+- updated: July 28, 2013
 
 ---
 
@@ -56,7 +56,7 @@ You will become comfortable with the following topics:
   - `npm install`
   - `npm start`
   - There are a few extra steps needed to persists data to redis and to use the twitter server example discussed below.
-- This project uses redis as a database.  actionHero comes with 'fakeRedis', which is an in-process redis server, but it does not persist data.  If you want to use this process in a cluster or across multiple servers, you need to install and use a real redis server.  Change the appropriate `redis` sections in `config.js` to enable this.
+- This project uses redis as a database.  actionHero comes with [fakeRedis](https://github.com/hdachev/fakeredis), which is an in-process redis server, but it does not persist data.  If you want to use this process in a cluster or across multiple servers, you need to install and use a real redis server.  Change the appropriate `redis` sections in `config.js` to enable this.
 - Remember that actionHero is an API server, not an website framework.  We will be focusing on creating an API for blogging and chatting, and *applying* that to a website rather than creating a beautiful website itself. 
 
 ## Getting Started with a new actionHero Project
@@ -71,7 +71,7 @@ You will become comfortable with the following topics:
 
 actionHero is a node.js package.  Be sure you have node.js (version >= 8.0.0) installed.  Node now also comes with [npm](http://npmjs.org), the node package manager.  You can get node from [nodejs.org](http://nodejs.org/) if you do not have it.
 
-This guide was written on OSX 10.8  It should be appropriate for any version of OSX > 10.6.  It should also work on most Linux distributions (Ubuntu, CentOs).  The concepts presented here should also be appropriate for windows users, but many of the "Getting Started" commands will not work as transcribed here.  
+This guide was written on OSX 10.8  It should be appropriate for any version of OSX > 10.6.  It should also work on most Linux distributions (Ubuntu, CentOs).  The concepts presented here should also be appropriate for windows users, but many of the "Getting Started" commands will not work as transcribed here.  If you are looking for help on getting started on Windows, Mark Tucker has [a video tutorial for windows users](http://www.youtube.com/watch?v=PwbuJM03XFc)
 
 Create a new directory for this project and enter it (in the terminal): 
 
@@ -92,15 +92,15 @@ Try to boot the actionHero server
 
 - `npm start` 
 
-You should see the default actionHero welcome page at `http://localhost:8080/public` (vist in your browser)
+You should see the default actionHero welcome page at `http://localhost:8080/public` (visit in your browser)
 
 The port `8080` is defined in `config.js`, along with all other settings for actionHero.  actionHero has 2 types of http routes: static files and api routes.  static files are served from `/public` and the api is served from `/api`.  These routes are configurable.  actionHero also picks one of these to be the default root route.  This is defined by `configData.servers.web.rootEndpointType`.  As we want to make a website, lets change that from `api` to `file`.
 
-Restart your server by pressing `ctrl+c` in the terminal window running actionHero.  Now visit `http://localhost:8080/` and you should see the welcome page.  You will note that the setting we just changed was under the `servers.web` section.  This is because this setting is only relevant to HTTP clients, and not the others (socket, websocket, etc).  We will talk about these more later.
+Restart your server by pressing `ctrl+c` in the terminal window running actionHero.  Start up the server again and visit `http://localhost:8080/` and you should see the welcome page.  You will note that the setting we just changed was under the `servers.web` section.  This is because this setting is only relevant to HTTP clients, and not the others (socket, websocket, etc).  We will talk about these more later.
 
 We should also enable all the servers which ship with actionHero (web, websocket, and socket).  Uncomment their sections in `config.js`
 
-Lets change one more thing in `config.js`: development mode.  Change `configData.general.developmentMode = true;`  Development mode is helpful while creating a new application as it will automatically restart your server on config changes, and watch and reload your actions and tasks as you change them.  Keep in mind that you will still need to manually restart your server if you make any changes to your initializers. 
+Lets change one more thing in `config.js`: development mode.  Change `configData.general.developmentMode = true;`  Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.  Keep in mind that you will still need to manually restart your server if you make any changes to your initializers. 
 
 ## Creating Initializers
 
@@ -158,12 +158,6 @@ A few things to note:
 
 We know we will need to authenticate users to our blog, so lets make another initializer to handle this as well.
 
-Lets install the `bcrypt` module for good password hashing
-
-`npm install bcrypt`
-
-and add it to our `package.json` as a dependency.
-
 - `node ./node_modules/.bin/actionHero generateInitializer --name=users`
 
 Our user methods are:
@@ -183,6 +177,7 @@ api.users = {
 Notes:
 - We are again storing all data in a redis hash 
 - If we delete a user, we should delete all the posts and comments from them
+- We are only using md5 as a hashing algorithm for our user's passwords.  There are more secure options which you should use in production, like [BCrypt](https://github.com/ncb000gt/node.bcrypt.js/)
 
 ## Public and Private actions with Middleware
 
@@ -286,7 +281,6 @@ A successful test run looks like this:
 
 **files discussed in this section:**
 
-- [actions/actionsView.js](https://github.com/evantahler/actionHero-tutorial/blob/master/actions/actionsView.js)
 - [public/index.html](https://github.com/evantahler/actionHero-tutorial/blob/master/public/index.js)
 
 **relevant wiki section:**
@@ -297,7 +291,7 @@ A successful test run looks like this:
 
 actionHero is primarily an API server, but it can still serve static files for you.  In `config.js`, the `configData.general.flatFileDirectory` directive is where your web site's "root" is.  You can also use actions to manipulate file content with the `api.staticFile.get` method.  actionHero is also a great choice to power your front-end applications (angular.js, ember, etc).  The examples below are purposefully sparse and often eschew convention and best practices in favor of legibility.  No external JS (jQuery, etc) is required to use actionHero in your website (although they will make your life much easier).
 
-Provided in `index.html` is a simple page which demonstrates how simple it is to call an action from the web to document the API we have created via the `actionsView` action.  
+Provided in `index.html` is a simple page which demonstrates how simple it is to call an action from the web to document the API we have created.  If you visit the root of an actionHero API (/api/) with no actions, actionHero will describe it's capabilities, and we can then render them on our web page.
 
 ## Sockets
 

@@ -1,5 +1,6 @@
 // initializers/users.js
-var bcrypt = require('bcrypt');
+var crypto = require('crypto');
+var salt = "asdjkafhjewiovnjksdv" // in production, you will want to change this, and probably have a unique salt for each user.
 
 exports.users = function(api, next){
   var redis = api.redis.client;
@@ -86,21 +87,14 @@ exports.users = function(api, next){
     // helpers
 
     cryptPassword: function(password, next) {
-       bcrypt.genSalt(10, function(error, salt) {
-        if (error){
-          return next(error)
-        }else{
-          bcrypt.hash(password, salt, function(error, hashedPassword) {
-              return next(error, hashedPassword);
-          });
-        }
-      });
+       var hash = crypto.createHash('md5').update(salt + password).digest("hex");
+       next(null, hash);
     },
 
     comparePassword: function(hashedPassword, userPassword, next) {
-       bcrypt.compare(userPassword, hashedPassword, function(error, match){
-          return next(error, match);
-       });
+       var hash = crypto.createHash('md5').update(salt + userPassword).digest("hex");
+       var matched = (hash === hashedPassword);
+       next(null, matched)
     },
   }
 

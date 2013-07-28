@@ -111,7 +111,9 @@
     <div class="server_info">
       <div class="box"><div class="left">Name:</div><span id="name"></span></div>
       <div class="box"><div class="left">Message:</div>
-          <input type="text" name="message" size="90" id="message"> <a href="javascript:sendMessage()">[ send ]</a>
+          <form action="#" onsubmit="return sendMessage();">
+            <input type="text" name="message" size="90" id="message"> <a href="javascript:sendMessage()">[ send ]</a>
+          </form>
       </div>
     </div>
   </div>

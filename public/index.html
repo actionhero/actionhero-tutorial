@@ -5,7 +5,6 @@
   <meta name="description" content="actionHero.js" />
   <link href='http://fonts.googleapis.com/css?family=Merriweather+Sans:400,700,800,300' rel='stylesheet' type='text/css'>
   <link href='/public/css/actionhero.css' rel='stylesheet' type='text/css'>
-  <script type="text/javascript" src="/public/javascript/app.js"></script>
   <link rel="icon" href="/public/favicon.ico">
   <title>actionHero.js</title>
 
@@ -23,24 +22,30 @@
         callback(response);
       }
     }
-    xmlhttp.open("POST", "/api/" + action, true);
+    xmlhttp.open("GET", "/api/" + action, true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.send(params);
   }
 
   var populateServerInfo = function(){
-    apiRequest("actionsView", {}, function(data){
+    apiRequest("", {}, function(data){
       document.getElementById("serverVersion").innerHTML = data.serverInformation.apiVersion;
       document.getElementById("serverName").innerHTML = data.serverInformation.serverName;
-      data.actions.forEach(function(action){
-        var row = "";
-        row += "<div class=\"box\"><div class=\"left\">";
-        row += "<a href=\"/api/" + action.name + "\" >" + action.name + "</a></div><div class=\"right\">" + action.description + "</br>";
-        row += "<br><strong>required: </strong>" + action.inputs.required.join(", ");
-        row += "<br><strong>optional:</strong>" + action.inputs.optional.join(", ");
-        row += "</div></div>";
-        document.getElementById("actions").innerHTML += row + "<div class=\"box\"></div>";
-      });
+      for(var actionName in data.documentation){
+        for(var version in data.documentation[actionName]){
+          var action = data.documentation[actionName][version];
+          var row = "";
+          row += "<div class=\"box box-tall\"><div class=\"left\">";
+          row += "<a href=\"/api/" + action.name + "?apiVersion=" + version + "\" >" + action.name + " (v" + version + ")</a></div>";
+          row += "<div class=\"right\">" + action.description;
+          row += "<br /><br />";
+          row += "required: " + action.inputs.required.join(",");
+          row += "<br />";
+          row += "optional: " + action.inputs.optional.join(",");
+          row += "</div></div>";
+          document.getElementById("actions").innerHTML += row;
+        }
+      };
     });
   }
 
