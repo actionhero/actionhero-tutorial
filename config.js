@@ -3,26 +3,36 @@
 
 var configData = {};
 
+var fs = require('fs');
+var cluster = require('cluster');
+
 /////////////////////////
 // General Information //
 /////////////////////////
 
 configData.general = {
-  apiVersion: "6.1.0",
+  apiVersion: "0.0.1",
   serverName: "actionHero API",
-  // id: "myActionHeroServer",                                    // id can be set here, or generated dynamically.  be sure that every server you run as a unique ID (which will happen when genrated dynamically)
-  serverToken: "change-me",                                       // A unique token to your application which servers will use to authenticate to eachother
+  // id: "myActionHeroServer",                                    // id can be set here, or it will be generated dynamically.  Be sure that every server you run has a unique ID (which will happen when genrated dynamically)
+  serverToken: "change-me",                                       // A unique token to your application that servers will use to authenticate to each other
   welcomeMessage : "Hello! Welcome to the actionHero api",        // The welcome message seen by TCP and webSocket clients upon connection
-  flatFileDirectory: __dirname + "/public/",                      // The directory which will be the root for the /public route
-  flatFileNotFoundMessage: "Sorry, that file is not found :(",    // The body message to acompany 404 (file not found) errors regading flat files
-  serverErrorMessage: "The server experienced an internal error", // The message to acompany 500 errors (internal server errors)
-  defaultChatRoom: "defaultRoom",                                 // the chatRoom that TCP and webSocket clients are joined to when the connect
+  flatFileNotFoundMessage: "Sorry, that file is not found :(",    // The body message to accompany 404 (file not found) errors regading flat files
+  serverErrorMessage: "The server experienced an internal error", // The message to accompany 500 errors (internal server errors)
+  defaultChatRoom: "defaultRoom",                                 // The chatRoom that TCP and webSocket clients are joined to when the connect
   defaultLimit: 100,                                              // defaultLimit & defaultOffset are useful for limiting the length of response lists. 
   defaultOffset: 0,
   workers : 5,                                                    // The number of internal "workers" (timers) this node will have.
-  developmentMode: true,                                         // watch for changes in actions and tasks, and reload/restart them on the fly
-  pidFileDirectory: process.cwd() + "/pids/",                     // the location of the directory to keep pidfiles
-  simultaniousActions: 5                                          // how many pending actions can a single connection be working on 
+  developmentMode: true,                                          // Watch for changes in actions and tasks, and reload/restart them on the fly
+  simultaneousActions: 5,                                         // How many pending actions can a single connection be working on 
+  paths: {                                                        // configuration for your actionHero project structure
+    "action":      __dirname + "/actions",
+    "task":        __dirname + "/tasks",
+    "public":      __dirname + "/public",
+    "pid":         __dirname + "/pids",
+    "log":         __dirname + "/log",
+    "server":      __dirname + "/servers",
+    "initializer": __dirname + "/initializers",
+  }
 };
 
 /////////////

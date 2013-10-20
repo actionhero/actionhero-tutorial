@@ -6,7 +6,6 @@
       callback = options; options = null;
     }
 
-    self.messageCount = 0;
     self.callbacks = {};
     self.id = null;
     self.events = {};
@@ -34,7 +33,7 @@
       setupChannel: "/_welcome",
       channelPrefix: "/client/websocket/connection/",
       apiPath: "/api",
-      connectionDelay: 100,
+      connectionDelay: 500,
     }
   }
 
@@ -52,26 +51,29 @@
 
   actionHeroWebSocket.prototype.connect = function(callback){
     var self = this;
+    self.messageCount = 0;
     self.startupCallback = callback;
-    self.client = new self.faye.Client(self.options.host + self.options.path);    
+    self.client = new self.faye.Client(self.options.host + self.options.path);   
+    // self.client.disable('websocket');
     self.setupConnection(function(){
       if(typeof self.events.connect === 'function'){
         self.events.connect('connected');
       }
 
       self.client.bind('transport:down', function() {
+        self.disconnect();
         if(typeof self.events.disconnect === 'function'){
           self.events.disconnect('disconnected');
         }
-      });
-
-      self.client.bind('transport:up', function() {
-        self.messageCount = 0;
-        self.setupConnection(function(){
+        self.connect(function(){
           if(typeof self.events.reconnect === 'function'){
             self.events.reconnect('reconnected');
           }
         });
+      });
+
+      self.client.bind('transport:up', function() {
+        //
       });
 
     });
@@ -79,33 +81,20 @@
 
   actionHeroWebSocket.prototype.setupConnection = function(callback){
     var self = this;
+    self.channel = self.options.channelPrefix + self.createUUID();
+
+    self.subscription = self.client.subscribe(self.channel, function(message) {
+      self.handleMessage(message);
+    });
+
     setTimeout(function(){
-      var initialMessage = self.client.publish(self.options.setupChannel, 'hello');
-      
-      initialMessage.callback(function() {
-        self.id = self.createUUID();
-        self.channel = self.options.channelPrefix + self.id;
-
-        self.subscription = self.client.subscribe(self.channel, function(message) {
-          self.handleMessage(message);
-        });
-
-        setTimeout(function(){
-          self.setIP(function(err, ip){
-            self.detailsView(function(details){
-              if(self.room != null){
-                self.send({event: 'roomChange', room: self.room});
-              }
-              self.completeConnect(details);
-              callback();
-            });
-          });
-        },self.options.connectionDelay);
-
-      });
-
-      initialMessage.errback(function(error) {
-        callback(error, null);
+      self.detailsView(function(details){
+        if(self.room != null){
+          self.send({event: 'roomChange', room: self.room});
+        }
+        self.id = details.data.id;
+        self.completeConnect(details);
+        callback();
       });
     },self.options.connectionDelay);
   }
@@ -120,8 +109,8 @@
 
   actionHeroWebSocket.prototype.send = function(args, callback){
     var self = this;
+    self.messageCount++;
     if(typeof callback === "function"){
-      self.messageCount++;
       self.callbacks[self.messageCount] = callback;
     }
     self.client.publish(self.channel, args).errback(function(err){
@@ -146,7 +135,7 @@
 
     else if(message.welcome != null && message.context == "api"){
       self.welcomeMessage = message.welcome;
-      if(typeof self.events.say === 'function'){
+      if(typeof self.events.say === 'function' && typeof self.events.welcome == "function"){
         self.events.welcome(message);
       }
     }
@@ -171,30 +160,6 @@
 
     var uuid = s.join("");
     return uuid;
-  }
-
-  actionHeroWebSocket.prototype.setIP = function(callback){
-    var self = this;
-    try{
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.onreadystatechange=function(){
-        if (xmlhttp.readyState==4 && xmlhttp.status==200){
-          var response = JSON.parse(xmlhttp.responseText);
-          self.ip = response.requestorInformation.remoteIP;
-          self.send({ event: 'setIP', ip: self.ip }, function(){
-            callback(null, self.ip);
-          });
-        }
-      }
-      xmlhttp.open("GET", self.options.host + self.options.apiPath, true);
-      xmlhttp.send();
-    }catch(e){
-      // can't make the ajax call, assume it's localhost...
-      self.ip = "127.0.0.1";
-      self.send({ event: 'setIP', ip: self.ip }, function(){
-        callback(null, self.ip);
-      });
-    }
   }
 
   actionHeroWebSocket.prototype.action = function(action, params, callback){
@@ -236,6 +201,10 @@
 
   actionHeroWebSocket.prototype.silenceRoom = function(room, callback){
     this.send({event: 'silenceRoom', room: room}, callback);
+  }
+
+  actionHeroWebSocket.prototype.documentation = function(callback){
+    this.send({event: 'documentation'}, callback);
   }
 
   actionHeroWebSocket.prototype.disconnect = function(){

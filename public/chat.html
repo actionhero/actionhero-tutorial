@@ -111,7 +111,7 @@
     <div class="server_info">
       <div class="box"><div class="left">Name:</div><span id="name"></span></div>
       <div class="box"><div class="left">Message:</div>
-          <form action="#" onsubmit="return sendMessage();">
+          <form id="messageForm" name="messageForm" action="#">
             <input type="text" name="message" size="90" id="message"> <a href="javascript:sendMessage()">[ send ]</a>
           </form>
       </div>
@@ -126,4 +126,9 @@
   </div>
 
 </body>
+
+<script>
+document.getElementById('messageForm').addEventListener('submit', function(e){ e.preventDefault; sendMessage(); }, false);
+</script>
+
 </html>
