@@ -101,7 +101,11 @@ configData.servers = {
     bindIP: "0.0.0.0",                   // which IP to listen on (use 0.0.0.0 for all)
     keyFile: "./certs/server-key.pem",   // only for secure = true
     certFile: "./certs/server-cert.pem", // only for secure = true
-    httpHeaders : { },                   // Any additional headers you want actionHero to respond with
+    httpHeaders : {                      // Any additional headers you want actionHero to respond with
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'PUT, GET, POST, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    },    
     urlPathForActions : "api",           // route which actions will be served from; secondary route against this route will be treated as actions, IE: /api/?action=test == /api/test/
     urlPathForFiles : "public",          // route which static files will be served from; path (relitive to your project root) to server static content from
     rootEndpointType : "file",            // when visiting the root URL, should visitors see "api" or "file"? visitors can always visit /api and /public as normal
@@ -116,6 +120,10 @@ configData.servers = {
       uploadDir: "/tmp",
       keepExtensions: false,
       maxFieldsSize: 1024 * 1024 * 100
+    },
+    metadataOptions: {                   // Options to configure metadata in responses
+      serverInformation: true,
+      requestorInformation: true
     },
     returnErrorCodes: false              // when enabled, returnErrorCodes will modify the response header for http(s) clients if connection.error is not null.  You can also set connection.responseHttpCode to specify a code per request.
 
