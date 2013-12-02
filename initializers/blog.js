@@ -6,7 +6,7 @@ exports.blog = function(api, next){
 
     // constants
 
-    seperator: ";",
+    separator: ";",
     postPrefix: "posts",
     commentPrefix: "comments:",
 
@@ -35,12 +35,12 @@ exports.blog = function(api, next){
 
     postsList: function(userName, next){
       var self = this;
-      var search = self.postPrefix + self.seperator + userName + self.seperator;
+      var search = self.postPrefix + self.separator + userName + self.separator;
       redis.keys(search+"*", function(error, keys){
         var titles = [];
         var started = 0;
         keys.forEach(function(key){
-          var parts = key.split(self.seperator)
+          var parts = key.split(self.separator)
           var k = parts[(parts.length - 1)];
           titles.push(k);
         });
@@ -116,10 +116,10 @@ exports.blog = function(api, next){
     // helpers
 
     buildTitleKey: function(userName, title){
-      return this.postPrefix + this.seperator + userName + this.seperator + title // "posts:evan:my first post"
+      return this.postPrefix + this.separator + userName + this.separator + title; // "posts:evan:my first post"
     },
     buildCommentKey: function(userName, title){
-      return this.commentPrefix + this.seperator + userName + this.seperator + title // "comments:evan:my first post"
+      return this.commentPrefix + this.separator + userName + this.separator + title; // "comments:evan:my first post"
     },
     buildCommentId: function(commenterName){
       return commenterName + new Date().getTime();
