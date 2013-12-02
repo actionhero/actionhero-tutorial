@@ -3,6 +3,7 @@ exports.task = {
   description: "stats",
   scope: "any",
   frequency: 30 * 1000,
+  queue: "default",
   toAnnounce: true,
   run: function(api, params, next){
     var error = null;    

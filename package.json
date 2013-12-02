@@ -14,7 +14,7 @@
       "node": ">=0.8.0"
     },
     "dependencies": {
-      "actionHero": "6.4.1",
+      "actionHero": "7.0.0",
       "ntwitter": "x"
     },
     "devDependencies": {

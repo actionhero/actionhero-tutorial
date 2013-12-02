@@ -5,6 +5,7 @@ var task = {};
 task.name = "runAction";
 task.description = "I will run an action and return the connection object";
 task.scope = "any";
+task.queue = "default";
 task.frequency = 0;
 
 /////////////////////////////////////////////////////////////////////
