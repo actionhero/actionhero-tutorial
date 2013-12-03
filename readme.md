@@ -3,7 +3,7 @@
 <img src="https://raw.github.com/evantahler/actionHero/master/public/logo/actionHero.png" height="300"/>
 
 - created: June 22, 2013
-- updated: July 28, 2013
+- updated: December 3, 2013
 
 ---
 
@@ -48,7 +48,7 @@ You will become comfortable with the following topics:
 
 ## Notes
 
-- You are expected to have a basic familiarity with nodejs and the command line
+- You are expected to have a basic familiarity with node.js and the command line
 - You do not need to clone out this repository to follow this guide.  The code in this repository represents the final state of a project created with these instructions.  The code in this project should serve as a reference.  
 - You should also be able to run this project by:
   - `git clone https://github.com/evantahler/actionHero-tutorial.git`
@@ -118,7 +118,7 @@ Because we are building a blog, first we will need a place to store our entries 
 
 Create a new initializer for the blog's common functions:
 
-- `node ./node_modules/.bin/actionHero generateInitializer --name=blog`
+- `./node_modules/.bin/actionHero generateInitializer --name=blog`
 
 I'll define some common blog functions we'll use later in actions in `initializers/blog.js`
 
@@ -127,7 +127,7 @@ Our blogging methods are:
 ```javascript
 api.blog = {
   // constants
-  seperator: ";",
+  separator: ";",
   postPrefix: "posts",
   commentPrefix: "comments:",
   // posts
@@ -158,7 +158,7 @@ A few things to note:
 
 We know we will need to authenticate users to our blog, so lets make another initializer to handle this as well.
 
-- `node ./node_modules/.bin/actionHero generateInitializer --name=users`
+- `./node_modules/.bin/actionHero generateInitializer --name=users`
 
 Our user methods are:
 
@@ -195,7 +195,7 @@ In actionHero, we know that we will wrap any use of our initializer's methods by
 
 Let's create a new initializer for this:
 
-- `node ./node_modules/.bin/actionHero generateInitializer --name=middleware`
+- `./node_modules/.bin/actionHero generateInitializer --name=middleware`
 
 There are arrays of functions in actionHero which will be run before an after every action.  Here, we only need a check before to see if an action should be run.  You have access to the action itself, along with the connection.  
 
@@ -271,7 +271,7 @@ First, lets create a spec helper in `test/_setup.js`
 
 Now we can use our `_setup.js` in a test.  Let's create an integration test `/test/integration.js` for post creation and reading.  Note how we are using `fakeredis` so we have an isolated in-process test database to work with. 
 
-We can now run the test with the `mocha` command.  In our `package.json` we can also setup `npm test` to run the test suite how we would like it: `"test": "node ./node_modules/.bin/mocha --reporter spec ./test"`
+We can now run the test with the `mocha` command.  In our `package.json` we can also setup `npm test` to run the test suite how we would like it: `"test": "sh ./node_modules/.bin/mocha --reporter spec ./test"`
 
 A successful test run looks like this:
 
@@ -281,7 +281,7 @@ A successful test run looks like this:
 
 **files discussed in this section:**
 
-- [public/index.html](https://github.com/evantahler/actionHero-tutorial/blob/master/public/index.js)
+- [public/index.html](https://github.com/evantahler/actionHero-tutorial/blob/master/public/index.html)
 
 **relevant wiki section:**
 

@@ -68,6 +68,17 @@ configData.logger = {
 };
 
 ///////////
+// Stats //
+///////////
+
+configData.stats = {
+    writeFrequency: 1000, // how often should the server write its stats to redis?
+    keys: [              // what redis key(s) [hash] should be used to store stats? provide no key if you do not want to store stats
+        'actionHero:stats',
+    ],
+};
+
+///////////
 // Redis //
 ///////////
 
@@ -77,7 +88,7 @@ configData.redis = {
   port: 6379,
   password: null,
   options: null,
-  DB: 0,
+  database: 0,
 };
 
 //////////
@@ -88,6 +99,20 @@ configData.faye = {
   mount: "/faye",
   timeout: 45,
   ping: null,
+  redis: configData.redis, // What redis server should we connet to for faye?
+  namespace: "faye:"       // redis prefix for faye keys
+};
+
+///////////
+// TASKS //
+///////////
+
+configData.tasks = {
+    // see https://github.com/taskrabbit/node-resque for more information / options
+    scheduler: true,       // Should this node run a scheduler to promote delayed tasks?
+    queues: ['*'],             // what queues should the workers work and how many to spawn? "['*']" is one worker working the * queue; "['high,low']" is one worker woring 2 queues
+    timeout: 5000,          // how long to sleep between jobs / scheduler checks
+    redis: configData.redis // What redis server should we connet to for tasks / delayed jobs?
 };
 
 /////////////
@@ -142,7 +167,7 @@ configData.servers = {
     consumer_key: "xxx",         // Be sure to fill these in with your own API keys
     consumer_secret: "xxx",
     access_token_key: "xxx",
-    access_token_secret: "xxxx",
+    access_token_secret: "xxx",
   }
 }
 

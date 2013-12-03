@@ -14,7 +14,7 @@
       "node": ">=0.8.0"
     },
     "dependencies": {
-      "actionHero": "6.4.1",
+      "actionHero": "7.0.0",
       "ntwitter": "x"
     },
     "devDependencies": {
@@ -23,11 +23,11 @@
       "request": "x"
     },
     "scripts": {
-      "start": "node ./node_modules/.bin/actionHero start",
-      "startCluster": "node ./node_modules/.bin/actionHero startCluster",
-      "actionHero": "node ./node_modules/.bin/actionHero",
-      "help": "node ./node_modules/.bin/actionHero help",
-      "test": "node ./node_modules/.bin/mocha --reporter spec ./test"
+      "start": "sh ./node_modules/.bin/actionHero start",
+      "startCluster": "sh ./node_modules/.bin/actionHero startCluster",
+      "actionHero": "sh ./node_modules/.bin/actionHero",
+      "help": "sh ./node_modules/.bin/actionHero help",
+      "test": "sh ./node_modules/.bin/mocha --reporter spec ./test"
     }
   }
   
