@@ -1,0 +1,18 @@
+notifications:
+  email:
+    - evantahler@gmail.com
+language: node_js
+node_js:
+  - "0.8"
+  - "0.10"
+  # - "0.11"
+
+branches:
+  only:
+    - master
+services:
+  - redis-server
+# before_script:
+notifications:
+after_failure: 
+  - "cat /home/travis/builds/evantahler/actionHero/npm-debug.log"
