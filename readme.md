@@ -256,6 +256,10 @@ We have the basics of our API working, but it might be tedious to keep using GET
 
 Now we can get the list of posts for user `evan` with `curl -X GET "http://localhost:8080/api/posts/evan"` and we don't need to pass any parameters. 
 
+- I can get a list of my posts with `http://localhost:8080/api/posts/evan`
+- I can view a post with `http://localhost:8080/api/post/evan/first-post`
+- etc
+
 ## Testing
 
 **files discussed in this section:**
