@@ -24,15 +24,15 @@ var twitter = function(api, options, next){
   server._start = function(next){
     var self = this;
     api.twitter = new ntwitter({
-      consumer_key:        api.configData.servers.twitter.consumer_key,
-      consumer_secret:     api.configData.servers.twitter.consumer_secret,
-      access_token_key:    api.configData.servers.twitter.access_token_key,
-      access_token_secret: api.configData.servers.twitter.access_token_secret
+      consumer_key:        api.config.servers.twitter.consumer_key,
+      consumer_secret:     api.config.servers.twitter.consumer_secret,
+      access_token_key:    api.config.servers.twitter.access_token_key,
+      access_token_secret: api.config.servers.twitter.access_token_secret
     });
 
     api.twitter.verifyCredentials(function (err, data) {
       if(err == null){
-        api.twitter.stream('statuses/filter', {track:'#' + api.configData.servers.twitter.hashtag}, function(stream) {
+        api.twitter.stream('statuses/filter', {track:'#' + api.config.servers.twitter.hashtag}, function(stream) {
           api.twitterStram = stream;
           api.twitterStram.on('data', function (tweet) {
             self.addTweet(tweet);
@@ -55,7 +55,7 @@ var twitter = function(api, options, next){
     server.buildConnection({
       id: tweet.id,
       rawConnection  : { 
-        hashtag: api.configData.servers.twitter.hashtag,
+        hashtag: api.config.servers.twitter.hashtag,
         clientId: tweet.id,
         message: tweet.text,
         twitterUser: twitterUser,

@@ -14,7 +14,7 @@
       "node": ">=0.8.0"
     },
     "dependencies": {
-      "actionHero": "7.0.0",
+      "actionHero": "7.1.0",
       "ntwitter": "x"
     },
     "devDependencies": {
@@ -27,7 +27,7 @@
       "startCluster": "node ./node_modules/.bin/actionHero startCluster",
       "actionHero": "node ./node_modules/.bin/actionHero",
       "help": "node ./node_modules/.bin/actionHero help",
-      "test": "node ./node_modules/.bin/mocha --reporter spec ./test"
+      "test": "NODE_ENV=test node ./node_modules/.bin/mocha --reporter spec ./test"
     }
   }
   
