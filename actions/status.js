@@ -2,15 +2,15 @@ var action = {};
 
 /////////////////////////////////////////////////////////////////////
 // metadata
-action.name = "status";
-action.description = "I will return some basic information about the API";
+action.name = 'status';
+action.description = 'I will return some basic information about the API';
 action.inputs = {
-  "required" : [],
-  "optional" : []
+  'required' : [],
+  'optional' : []
 };
 action.blockedConnectionTypes = [];
 action.outputExample = {
-  status: "OK",
+  status: 'OK',
   uptime: 1234,
   stats: {}
 }
@@ -23,18 +23,9 @@ action.run = function(api, connection, next){
   connection.response.uptime = now - api.bootTime;
   api.stats.getAll(function(err, stats){
     connection.response.stats = stats;
-    connection.response.tasks = {};
-    connection.response.workers = {};
-    api.tasks.getAllTasks(api, function(err, allTasks){
-      for(var i in allTasks){
-        connection.response.tasks[i] = allTasks[i];
-      }
-      api.tasks.getWorkerStatuses(function(err, workerStatuses){
-        for(var i in workerStatuses){
-          connection.response.workers[i] = workerStatuses[i];
-        }
-        next(connection, true);
-      });
+    api.tasks.details(function(err, details){
+      connection.response.queues = details['queues'];
+      next(connection, true);
     });
   });
 };

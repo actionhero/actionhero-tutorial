@@ -65,7 +65,7 @@ You will become comfortable with the following topics:
 
 **files discussed in this section:**
 
-- [config.js](https://github.com/evantahler/actionHero-tutorial/blob/master/config.js)
+- [config.js](https://github.com/evantahler/actionHero-tutorial/blob/master/config/config.js)
 
 **relevant wiki section:**
 
@@ -96,13 +96,15 @@ Try to boot the actionHero server
 
 You should see the default actionHero welcome page at `http://localhost:8080/public` (visit in your browser)
 
-The port `8080` is defined in `config.js`, along with all other settings for actionHero.  actionHero has 2 types of http routes: static files and api routes.  static files are served from `/public` and the api is served from `/api`.  These routes are configurable.  actionHero also picks one of these to be the default root route.  This is defined by `configData.servers.web.rootEndpointType`.  As we want to make a website, lets change that from `api` to `file`.
+The port `8080` is defined in `config.js`, along with all other settings for actionHero.  actionHero has 2 types of http routes: static files and api routes.  static files are served from `/public` and the api is served from `/api`.  These routes are configurable.  actionHero also picks one of these to be the default root route.  This is defined by `api.config.servers.web.rootEndpointType`.  As we want to make a website, lets change that from `api` to `file`.
 
 Restart your server by pressing `ctrl+c` in the terminal window running actionHero.  Start up the server again and visit `http://localhost:8080/` and you should see the welcome page.  You will note that the setting we just changed was under the `servers.web` section.  This is because this setting is only relevant to HTTP clients, and not the others (socket, websocket, etc).  We will talk about these more later.
 
 We should also enable all the servers which ship with actionHero (web, websocket, and socket).  Uncomment their sections in `config.js`
 
-Lets change one more thing in `config.js`: development mode.  Change `configData.general.developmentMode = true;`  Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.  Keep in mind that you will still need to manually restart your server if you make any changes to your initializers. 
+Lets change one more thing in `config.js`: development mode.  Change `api.config.general.developmentMode = true;`  Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.  Keep in mind that you will still need to manually restart your server if you make any changes to your initializers. 
+
+actionHero uses the variable `NODE_ENV` to determine which modification file to load from `/config/environments` to load to modify the default values in config.js.  This is how you can set different variables per envrionment.  We will use this for testing later.
 
 ## Creating Initializers
 
@@ -258,7 +260,8 @@ Now we can get the list of posts for user `evan` with `curl -X GET "http://local
 
 **files discussed in this section:**
 
-- [config.js](https://github.com/evantahler/actionHero-tutorial/blob/master/config.js)
+- [config.js](https://github.com/evantahler/actionHero-tutorial/blob/master/config/config.js)
+- [config.js (test)](https://github.com/evantahler/actionHero-tutorial/blob/master/config/environments/config.js)
 - [package.json](https://github.com/evantahler/actionHero-tutorial/blob/master/package.json)
 - [test/_setup.js](https://github.com/evantahler/actionHero-tutorial/blob/master/test/_setup.js)
 - [test/integration.js](https://github.com/evantahler/actionHero-tutorial/blob/master/test/integration.js)
@@ -273,7 +276,9 @@ First, lets create a spec helper in `test/_setup.js`
 
 Now we can use our `_setup.js` in a test.  Let's create an integration test `/test/integration.js` for post creation and reading.  Note how we are using `fakeredis` so we have an isolated in-process test database to work with. 
 
-We can now run the test with the `mocha` command.  In our `package.json` we can also setup `npm test` to run the test suite how we would like it: `"test": "sh ./node_modules/.bin/mocha --reporter spec ./test"`
+We can now run the test with the `mocha` command.  In our `package.json` we can also setup `npm test` to run the test suite how we would like it: `"test": "NODE_ENV=test ./node_modules/.bin/mocha --reporter spec ./test"`
+
+Note how we are calling `NODE_ENV=test` to tell actionHero we are running this command in the 'test' environment this will signal actionHero load any configChanges from the `/config/environments/test.js` file.  Here we setup redis and the servers how we want for testing.
 
 A successful test run looks like this:
 
@@ -291,7 +296,7 @@ A successful test run looks like this:
 
 <img src="https://raw.github.com/evantahler/actionHero-tutorial/master/images/index.html.jpg"/>
 
-actionHero is primarily an API server, but it can still serve static files for you.  In `config.js`, the `configData.general.flatFileDirectory` directive is where your web site's "root" is.  You can also use actions to manipulate file content with the `api.staticFile.get` method.  actionHero is also a great choice to power your front-end applications (angular.js, ember, etc).  The examples below are purposefully sparse and often eschew convention and best practices in favor of legibility.  No external JS (jQuery, etc) is required to use actionHero in your website (although they will make your life much easier).
+actionHero is primarily an API server, but it can still serve static files for you.  In `config.js`, the `api.config.general.flatFileDirectory` directive is where your web site's "root" is.  You can also use actions to manipulate file content with the `api.staticFile.get` method.  actionHero is also a great choice to power your front-end applications (angular.js, ember, etc).  The examples below are purposefully sparse and often eschew convention and best practices in favor of legibility.  No external JS (jQuery, etc) is required to use actionHero in your website (although they will make your life much easier).
 
 Provided in `index.html` is a simple page which demonstrates how simple it is to call an action from the web to document the API we have created.  If you visit the root of an actionHero API (/api/) with no actions, actionHero will describe it's capabilities, and we can then render them on our web page.
 
@@ -397,7 +402,7 @@ actionHero comes with a robust task system for delayed / recurring tasks.  For o
 
 - note how we set the `task.frequency` to run every 30 seconds
 - the scope of this task is `all`, as we want every server we might run this task on to display these stats
-- `configData.general.simultaniousActions` in `config.js` defines how many tasks will be run at once per server.  You can have some instances of your application running tasks while others won't.
+- `api.config.general.simultaniousActions` in `config.js` defines how many tasks will be run at once per server.  You can have some instances of your application running tasks while others won't.
 
 ## Custom Server
 
@@ -418,7 +423,7 @@ We will also use the `ntwittter` package to help us with connecting to twitter
 - `npm install ntwitter` (and add it to your `package.json`)
 - You will need to register a new twitter application at dev.twitter.com to generate the required access keys.
 
-We created a new section in `config.js` in the `configData.servers` section to hold our twitter credentials:
+We created a new section in `config.js` in the `api.config.servers` section to hold our twitter credentials:
 
 ```javascript
 "twitter" = {
