@@ -5,8 +5,7 @@
 - created: June 22, 2013
 - updated: December 3, 2013
 
-[![Build Status](https://secure.travis-ci.org/evantahler/actionHero.png?branch=master)](http://travis-ci.org/evantahler/actionHero)  [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/evantahler/actionhero-tutorial/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
+[![Build Status](https://secure.travis-ci.org/evantahler/actionHero.png?branch=master)](http://travis-ci.org/evantahler/actionHero) 
 ---
 
 This guide will walk you through the creation of the application in this repository, and in the process you will learn some of the basics of [actionHero](http://actionherojs.com).
