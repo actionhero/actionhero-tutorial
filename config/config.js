@@ -1,4 +1,4 @@
-// actionHero Config File
+// actionhero Config File
 // I will be loaded into api.config
 
 var fs = require('fs');
@@ -12,14 +12,14 @@ var config = {};
 
 config.general = {
   apiVersion: '0.0.1',
-  serverName: 'actionHero API',
+  serverName: 'actionhero API',
   // id can be set here, or it will be generated dynamically.
   //  Be sure that every server you run has a unique ID (which will happen when generated dynamically)
 //  id: 'myActionHeroServer',
   // A unique token to your application that servers will use to authenticate to each other
   serverToken: 'change-me',
   // The welcome message seen by TCP and webSocket clients upon connection
-  welcomeMessage: 'Hello! Welcome to the actionHero api',
+  welcomeMessage: 'Hello! Welcome to the actionhero api',
   // The body message to accompany 404 (file not found) errors regarding flat files
   flatFileNotFoundMessage: 'Sorry, that file is not found :(',
   // The message to accompany 500 errors (internal server errors)
@@ -31,7 +31,7 @@ config.general = {
   developmentMode: true,
   // How many pending actions can a single connection be working on 
   simultaneousActions: 5,
-  // configuration for your actionHero project structure
+  // configuration for your actionhero project structure
   paths: {
     'action':      __dirname + '/../actions',
     'task':        __dirname + '/../tasks',
@@ -92,7 +92,7 @@ config.stats = {
   // what redis key(s) [hash] should be used to store stats?
   //  provide no key if you do not want to store stats
   keys: [
-    'actionHero:stats'
+    'actionhero:stats'
   ]
 }
 
@@ -160,7 +160,7 @@ config.servers = {
     port: 8080,
     // Which IP to listen on (use '0.0.0.0' for all; '::' for all on ipv4 and ipv6)
     bindIP: '0.0.0.0',
-    // Any additional headers you want actionHero to respond with
+    // Any additional headers you want actionhero to respond with
     httpHeaders : {
       'Access-Control-Allow-Origin' : '*',
       'Access-Control-Allow-Methods': 'HEAD, GET, POST, PUT, DELETE, OPTIONS, TRACE',

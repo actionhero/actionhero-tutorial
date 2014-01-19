@@ -1,20 +1,17 @@
 {
-    "author": "YOU <YOU@example.com>",
-    "name": "my_actionHero_project",
-    "description": "",
+    "author": "evan <evan@evantahler.com>",
+    "name": "actionhero_tutorial",
+    "description": "actionhero tutorial",
     "version": "0.0.1",
-    "homepage": "",
     "repository": {
-      "type": "",
-      "url": ""
+      "type": "git",
+      "url": "https://github.com/evantahler/actionhero-tutorial.git"
     },
-    "main": "app.js",
-    "keywords": "",
     "engines": {
       "node": ">=0.8.0"
     },
     "dependencies": {
-      "actionHero": "7.1.0",
+      "actionhero": "7.6.0",
       "ntwitter": "x"
     },
     "devDependencies": {
@@ -23,11 +20,11 @@
       "request": "x"
     },
     "scripts": {
-      "start": "node ./node_modules/.bin/actionHero start",
-      "startCluster": "node ./node_modules/.bin/actionHero startCluster",
-      "actionHero": "node ./node_modules/.bin/actionHero",
-      "help": "node ./node_modules/.bin/actionHero help",
-      "test": "NODE_ENV=test node ./node_modules/.bin/mocha --reporter spec ./test"
+      "help":         "actionhero help",
+      "start":        "actionhero start",
+      "actionhero":   "actionhero",
+      "startCluster": "actionhero startCluster",
+      "test":         "mocha"
     }
   }
   

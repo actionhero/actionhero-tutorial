@@ -65,7 +65,7 @@ var twitter = function(api, options, next){
     }); // will emit "connection"
   }
 
-  server._teardown = function(next){
+  server._stop = function(next){
     next();
   }
 

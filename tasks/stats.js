@@ -1,10 +1,11 @@
 exports.task = {
   name: "stats",
   description: "stats",
-  scope: "any",
   frequency: 30 * 1000,
   queue: "default",
-  toAnnounce: true,
+  plugins:       [],
+  pluginOptions: [],
+
   run: function(api, params, next){
     var error = null;    
     var redis = api.redis.client;
