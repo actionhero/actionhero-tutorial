@@ -5,7 +5,7 @@
 - created: June 22, 2013
 - updated: December 3, 2013
 
-[![Build Status](https://secure.travis-ci.org/evantahler/actionhero.png?branch=master)](http://travis-ci.org/evantahler/actionhero) 
+[![Build Status](https://secure.travis-ci.org/evantahler/actionhero-tutorial.png?branch=master)](http://travis-ci.org/evantahler/actionhero-tutorial) 
 ---
 
 This guide will walk you through the creation of the application in this repository, and in the process you will learn some of the basics of [actionhero](http://actionherojs.com).
