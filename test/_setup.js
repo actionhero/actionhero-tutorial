@@ -1,6 +1,6 @@
 exports._setup = {
   serverPrototype: require("../node_modules/actionhero/actionhero.js").actionheroPrototype,
-  testUrl:         "http://127.0.0.1:9000/api",
+  testUrl:         "http://127.0.0.1:8081/api",
   
   init: function(callback){
     var self = this;
