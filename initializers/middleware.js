@@ -15,7 +15,7 @@ exports.middleware = function(api, next){
     }
   }
 
-  api.actions.preProcessors.push(authenticationMiddleware);
+  api.actions.addPreProcessor(authenticationMiddleware);
 
   next();
 }

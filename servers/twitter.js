@@ -8,11 +8,13 @@ var twitter = function(api, options, next){
 
   var type = "twitter"
   var attributes = {
-    canChat: false,
-    logConnections: true,
-    logExits: true,
+    canChat: true,
+    logConnections: false,
+    logExits: false,
     sendWelcomeMessage: false,
-    verbs: [],
+    verbs: [
+      'say'
+    ],
   }
 
   var server = new api.genericServer(type, options, attributes);
@@ -69,18 +71,24 @@ var twitter = function(api, options, next){
     next();
   }
 
+  server.goodbye = function(connection, reason){
+    //
+  };
+
   ////////////
   // EVENTS //
   ////////////
 
   server.on("connection", function(connection){
-    connection.room = "twitter";
-    api.chatRoom.socketRoomBroadcast(connection, {
-      message: connection.rawConnection.message,
-      twitterUser: connection.rawConnection.twitterUser,
-      hashtag: connection.rawConnection.hashtag,
-    });
-    connection.destroy();
+    // connection.rooms.push("twitter");
+    api.chatRoom.addMember(connection.id, 'twitter', function(){
+      api.chatRoom.broadcast(connection, 'twitter', {
+        message: connection.rawConnection.message,
+        twitterUser: connection.rawConnection.twitterUser,
+        hashtag: connection.rawConnection.hashtag,
+      });
+      connection.destroy();
+    });    
   });
 
   /////////////

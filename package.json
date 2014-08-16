@@ -11,8 +11,9 @@
       "node": ">=0.8.0"
     },
     "dependencies": {
-      "actionhero": "8.0.2",
-      "ntwitter": "x"
+      "actionhero": "9.2.2",
+      "ntwitter": "x",
+      "grunt": "~0.4.2"
     },
     "devDependencies": {
       "should": "x",

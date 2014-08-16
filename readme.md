@@ -3,7 +3,7 @@
 <img src="https://raw.github.com/evantahler/actionhero/master/public/logo/actionhero.png" height="300"/>
 
 - created: June 22, 2013
-- updated: December 3, 2013
+- updated: August 16, 2014
 
 [![Build Status](https://secure.travis-ci.org/evantahler/actionhero-tutorial.png?branch=master)](http://travis-ci.org/evantahler/actionhero-tutorial) 
 ---
@@ -42,23 +42,23 @@ You will become comfortable with the following topics:
 ## actionhero Resources
 - [Public Site](http://www.actionherojs.com)
 - [NPM](https://npmjs.org/package/actionhero)
-- [Wiki](http://actionherojs.com/wikit)
-- [API Methods](http://actionherojs.com/wiki/methods.html)
+- [Documentation](http://actionherojs.com/docs)
+- [API Methods](http://actionherojs.com/docs/methods.html)
 - [GitHub](https://github.com/evantahler/actionhero)
 - [Mailing List](https://groups.google.com/forum/?fromgroups=#!forum/actionhero-js)
 
 ## Notes
 
 - You are expected to have a basic familiarity with node.js and the command line
-- You do not need to clone out this repository to follow this guide.  The code in this repository represents the final state of a project created with these instructions.  The code in this project should serve as a reference.  
+- You do not need to clone this repository to follow this guide.  The code in this repository represents the final state of a project created with these instructions.  The code in this project should serve as a reference.  
 - You should also be able to run this project by:
   - `git clone https://github.com/evantahler/actionhero-tutorial.git`
   - `cd actionhero-tutorial`
   - `npm install`
   - `npm start`
   - There are a few extra steps needed to persists data to redis and to use the twitter server example discussed below.
-- This project uses redis as a database.  actionhero comes with [fakeRedis](https://github.com/hdachev/fakeredis), which is an in-process redis server, but it does not persist data.  If you want to use this process in a cluster or across multiple servers, you need to install and use a real redis server.  Change the appropriate `redis` sections in `/config/redis.js` to enable this.
-- Remember that actionhero is an API server, not an website framework.  We will be focusing on creating an API for blogging and chatting, and *applying* that to a website rather than creating a beautiful website itself. 
+- This project uses redis as a database.  actionhero comes with [fakeRedis](https://github.com/hdachev/fakeredis), which is an in-process redis server, but it does not persist data.  If you want to use this project in a cluster or across multiple servers, you need to install and use a real redis server.  Change the appropriate `redis` sections in `/config/redis.js` to enable this.
+- Remember that actionhero is an API server, so we will be focusing on creating an API for blogging and chatting, and *applying* that to a website rather than creating a beautiful website itself. 
 
 ## Getting Started with a new actionhero Project
 
@@ -66,13 +66,13 @@ You will become comfortable with the following topics:
 
 - [config](https://github.com/evantahler/actionhero-tutorial/blob/master/config)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Getting Started](http://actionherojs.com/wiki/ops/getting-started.html)
+- [Getting Started](http://actionherojs.com/docs/ops/getting-started.html)
 
 actionhero is a node.js package.  Be sure you have node.js (version >= 8.0.0) installed.  Node now also comes with [npm](http://npmjs.org), the node package manager.  You can get node from [nodejs.org](http://nodejs.org/) if you do not have it.
 
-This guide was written on OSX 10.8  It should be appropriate for any version of OSX > 10.6.  It should also work on most Linux distributions (Ubuntu, CentOs).  The concepts presented here should also be appropriate for windows users, but many of the "Getting Started" commands will not work as transcribed here.  If you are looking for help on getting started on Windows, Mark Tucker has [a video tutorial for windows users](http://www.youtube.com/watch?v=PwbuJM03XFc)
+This guide was written on OSX 10.8  It should be appropriate for any version of OSX > 10.6.  It should also work on most Linux distributions (Ubuntu, CentOs, Fedora, etc).  The concepts presented here should also be appropriate for windows users, but many of the "Getting Started" commands will not work as described here.  If you are looking for help on getting started on Windows, Mark Tucker has [a video tutorial for windows users](http://www.youtube.com/watch?v=PwbuJM03XFc)
 
 Create a new directory for this project and enter it (in the terminal): 
 
@@ -89,6 +89,10 @@ Use the actionhero generator to build your project
 
 - `./node_modules/.bin/actionhero generate`
 
+Install any project dependancies
+
+- `npm install` 
+
 Try to boot the actionhero server
 
 - `npm start` 
@@ -101,7 +105,7 @@ Restart your server by pressing `ctrl+c` in the terminal window running actionhe
 
 We should also enable all the servers which ship with actionhero (web, websocket, and socket).  Enable their sections in thier config files
 
-Lets change one more thing in `config/api.js`: development mode.  Change `api.config.general.developmentMode = true;`  Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.  Keep in mind that you will still need to manually restart your server if you make any changes to your initializers. 
+Lets change one more thing in `config/api.js`: development mode.  Change `api.config.general.developmentMode = true;`  Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.
 
 actionhero uses the variable `NODE_ENV` to determine which modification file to load from `/config/*` to load to modify the default values in `api.config`.  This is how you can set different variables per envrionment.  We will use this for testing later.
 
@@ -111,9 +115,9 @@ actionhero uses the variable `NODE_ENV` to determine which modification file to 
 
 - [initializers/blog.js](https://github.com/evantahler/actionhero-tutorial/blob/master/initializers/blog.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Initializers](http://actionherojs.com/wiki/core/initializers.html)
+- [Initializers](http://actionherojs.com/docs/core/initializers.html)
 
 initializers in actionhero are places to save common code which other parts of your application will use.  Here is where you might connect to your database or define middlewares.  Normally, you append your new classes to the `api` object so it becomes available in scope for your actions and tasks (like `api.mysql` or `api.game`).  When your server boots, you can optionally execute code within a `_start` method.
 
@@ -188,9 +192,9 @@ Notes:
 
 - [initializers/middleware.js](https://github.com/evantahler/actionhero-tutorial/blob/master/initializers/middleware.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Middleware](http://actionherojs.com/wiki/core/middleware.html)
+- [Middleware](http://actionherojs.com/docs/core/middleware.html)
 
 In the steps above, we created a `api.users.authenticate` method, but didn't use it anywhere.  There are clearly methods which should be protected (like adding a post, or deleting a user), but we need to safeguard them somehow.  
 
@@ -202,9 +206,9 @@ Let's create a new initializer for this:
 
 There are arrays of functions in actionhero which will be run before an after every action.  Here, we only need a check before to see if an action should be run.  You have access to the action itself, along with the connection.  
 
-The middleware we created allows us to simply append `action.authenticated = true` to the action, and the middleware will be invoked.
+The middleware we created allows us to simply append `action.authenticated = true` to the action defintion, and the middleware will be invoked.
 
-Middlewares are invoked by adding them to the `api.actions.preProcessors.push(authenticationMiddleware);` array
+Middlewares are invoked by adding them to the `api.actions.addPreProcessor(authenticationMiddleware);` collection
 
 ## Creating Actions
 
@@ -213,9 +217,9 @@ Middlewares are invoked by adding them to the `api.actions.preProcessors.push(au
 - [actions/users.js](https://github.com/evantahler/actionhero-tutorial/blob/master/actions/users.js)
 - [actions/blog.js](https://github.com/evantahler/actionhero-tutorial/blob/master/actions/blog.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Actions](http://actionherojs.com/wiki/core/actions.html)
+- [Actions](http://actionherojs.com/docs/core/actions.html)
 
 Now that we have our helpers for getting and setting blog posts, how can we allow users to use them?  Actions!
 
@@ -247,9 +251,9 @@ Now we can use CURL to test out our API!  Note that right now, all HTTP methods 
 
 - [routes.js](https://github.com/evantahler/actionhero-tutorial/blob/master/routes.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Web](http://actionherojs.com/wiki/servers/web.html)
+- [Web](http://actionherojs.com/docs/servers/web.html)
 
 We have the basics of our API working, but it might be tedious to keep using GET and POST params. It's time to set up routes.  Routes allow different HTTP verbs to preform a different action on the same URL.  We'll use a `routes.js` file to transform our API into restful resources for users, comments, and posts.  You can derive input variables from the structure of URLs with routing as well.
 
@@ -291,21 +295,21 @@ A successful test run looks like this:
 
 - [public/index.html](https://github.com/evantahler/actionhero-tutorial/blob/master/public/index.html)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Web](http://actionherojs.com/wiki/servers/web.html)
+- [Web](http://actionherojs.com/docs/servers/web.html)
 
 <img src="https://raw.github.com/evantahler/actionhero-tutorial/master/images/index.html.jpg"/>
 
 actionhero is primarily an API server, but it can still serve static files for you.  In `config/api.js`, the `api.config.general.flatFileDirectory` directive is where your web site's "root" is.  You can also use actions to manipulate file content with the `api.staticFile.get` method.  actionhero is also a great choice to power your front-end applications (angular.js, ember, etc).  The examples below are purposefully sparse and often eschew convention and best practices in favor of legibility.  No external JS (jQuery, etc) is required to use actionhero in your website (although they will make your life much easier).
 
-Provided in `index.html` is a simple page which demonstrates how simple it is to call an action from the web to document the API we have created.  If you visit the root of an actionhero API (/api/) with no actions, actionhero will describe it's capabilities, and we can then render them on our web page.
+Provided in `index.html` is a simple page which demonstrates how simple it is to call an action from the web to document the API we have created.  If you visit the the `showDocumentation` action (generated with a new project), actionhero will describe it's capabilities, and we can then render them on our web page.
 
 ## Sockets
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Socket](http://actionherojs.com/wiki/servers/websocket.html)
+- [Socket](http://actionherojs.com/docs/servers/websocket.html)
 
 While this application probably makes the most sense being used in a web browser, actionhero can still provide a TCP/Socket API for clients who wish to use it.   There is nothing new you need to do to enable it.  
 
@@ -347,17 +351,15 @@ exit
 - [public/chat.html](https://github.com/evantahler/actionhero-tutorial/blob/master/public/chat.html)
 - [public/javascripts/actionheroWebSocket.js](https://github.com/evantahler/actionhero-tutorial/blob/master/public/javascript/actionheroWebSocket.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Websocket](http://actionherojs.com/wiki/servers/websocket.html)
+- [Websocket](http://actionherojs.com/docs/servers/websocket.html)
 
 <img src="https://raw.github.com/evantahler/actionhero-tutorial/master/images/chat.html.jpg"/>
 
 `/public/chat.js` demonstrates how to use actionhero's websockets.  The `websocket` is a first-class protocol in acitonHero and has all the capabilities of `web` and `socket`.  Like `socket`, it is a persistent connection which also enables actionhero's chat room features.  We will make use of them here.
 
-Note that we include both the javascript in the `<head>` for faye and the wrapper around it, `actionheroWebSocket.js`
-
-The faye transport will degrade to long-polling and finally http if those features are not available to either your clients or server.
+Note that we include both the javascript `actionheroWebSocket.js`
 
 Note how we make use of the event libraries of `actionheroWebsocket` and build our events around it:
 
@@ -393,27 +395,28 @@ A.connect(function(err, details){
 
 - [tasks/stats.js](https://github.com/evantahler/actionhero-tutorial/blob/master/tasks/stats.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Tasks](http://actionherojs.com/wiki/core/tasks.html)
+- [Tasks](http://actionherojs.com/docs/core/tasks.html)
 
 actionhero comes with a robust task system for delayed / recurring tasks.  For our example, we are going to create a task which will log some stats to the command line every 30 seconds.   You can do much more with actionhero's task system, including distributed tasks, recurring tasks, and more.
 
 `./node_modules/.bin/actionhero generateTask --name=stats`
 
 - note how we set the `task.frequency` to run every 30 seconds
-- the scope of this task is `all`, as we want every server we might run this task on to display these stats
-- `api.config.general.simultaniousActions` in `config/api.js` defines how many tasks will be run at once per server.  You can have some instances of your application running tasks while others won't.
+- to enable our server to run tasks, we need to configure 'workers' to run.  You can enable workers in `/config/tasks.js`.
+- to re-scheudle a job like ours, you will also need to enable the schduler process in `/config/tasks.js`.
 
 ## Custom Server
 
 **files discussed in this section:**
 
 - [servers/twitter.js](https://github.com/evantahler/actionhero-tutorial/blob/master/servers/twitter.js)
+- [config/twitter.js](https://github.com/evantahler/actionhero-tutorial/blob/master/config/servers/twitter.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Servers](http://actionherojs.com/wiki/core/servers.html)
+- [Servers](http://actionherojs.com/docs/core/servers.html)
 
 One of the powers of actionhero is that you can build your own servers and transports.  Think of a serer as any mechanism which creates a client which may then preform an action.  This might be anything from an interface to an Arduino to a rabbitMQ client.   
 
@@ -423,18 +426,25 @@ We will also use the `ntwittter` package to help us with connecting to twitter
 - `npm install ntwitter` (and add it to your `package.json`)
 - You will need to register a new twitter application at dev.twitter.com to generate the required access keys.
 
-We created a new section in `config/twitter.js` in the `api.config.servers` section to hold our twitter credentials:
+We created a new section in `config/servers/twitter.js` in the `api.config.servers` section to hold our twitter credentials:
 
 ```javascript
-"twitter" = {
-  hashtag: "nodejs",
-  twitter: {
-    consumer_key: "xxx",
-    consumer_secret: "xxx",
-    access_token_key: "xxx",
-    access_token_secret: "xxx",
+exports.default = {
+  servers: {
+    twitter: function(api){
+      return {
+        enabled: true,
+        hashtag: "sports",
+        // Be sure to fill these in with your own API keys
+        consumer_key: "XXX",
+        consumer_secret: "XXX",
+        access_token_key: "XXX",
+        access_token_secret: "XXX",
+      }
+    }
   }
 }
+
 ```
 
 - Generate a new custom server `./node_modules/.bin/actionhero generateServer --name=twitter`

@@ -11,7 +11,7 @@ describe('integration', function(){
   it("the api should work in general", function(done){
     request.get(setup.testUrl + "/someAction", function(err, response, body){
       body = JSON.parse(body);
-      body.error.should.equal("Error: someAction is not a known action or that is not a valid apiVersion.");
+      body.error.should.equal("Error: unknown action or invalid apiVersion");
       done();
     });
   });
@@ -38,7 +38,7 @@ describe('integration', function(){
     it("I should be in the list of users", function(done){
       request.get(setup.testUrl + "/usersList", function(err, response, body){
         body = JSON.parse(body);
-        body.users.should.include("evan")
+        body.users.indexOf("evan").should.equal(0);
         should.not.exist(body.error);
         done();
       });
@@ -74,7 +74,7 @@ describe('integration', function(){
     it("I should be in the list of posts", function(done){
       request.post(setup.testUrl + "/postsList", {form: {userName: "evan"}}, function(err, response, body){
         body = JSON.parse(body);
-        body.posts.should.include("test post title")
+        body.posts.indexOf("test post title").should.equal(0)
         should.not.exist(body.error);
         done();
       });

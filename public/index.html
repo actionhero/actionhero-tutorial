@@ -8,15 +8,15 @@
   <title>actionhero.js</title>
 
   <script src="/public/javascript/actionheroClient.js"></script>
-  
+
 </head>
 
-<body> 
+<body>
 
   <div class="body_container">
     <h1>actionhero.js</h1>
     <img src="/public/logo/actionhero.png" width="400px"/>
-    <p><strong>Congratulations!</strong> Your actionhero server working.</p>
+    <p><strong>Congratulations!</strong> Your actionhero server is working.</p>
     <p>Try <a href="/chat.html">chat with websockets</a></p>
     <p>Learn more @ <a href="http://www.actionherojs.com">www.actionherojs.com</a></p>
   </div>
@@ -32,7 +32,7 @@
   <div class="body_container">
     <h2>Actions:</h2>
     <div class="server_info" id="actions">
-      
+
     </div>
   </div>
 
@@ -60,9 +60,9 @@
     }
 
     var client = new actionheroClient();
-    client.action('', function(err, data){
+    client.action('showDocumentation', function(err, data){
       populateServerInfo(data)
-    }); 
+    });
   </script>
 
 </body>

@@ -7,7 +7,6 @@
   <link rel="icon" href="/public/favicon.ico">
   <title>actionhero.js</title>
 
-  <script type="text/javascript" src="/faye/client.js"></script>
   <script type="text/javascript" src="/public/javascript/actionheroClient.js"></script>
 
   <script type="text/javascript">
@@ -21,8 +20,8 @@
     
     // client.on('message',      function(message){ console.log(message) })
 
-    client.on('alert',        function(message){ alert(message) })
-    client.on('api',          function(message){ alert(message) })
+    client.on('alert',        function(message){ alert( JSON.stringify(message) ) })
+    client.on('api',          function(message){ alert( JSON.stringify(message) ) })
 
     client.on('welcome',      function(message){ appendMessage(message); })
     client.on('say',          function(message){ appendMessage(message); })
@@ -31,7 +30,8 @@
       if(err != null){
         console.log(err);
       }else{
-        client.roomChange("defaultRoom");
+        client.roomAdd("defaultRoom");
+        client.roomAdd("twitter");
         document.getElementById("name").innerHTML = "<span style=\"color:#" + intToARGB(hashCode(client.id)) + "\">" + client.id + "</span>"
       }
     });
@@ -43,7 +43,7 @@
     s += "<pre>"
     if (message.welcome != null){
       s += "<div align=\"center\">*** " + message.welcome + " ***</div>";
-    }else{
+    }else if(message.room != 'twitter'){
       s += " " + formatTime(message.sentAt);
       s += "<span style=\"color:#" + intToARGB(hashCode(message.from)) + "\">"
       s += " [";
@@ -53,6 +53,10 @@
       s += "] ";
       s += "</span>"
       s += message.message;
+    }else{
+      s += " " + formatTime(message.sentAt);
+      s += " [ @" + message.message.twitterUser + "] ";
+      s += message.message.message;
     }
     s += "</pre>"
     var div = document.getElementById("chatBox");
@@ -63,7 +67,7 @@
     var div = document.getElementById("message");
     var message = div.value;
     div.value = "";
-    client.say(message);
+    client.say(client.rooms[0], message);
     appendMessage({
       me: true,
       message: message,
