@@ -412,7 +412,7 @@ actionhero comes with a robust task system for delayed / recurring tasks.  For o
 **files discussed in this section:**
 
 - [servers/twitter.js](https://github.com/evantahler/actionhero-tutorial/blob/master/servers/twitter.js)
-- [servers/twitter.js](https://github.com/evantahler/actionhero-tutorial/blob/master/config/servers/twitter.js)
+- [config/twitter.js](https://github.com/evantahler/actionhero-tutorial/blob/master/config/servers/twitter.js)
 
 **relevant documentation section:**
 
@@ -426,18 +426,25 @@ We will also use the `ntwittter` package to help us with connecting to twitter
 - `npm install ntwitter` (and add it to your `package.json`)
 - You will need to register a new twitter application at dev.twitter.com to generate the required access keys.
 
-We created a new section in `config/twitter.js` in the `api.config.servers` section to hold our twitter credentials:
+We created a new section in `config/servers/twitter.js` in the `api.config.servers` section to hold our twitter credentials:
 
 ```javascript
-"twitter" = {
-  hashtag: "nodejs",
-  twitter: {
-    consumer_key: "xxx",
-    consumer_secret: "xxx",
-    access_token_key: "xxx",
-    access_token_secret: "xxx",
+exports.default = {
+  servers: {
+    twitter: function(api){
+      return {
+        enabled: true,
+        hashtag: "sports",
+        // Be sure to fill these in with your own API keys
+        consumer_key: "XXX",
+        consumer_secret: "XXX",
+        access_token_key: "XXX",
+        access_token_secret: "XXX",
+      }
+    }
   }
 }
+
 ```
 
 - Generate a new custom server `./node_modules/.bin/actionhero generateServer --name=twitter`
