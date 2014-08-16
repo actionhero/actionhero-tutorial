@@ -412,6 +412,7 @@ actionhero comes with a robust task system for delayed / recurring tasks.  For o
 **files discussed in this section:**
 
 - [servers/twitter.js](https://github.com/evantahler/actionhero-tutorial/blob/master/servers/twitter.js)
+- [servers/twitter.js](https://github.com/evantahler/actionhero-tutorial/blob/master/config/servers/twitter.js)
 
 **relevant documentation section:**
 
