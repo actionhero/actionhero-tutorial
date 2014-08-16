@@ -50,15 +50,15 @@ You will become comfortable with the following topics:
 ## Notes
 
 - You are expected to have a basic familiarity with node.js and the command line
-- You do not need to clone out this repository to follow this guide.  The code in this repository represents the final state of a project created with these instructions.  The code in this project should serve as a reference.  
+- You do not need to clone this repository to follow this guide.  The code in this repository represents the final state of a project created with these instructions.  The code in this project should serve as a reference.  
 - You should also be able to run this project by:
   - `git clone https://github.com/evantahler/actionhero-tutorial.git`
   - `cd actionhero-tutorial`
   - `npm install`
   - `npm start`
   - There are a few extra steps needed to persists data to redis and to use the twitter server example discussed below.
-- This project uses redis as a database.  actionhero comes with [fakeRedis](https://github.com/hdachev/fakeredis), which is an in-process redis server, but it does not persist data.  If you want to use this process in a cluster or across multiple servers, you need to install and use a real redis server.  Change the appropriate `redis` sections in `/config/redis.js` to enable this.
-- Remember that actionhero is an API server, not an website framework.  We will be focusing on creating an API for blogging and chatting, and *applying* that to a website rather than creating a beautiful website itself. 
+- This project uses redis as a database.  actionhero comes with [fakeRedis](https://github.com/hdachev/fakeredis), which is an in-process redis server, but it does not persist data.  If you want to use this project in a cluster or across multiple servers, you need to install and use a real redis server.  Change the appropriate `redis` sections in `/config/redis.js` to enable this.
+- Remember that actionhero is an API server, so we will be focusing on creating an API for blogging and chatting, and *applying* that to a website rather than creating a beautiful website itself. 
 
 ## Getting Started with a new actionhero Project
 
@@ -72,7 +72,7 @@ You will become comfortable with the following topics:
 
 actionhero is a node.js package.  Be sure you have node.js (version >= 8.0.0) installed.  Node now also comes with [npm](http://npmjs.org), the node package manager.  You can get node from [nodejs.org](http://nodejs.org/) if you do not have it.
 
-This guide was written on OSX 10.8  It should be appropriate for any version of OSX > 10.6.  It should also work on most Linux distributions (Ubuntu, CentOs).  The concepts presented here should also be appropriate for windows users, but many of the "Getting Started" commands will not work as transcribed here.  If you are looking for help on getting started on Windows, Mark Tucker has [a video tutorial for windows users](http://www.youtube.com/watch?v=PwbuJM03XFc)
+This guide was written on OSX 10.8  It should be appropriate for any version of OSX > 10.6.  It should also work on most Linux distributions (Ubuntu, CentOs, Fedora, etc).  The concepts presented here should also be appropriate for windows users, but many of the "Getting Started" commands will not work as described here.  If you are looking for help on getting started on Windows, Mark Tucker has [a video tutorial for windows users](http://www.youtube.com/watch?v=PwbuJM03XFc)
 
 Create a new directory for this project and enter it (in the terminal): 
 
@@ -89,6 +89,10 @@ Use the actionhero generator to build your project
 
 - `./node_modules/.bin/actionhero generate`
 
+Install any project dependancies
+
+- `npm install` 
+
 Try to boot the actionhero server
 
 - `npm start` 
@@ -101,7 +105,7 @@ Restart your server by pressing `ctrl+c` in the terminal window running actionhe
 
 We should also enable all the servers which ship with actionhero (web, websocket, and socket).  Enable their sections in thier config files
 
-Lets change one more thing in `config/api.js`: development mode.  Change `api.config.general.developmentMode = true;`  Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.  Keep in mind that you will still need to manually restart your server if you make any changes to your initializers. 
+Lets change one more thing in `config/api.js`: development mode.  Change `api.config.general.developmentMode = true;`  Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.
 
 actionhero uses the variable `NODE_ENV` to determine which modification file to load from `/config/*` to load to modify the default values in `api.config`.  This is how you can set different variables per envrionment.  We will use this for testing later.
 
@@ -202,9 +206,9 @@ Let's create a new initializer for this:
 
 There are arrays of functions in actionhero which will be run before an after every action.  Here, we only need a check before to see if an action should be run.  You have access to the action itself, along with the connection.  
 
-The middleware we created allows us to simply append `action.authenticated = true` to the action, and the middleware will be invoked.
+The middleware we created allows us to simply append `action.authenticated = true` to the action defintion, and the middleware will be invoked.
 
-Middlewares are invoked by adding them to the `api.actions.preProcessors.push(authenticationMiddleware);` array
+Middlewares are invoked by adding them to the `api.actions.addPreProcessor(authenticationMiddleware);` collection
 
 ## Creating Actions
 
@@ -299,7 +303,7 @@ A successful test run looks like this:
 
 actionhero is primarily an API server, but it can still serve static files for you.  In `config/api.js`, the `api.config.general.flatFileDirectory` directive is where your web site's "root" is.  You can also use actions to manipulate file content with the `api.staticFile.get` method.  actionhero is also a great choice to power your front-end applications (angular.js, ember, etc).  The examples below are purposefully sparse and often eschew convention and best practices in favor of legibility.  No external JS (jQuery, etc) is required to use actionhero in your website (although they will make your life much easier).
 
-Provided in `index.html` is a simple page which demonstrates how simple it is to call an action from the web to document the API we have created.  If you visit the root of an actionhero API (/api/) with no actions, actionhero will describe it's capabilities, and we can then render them on our web page.
+Provided in `index.html` is a simple page which demonstrates how simple it is to call an action from the web to document the API we have created.  If you visit the the `showDocumentation` action (generated with a new project), actionhero will describe it's capabilities, and we can then render them on our web page.
 
 ## Sockets
 
@@ -355,9 +359,7 @@ exit
 
 `/public/chat.js` demonstrates how to use actionhero's websockets.  The `websocket` is a first-class protocol in acitonHero and has all the capabilities of `web` and `socket`.  Like `socket`, it is a persistent connection which also enables actionhero's chat room features.  We will make use of them here.
 
-Note that we include both the javascript in the `<head>` for faye and the wrapper around it, `actionheroWebSocket.js`
-
-The faye transport will degrade to long-polling and finally http if those features are not available to either your clients or server.
+Note that we include both the javascript `actionheroWebSocket.js`
 
 Note how we make use of the event libraries of `actionheroWebsocket` and build our events around it:
 
@@ -402,8 +404,8 @@ actionhero comes with a robust task system for delayed / recurring tasks.  For o
 `./node_modules/.bin/actionhero generateTask --name=stats`
 
 - note how we set the `task.frequency` to run every 30 seconds
-- the scope of this task is `all`, as we want every server we might run this task on to display these stats
-- `api.config.general.simultaniousActions` in `config/api.js` defines how many tasks will be run at once per server.  You can have some instances of your application running tasks while others won't.
+- to enable our server to run tasks, we need to configure 'workers' to run.  You can enable workers in `/config/tasks.js`.
+- to re-scheudle a job like ours, you will also need to enable the schduler process in `/config/tasks.js`.
 
 ## Custom Server
 

@@ -28,6 +28,10 @@ exports.default = {
         // When visiting the root URL, should visitors see 'api' or 'file'?
         //  Visitors can always visit /api and /public as normal
         rootEndpointType : 'file',
+        // simple routing also adds an 'all' route which matches /api/:action for all actions
+        simpleRouting : true,
+        // queryRouting allows an action to be defined via a URL param, ie: /api?action=:action
+        queryRouting : true,
         // The header which will be returned for all flat file served from /public; defined in seconds
         flatFileCacheDuration : 60,
         // Settings for determining the id of an http(s) request (browser-fingerprint)
