@@ -35,7 +35,10 @@ exports.default = {
           cookieKey: 'sessionID',
           toSetCookie: true,
           onlyStaticElements: false,
-          settings: 'path=/;'
+          settings: {
+            path: '/',
+            expires: 3600000,
+          }
         },
         // Options to be applied to incoming file uploads.
         //  More options and details at https://github.com/felixge/node-formidable
@@ -44,6 +47,9 @@ exports.default = {
           keepExtensions: false,
           maxFieldsSize: 1024 * 1024 * 100
         },
+        // Should we pad JSON responses with whitespace to make them more human-readable?
+        // set to null to disable
+        padding: 2,
         // Options to configure metadata in responses
         metadataOptions: {
           serverInformation: true,
@@ -51,7 +57,7 @@ exports.default = {
         },
         // When true, returnErrorCodes will modify the response header for http(s) clients if connection.error is not null.
         //  You can also set connection.rawConnection.responseHttpCode to specify a code per request.
-        returnErrorCodes: false
+        returnErrorCodes: true
       }
     }
   }

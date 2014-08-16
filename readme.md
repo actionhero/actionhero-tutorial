@@ -3,7 +3,7 @@
 <img src="https://raw.github.com/evantahler/actionhero/master/public/logo/actionhero.png" height="300"/>
 
 - created: June 22, 2013
-- updated: December 3, 2013
+- updated: August 16, 2014
 
 [![Build Status](https://secure.travis-ci.org/evantahler/actionhero-tutorial.png?branch=master)](http://travis-ci.org/evantahler/actionhero-tutorial) 
 ---
@@ -42,8 +42,8 @@ You will become comfortable with the following topics:
 ## actionhero Resources
 - [Public Site](http://www.actionherojs.com)
 - [NPM](https://npmjs.org/package/actionhero)
-- [Wiki](http://actionherojs.com/wikit)
-- [API Methods](http://actionherojs.com/wiki/methods.html)
+- [Documentation](http://actionherojs.com/docs)
+- [API Methods](http://actionherojs.com/docs/methods.html)
 - [GitHub](https://github.com/evantahler/actionhero)
 - [Mailing List](https://groups.google.com/forum/?fromgroups=#!forum/actionhero-js)
 
@@ -66,9 +66,9 @@ You will become comfortable with the following topics:
 
 - [config](https://github.com/evantahler/actionhero-tutorial/blob/master/config)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Getting Started](http://actionherojs.com/wiki/ops/getting-started.html)
+- [Getting Started](http://actionherojs.com/docs/ops/getting-started.html)
 
 actionhero is a node.js package.  Be sure you have node.js (version >= 8.0.0) installed.  Node now also comes with [npm](http://npmjs.org), the node package manager.  You can get node from [nodejs.org](http://nodejs.org/) if you do not have it.
 
@@ -111,9 +111,9 @@ actionhero uses the variable `NODE_ENV` to determine which modification file to 
 
 - [initializers/blog.js](https://github.com/evantahler/actionhero-tutorial/blob/master/initializers/blog.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Initializers](http://actionherojs.com/wiki/core/initializers.html)
+- [Initializers](http://actionherojs.com/docs/core/initializers.html)
 
 initializers in actionhero are places to save common code which other parts of your application will use.  Here is where you might connect to your database or define middlewares.  Normally, you append your new classes to the `api` object so it becomes available in scope for your actions and tasks (like `api.mysql` or `api.game`).  When your server boots, you can optionally execute code within a `_start` method.
 
@@ -188,9 +188,9 @@ Notes:
 
 - [initializers/middleware.js](https://github.com/evantahler/actionhero-tutorial/blob/master/initializers/middleware.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Middleware](http://actionherojs.com/wiki/core/middleware.html)
+- [Middleware](http://actionherojs.com/docs/core/middleware.html)
 
 In the steps above, we created a `api.users.authenticate` method, but didn't use it anywhere.  There are clearly methods which should be protected (like adding a post, or deleting a user), but we need to safeguard them somehow.  
 
@@ -213,9 +213,9 @@ Middlewares are invoked by adding them to the `api.actions.preProcessors.push(au
 - [actions/users.js](https://github.com/evantahler/actionhero-tutorial/blob/master/actions/users.js)
 - [actions/blog.js](https://github.com/evantahler/actionhero-tutorial/blob/master/actions/blog.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Actions](http://actionherojs.com/wiki/core/actions.html)
+- [Actions](http://actionherojs.com/docs/core/actions.html)
 
 Now that we have our helpers for getting and setting blog posts, how can we allow users to use them?  Actions!
 
@@ -247,9 +247,9 @@ Now we can use CURL to test out our API!  Note that right now, all HTTP methods 
 
 - [routes.js](https://github.com/evantahler/actionhero-tutorial/blob/master/routes.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Web](http://actionherojs.com/wiki/servers/web.html)
+- [Web](http://actionherojs.com/docs/servers/web.html)
 
 We have the basics of our API working, but it might be tedious to keep using GET and POST params. It's time to set up routes.  Routes allow different HTTP verbs to preform a different action on the same URL.  We'll use a `routes.js` file to transform our API into restful resources for users, comments, and posts.  You can derive input variables from the structure of URLs with routing as well.
 
@@ -291,9 +291,9 @@ A successful test run looks like this:
 
 - [public/index.html](https://github.com/evantahler/actionhero-tutorial/blob/master/public/index.html)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Web](http://actionherojs.com/wiki/servers/web.html)
+- [Web](http://actionherojs.com/docs/servers/web.html)
 
 <img src="https://raw.github.com/evantahler/actionhero-tutorial/master/images/index.html.jpg"/>
 
@@ -303,9 +303,9 @@ Provided in `index.html` is a simple page which demonstrates how simple it is to
 
 ## Sockets
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Socket](http://actionherojs.com/wiki/servers/websocket.html)
+- [Socket](http://actionherojs.com/docs/servers/websocket.html)
 
 While this application probably makes the most sense being used in a web browser, actionhero can still provide a TCP/Socket API for clients who wish to use it.   There is nothing new you need to do to enable it.  
 
@@ -347,9 +347,9 @@ exit
 - [public/chat.html](https://github.com/evantahler/actionhero-tutorial/blob/master/public/chat.html)
 - [public/javascripts/actionheroWebSocket.js](https://github.com/evantahler/actionhero-tutorial/blob/master/public/javascript/actionheroWebSocket.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Websocket](http://actionherojs.com/wiki/servers/websocket.html)
+- [Websocket](http://actionherojs.com/docs/servers/websocket.html)
 
 <img src="https://raw.github.com/evantahler/actionhero-tutorial/master/images/chat.html.jpg"/>
 
@@ -393,9 +393,9 @@ A.connect(function(err, details){
 
 - [tasks/stats.js](https://github.com/evantahler/actionhero-tutorial/blob/master/tasks/stats.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Tasks](http://actionherojs.com/wiki/core/tasks.html)
+- [Tasks](http://actionherojs.com/docs/core/tasks.html)
 
 actionhero comes with a robust task system for delayed / recurring tasks.  For our example, we are going to create a task which will log some stats to the command line every 30 seconds.   You can do much more with actionhero's task system, including distributed tasks, recurring tasks, and more.
 
@@ -411,9 +411,9 @@ actionhero comes with a robust task system for delayed / recurring tasks.  For o
 
 - [servers/twitter.js](https://github.com/evantahler/actionhero-tutorial/blob/master/servers/twitter.js)
 
-**relevant wiki section:**
+**relevant documentation section:**
 
-- [Servers](http://actionherojs.com/wiki/core/servers.html)
+- [Servers](http://actionherojs.com/docs/core/servers.html)
 
 One of the powers of actionhero is that you can build your own servers and transports.  Think of a serer as any mechanism which creates a client which may then preform an action.  This might be anything from an interface to an Arduino to a rabbitMQ client.   
 
