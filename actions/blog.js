@@ -129,7 +129,7 @@ exports.commentsView = {
 
 exports.commentDelete = {
   name: "commentDelete",
-  description: "I add a comment",
+  description: "I delete a comment",
   inputs: {
     required: ["userName", "password", "commentId", "title"],
     optional: [],
