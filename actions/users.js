@@ -70,6 +70,9 @@ exports.authenticate = {
     api.users.authenticate(connection.params.userName, connection.params.password, function(error, match){
       connection.error = error;
       connection.response.authenticated = match;
+      if(match === false && !connection.error){
+        connection.error = "unable to log in";
+      }
       next(connection, true);
     });
   }

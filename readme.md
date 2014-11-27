@@ -249,7 +249,7 @@ Now we can use CURL to test out our API!  Note that right now, all HTTP methods 
 
 **files discussed in this section:**
 
-- [routes.js](https://github.com/evantahler/actionhero-tutorial/blob/master/routes.js)
+- [routes.js](https://github.com/evantahler/actionhero-tutorial/blob/master/config/routes.js)
 
 **relevant documentation section:**
 
