@@ -4,17 +4,19 @@ exports._setup = {
   
   init: function(callback){
     var self = this;
-    if(self.server == null){
+    if(!self.server){
+      console.log("    starting test server...");
       self.server = new self.serverPrototype();
       self.server.start(function(err, api){
         self.api = api;
         callback();
       });
     }else{
+      console.log("    restarting test server...");
       self.server.restart(function(){
         callback();
       });
     }
   }
 
-}
+};
