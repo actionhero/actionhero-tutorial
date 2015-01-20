@@ -3,7 +3,7 @@
 <img src="https://raw.github.com/evantahler/actionhero/master/public/logo/actionhero.png" height="300"/>
 
 - created: June 22, 2013
-- updated: November 26, 2014
+- updated: January 19, 2015
 
 [![Build Status](https://secure.travis-ci.org/evantahler/actionhero-tutorial.png?branch=master)](http://travis-ci.org/evantahler/actionhero-tutorial) 
 ---
@@ -299,7 +299,7 @@ A successful test run looks like this:
 
 - [Web](http://actionherojs.com/docs/servers/web.html)
 
-<img src="https://raw.github.com/evantahler/actionhero-tutorial/master/images/index.html.jpg"/>
+<img src="https://raw.github.com/evantahler/actionhero-tutorial/master/images/index.html.png"/>
 
 actionhero is primarily an API server, but it can still serve static files for you.  In `config/api.js`, the `api.config.general.flatFileDirectory` directive is where your web site's "root" is.  You can also use actions to manipulate file content with the `api.staticFile.get` method.  actionhero is also a great choice to power your front-end applications (angular.js, ember, etc).  The examples below are purposefully sparse and often eschew convention and best practices in favor of legibility.  No external JS (jQuery, etc) is required to use actionhero in your website (although they will make your life much easier).
 
@@ -355,7 +355,7 @@ exit
 
 - [Websocket](http://actionherojs.com/docs/servers/websocket.html)
 
-<img src="https://raw.github.com/evantahler/actionhero-tutorial/master/images/chat.html.jpg"/>
+<img src="https://raw.github.com/evantahler/actionhero-tutorial/master/images/chat.html.png"/>
 
 `/public/chat.js` demonstrates how to use actionhero's websockets.  The `websocket` is a first-class protocol in acitonHero and has all the capabilities of `web` and `socket`.  Like `socket`, it is a persistent connection which also enables actionhero's chat room features.  We will make use of them here.
 
