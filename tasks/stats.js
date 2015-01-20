@@ -19,11 +19,11 @@ exports.task = {
       api.log(posts.length + " posts");
       api.log("**************");
       next();
-    }
+    };
 
     api.users.list(function(error, u){
       users = u;
-      if(users.length == 0){
+      if(users.length === 0){
         render();
       }else{
         users.forEach(function(user){
@@ -33,7 +33,7 @@ exports.task = {
               posts.push(post);
             });
             started--;
-            if(started == 0){ render(); }
+            if(started === 0){ render(); }
           });
         });
       }

@@ -1,21 +1,24 @@
-exports.middleware = function(api, next){
+module.exports = {
 
-  var authenticationMiddleware = function(connection, actionTemplate, next){
-    if(actionTemplate.authenticated === true){
-      api.users.authenticate(connection.params.userName, connection.params.password, function(error, match){
-        if(match === true){
-          next(connection, true);
-        }else{
-          connection.error = "Authentication Failed.  userName and password required";
-          next(connection, false);
-        }
-      });
-    }else{
-      next(connection, true);
-    }
+  initialize: function(api, next){
+
+    var authenticationMiddleware = function(connection, actionTemplate, next){
+      if(actionTemplate.authenticated === true){
+        api.users.authenticate(connection.params.userName, connection.params.password, function(error, match){
+          if(match === true){
+            next(connection, true);
+          }else{
+            connection.error = "Authentication Failed.  userName and password required";
+            next(connection, false);
+          }
+        });
+      }else{
+        next(connection, true);
+      }
+    };
+
+    api.actions.addPreProcessor(authenticationMiddleware);
+
+    next();
   }
-
-  api.actions.addPreProcessor(authenticationMiddleware);
-
-  next();
-}
+};

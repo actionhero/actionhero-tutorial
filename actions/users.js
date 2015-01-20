@@ -2,8 +2,8 @@ exports.userAdd = {
   name: "userAdd",
   description: "I add a user",
   inputs: {
-    required: ["userName", "password"],
-    optional: [],
+    userName: {required: true},
+    password: {required: true},
   },
   authenticated: false,
   outputExample: {},
@@ -20,8 +20,8 @@ exports.userDelete = {
   name: "userDelete",
   description: "I delete a user",
   inputs: {
-    required: ["userName", "password"],
-    optional: [],
+    userName: {required: true},
+    password: {required: true},
   },
   authenticated: true,
   outputExample: {},
@@ -37,10 +37,6 @@ exports.userDelete = {
 exports.usersList = {
   name: "usersList",
   description: "I list all the users",
-  inputs: {
-    required: [],
-    optional: [],
-  },
   authenticated: false,
   outputExample: {},
   version: 1.0,
@@ -60,8 +56,8 @@ exports.authenticate = {
   name: "authenticate",
   description: "I authenticate a user",
   inputs: {
-    required: ["userName", "password"],
-    optional: [],
+    userName: {required: true},
+    password: {required: true},
   },
   authenticated: false,
   outputExample: {},

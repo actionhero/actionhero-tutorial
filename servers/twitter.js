@@ -1,12 +1,12 @@
 var ntwitter = require("ntwitter");
 
-var twitter = function(api, options, next){
+var initialize = function(api, options, next){
 
   //////////
   // INIT //
   //////////
 
-  var type = "twitter"
+  var type = "twitter";
   var attributes = {
     canChat: true,
     logConnections: false,
@@ -15,7 +15,7 @@ var twitter = function(api, options, next){
     verbs: [
       'say'
     ],
-  }
+  };
 
   var server = new api.genericServer(type, options, attributes);
 
@@ -23,7 +23,7 @@ var twitter = function(api, options, next){
   // REQUIRED METHODS //
   //////////////////////
 
-  server._start = function(next){
+  server.start = function(next){
     var self = this;
     api.twitter = new ntwitter({
       consumer_key:        api.config.servers.twitter.consumer_key,
@@ -33,7 +33,7 @@ var twitter = function(api, options, next){
     });
 
     api.twitter.verifyCredentials(function (err, data) {
-      if(err == null){
+      if(!err){
         api.twitter.stream('statuses/filter', {track:'#' + api.config.servers.twitter.hashtag}, function(stream) {
           api.twitterStram = stream;
           api.twitterStram.on('data', function (tweet) {
@@ -45,14 +45,15 @@ var twitter = function(api, options, next){
         api.log("Twitter Error: " + err, "error");
         next();
       }
-    })
-  }
+    });
+  };
 
   server.addTweet = function(tweet){
+    var twitterUser;
     try{
-      var twitterUser = tweet.user.screen_name;
+      twitterUser = tweet.user.screen_name;
     }catch(e){
-      var twitterUser = "unknown";
+      twitterUser = "unknown";
     }
     server.buildConnection({
       id: tweet.id,
@@ -60,16 +61,16 @@ var twitter = function(api, options, next){
         hashtag: api.config.servers.twitter.hashtag,
         clientId: tweet.id,
         message: tweet.text,
-        twitterUser: twitterUser,
+        twitterUser: twitterUser
       }, 
       remoteAddress  : 0,
       remotePort     : 0 ,
     }); // will emit "connection"
-  }
+  };
 
-  server._stop = function(next){
+  server.stop = function(next){
     next();
-  }
+  };
 
   server.goodbye = function(connection, reason){
     //
@@ -96,8 +97,8 @@ var twitter = function(api, options, next){
   /////////////
 
   next(server);
-}
+};
 
 /////////////////////////////////////////////////////////////////////
 // exports
-exports.twitter = twitter;
+exports.initialize = initialize;
