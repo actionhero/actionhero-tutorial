@@ -10,10 +10,9 @@ exports.postAdd = {
   authenticated: true,
   outputExample: {},
   version: 1.0,
-  run: function(api, connection, next){
-    api.blog.postAdd(connection.params.userName, connection.params.title, connection.params.content, function(error){
-      connection.error = error;
-      next(connection, true);
+  run: function(api, data, next){
+    api.blog.postAdd(data.params.userName, data.params.title, data.params.content, function(error){
+      next(error);
     });
   }
 };
@@ -28,11 +27,10 @@ exports.postView = {
   authenticated: false,
   outputExample: {},
   version: 1.0,
-  run: function(api, connection, next){
-    api.blog.postView(connection.params.userName, connection.params.title, function(error, post){
-      connection.error = error;
-      connection.response.post = post;
-      next(connection, true);
+  run: function(api, data, next){
+    api.blog.postView(data.params.userName, data.params.title, function(error, post){
+      data.response.post = post;
+      next(error);
     });
   }
 };
@@ -46,11 +44,10 @@ exports.postsList = {
   authenticated: false,
   outputExample: {},
   version: 1.0,
-  run: function(api, connection, next){
-    api.blog.postsList(connection.params.userName, function(error, posts){
-      connection.error = error;
-      connection.response.posts = posts;
-      next(connection, true);
+  run: function(api, data, next){
+    api.blog.postsList(data.params.userName, function(error, posts){
+      data.response.posts = posts;
+      next(error);
     });
   }
 };
@@ -67,10 +64,9 @@ exports.postEdit = {
   authenticated: true,
   outputExample: {},
   version: 1.0,
-  run: function(api, connection, next){
-    api.blog.postEdit(connection.params.userName, connection.params.title, connection.params.content, function(error){
-      connection.error = error;
-      next(connection, true);
+  run: function(api, data, next){
+    api.blog.postEdit(data.params.userName, data.params.title, data.params.content, function(error){
+      next(error);
     });
   }
 };
@@ -86,10 +82,9 @@ exports.postDelete = {
   authenticated: true,
   outputExample: {},
   version: 1.0,
-  run: function(api, connection, next){
-    api.blog.postDelete(connection.params.userName, connection.params.title, function(error){
-      connection.error = error;
-      next(connection, true);
+  run: function(api, data, next){
+    api.blog.postDelete(data.params.userName, data.params.title, function(error){
+      next(error);
     });
   }
 };
@@ -106,10 +101,9 @@ exports.commentAdd = {
   authenticated: false,
   outputExample: {},
   version: 1.0,
-  run: function(api, connection, next){
-    api.blog.commentAdd(connection.params.userName, connection.params.title, connection.params.commenterName, connection.params.comment, function(error){
-      connection.error = error;
-      next(connection, true);
+  run: function(api, data, next){
+    api.blog.commentAdd(data.params.userName, data.params.title, data.params.commenterName, data.params.comment, function(error){
+      next(error);
     });
   }
 };
@@ -124,11 +118,10 @@ exports.commentsView = {
   authenticated: false,
   outputExample: {},
   version: 1.0,
-  run: function(api, connection, next){
-    api.blog.commentsView(connection.params.userName, connection.params.title, function(error, comments){
-      connection.error = error;
-      connection.response.comments = comments;
-      next(connection, true);
+  run: function(api, data, next){
+    api.blog.commentsView(data.params.userName, data.params.title, function(error, comments){
+      data.response.comments = comments;
+      next(error);
     });
   }
 };
@@ -145,10 +138,9 @@ exports.commentDelete = {
   authenticated: true,
   outputExample: {},
   version: 1.0,
-  run: function(api, connection, next){
-    api.blog.commentDelete(connection.params.userName, connection.params.title, connection.params.commentId, function(error){
-      connection.error = error;
-      next(connection, true);
+  run: function(api, data, next){
+    api.blog.commentDelete(data.params.userName, data.params.title, data.params.commentId, function(error){
+      next(error);
     });
   }
 };

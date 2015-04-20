@@ -11,7 +11,7 @@ describe('integration', function(){
   it("the api should work in general", function(done){
     request.get(setup.testUrl + "/someAction", function(err, response, body){
       body = JSON.parse(body);
-      body.error.should.equal("Error: unknown action or invalid apiVersion");
+      body.error.should.equal("unknown action or invalid apiVersion");
       done();
     });
   });
