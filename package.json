@@ -8,11 +8,11 @@
       "url": "https://github.com/evantahler/actionhero-tutorial.git"
     },
     "engines": {
-      "node": ">=0.8.0"
+      "node": ">=0.10.0"
     },
     "dependencies": {
-      "actionhero": "11.x.x",
-      "ntwitter": "x",
+      "actionhero": "12.x.x",
+      "twitter": "x",
       "grunt": "~0.4.2"
     },
     "devDependencies": {

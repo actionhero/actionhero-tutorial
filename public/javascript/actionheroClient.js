@@ -148,6 +148,16 @@ module.exports = function emits() {
 },{}],3:[function(_dereq_,module,exports){
 'use strict';
 
+//
+// We store our EE objects in a plain object whose properties are event names.
+// If `Object.create(null)` is not supported we prefix the event names with a
+// `~` to make sure that the built-in object properties are not overridden or
+// used as an attack vector.
+// We also assume that `Object.create(null)` is available when the event name
+// is an ES6 Symbol.
+//
+var prefix = typeof Object.create !== 'function' ? '~' : false;
+
 /**
  * Representation of a single EventEmitter function.
  *
@@ -183,15 +193,20 @@ EventEmitter.prototype._events = undefined;
  * Return a list of assigned event listeners.
  *
  * @param {String} event The events that should be listed.
- * @returns {Array}
+ * @param {Boolean} exists We only need to know if there are listeners.
+ * @returns {Array|Boolean}
  * @api public
  */
-EventEmitter.prototype.listeners = function listeners(event) {
-  if (!this._events || !this._events[event]) return [];
-  if (this._events[event].fn) return [this._events[event].fn];
+EventEmitter.prototype.listeners = function listeners(event, exists) {
+  var evt = prefix ? prefix + event : event
+    , available = this._events && this._events[evt];
 
-  for (var i = 0, l = this._events[event].length, ee = new Array(l); i < l; i++) {
-    ee[i] = this._events[event][i].fn;
+  if (exists) return !!available;
+  if (!available) return [];
+  if (available.fn) return [available.fn];
+
+  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
+    ee[i] = available[i].fn;
   }
 
   return ee;
@@ -205,15 +220,17 @@ EventEmitter.prototype.listeners = function listeners(event) {
  * @api public
  */
 EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
-  if (!this._events || !this._events[event]) return false;
+  var evt = prefix ? prefix + event : event;
 
-  var listeners = this._events[event]
+  if (!this._events || !this._events[evt]) return false;
+
+  var listeners = this._events[evt]
     , len = arguments.length
     , args
     , i;
 
   if ('function' === typeof listeners.fn) {
-    if (listeners.once) this.removeListener(event, listeners.fn, true);
+    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
 
     switch (len) {
       case 1: return listeners.fn.call(listeners.context), true;
@@ -234,7 +251,7 @@ EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
       , j;
 
     for (i = 0; i < length; i++) {
-      if (listeners[i].once) this.removeListener(event, listeners[i].fn, true);
+      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
 
       switch (len) {
         case 1: listeners[i].fn.call(listeners[i].context); break;
@@ -262,14 +279,15 @@ EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
  * @api public
  */
 EventEmitter.prototype.on = function on(event, fn, context) {
-  var listener = new EE(fn, context || this);
+  var listener = new EE(fn, context || this)
+    , evt = prefix ? prefix + event : event;
 
-  if (!this._events) this._events = {};
-  if (!this._events[event]) this._events[event] = listener;
+  if (!this._events) this._events = prefix ? {} : Object.create(null);
+  if (!this._events[evt]) this._events[evt] = listener;
   else {
-    if (!this._events[event].fn) this._events[event].push(listener);
-    else this._events[event] = [
-      this._events[event], listener
+    if (!this._events[evt].fn) this._events[evt].push(listener);
+    else this._events[evt] = [
+      this._events[evt], listener
     ];
   }
 
@@ -285,14 +303,15 @@ EventEmitter.prototype.on = function on(event, fn, context) {
  * @api public
  */
 EventEmitter.prototype.once = function once(event, fn, context) {
-  var listener = new EE(fn, context || this, true);
+  var listener = new EE(fn, context || this, true)
+    , evt = prefix ? prefix + event : event;
 
-  if (!this._events) this._events = {};
-  if (!this._events[event]) this._events[event] = listener;
+  if (!this._events) this._events = prefix ? {} : Object.create(null);
+  if (!this._events[evt]) this._events[evt] = listener;
   else {
-    if (!this._events[event].fn) this._events[event].push(listener);
-    else this._events[event] = [
-      this._events[event], listener
+    if (!this._events[evt].fn) this._events[evt].push(listener);
+    else this._events[evt] = [
+      this._events[evt], listener
     ];
   }
 
@@ -304,22 +323,36 @@ EventEmitter.prototype.once = function once(event, fn, context) {
  *
  * @param {String} event The event we want to remove.
  * @param {Function} fn The listener that we need to find.
+ * @param {Mixed} context Only remove listeners matching this context.
  * @param {Boolean} once Only remove once listeners.
  * @api public
  */
-EventEmitter.prototype.removeListener = function removeListener(event, fn, once) {
-  if (!this._events || !this._events[event]) return this;
+EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+  var evt = prefix ? prefix + event : event;
 
-  var listeners = this._events[event]
+  if (!this._events || !this._events[evt]) return this;
+
+  var listeners = this._events[evt]
     , events = [];
 
   if (fn) {
-    if (listeners.fn && (listeners.fn !== fn || (once && !listeners.once))) {
-      events.push(listeners);
-    }
-    if (!listeners.fn) for (var i = 0, length = listeners.length; i < length; i++) {
-      if (listeners[i].fn !== fn || (once && !listeners[i].once)) {
-        events.push(listeners[i]);
+    if (listeners.fn) {
+      if (
+           listeners.fn !== fn
+        || (once && !listeners.once)
+        || (context && listeners.context !== context)
+      ) {
+        events.push(listeners);
+      }
+    } else {
+      for (var i = 0, length = listeners.length; i < length; i++) {
+        if (
+             listeners[i].fn !== fn
+          || (once && !listeners[i].once)
+          || (context && listeners[i].context !== context)
+        ) {
+          events.push(listeners[i]);
+        }
       }
     }
   }
@@ -328,9 +361,9 @@ EventEmitter.prototype.removeListener = function removeListener(event, fn, once)
   // Reset the array, or remove it completely if we have no more listeners.
   //
   if (events.length) {
-    this._events[event] = events.length === 1 ? events[0] : events;
+    this._events[evt] = events.length === 1 ? events[0] : events;
   } else {
-    delete this._events[event];
+    delete this._events[evt];
   }
 
   return this;
@@ -345,8 +378,8 @@ EventEmitter.prototype.removeListener = function removeListener(event, fn, once)
 EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
   if (!this._events) return this;
 
-  if (event) delete this._events[event];
-  else this._events = {};
+  if (event) delete this._events[prefix ? prefix + event : event];
+  else this._events = prefix ? {} : Object.create(null);
 
   return this;
 };
@@ -365,18 +398,161 @@ EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
 };
 
 //
-// Expose the module.
+// Expose the prefix.
 //
-EventEmitter.EventEmitter = EventEmitter;
-EventEmitter.EventEmitter2 = EventEmitter;
-EventEmitter.EventEmitter3 = EventEmitter;
+EventEmitter.prefixed = prefix;
 
 //
 // Expose the module.
 //
-module.exports = EventEmitter;
+if ('undefined' !== typeof module) {
+  module.exports = EventEmitter;
+}
 
 },{}],4:[function(_dereq_,module,exports){
+'use strict';
+
+var regex = new RegExp('^((?:\\d+)?\\.?\\d+) *('+ [
+  'milliseconds?',
+  'msecs?',
+  'ms',
+  'seconds?',
+  'secs?',
+  's',
+  'minutes?',
+  'mins?',
+  'm',
+  'hours?',
+  'hrs?',
+  'h',
+  'days?',
+  'd',
+  'weeks?',
+  'wks?',
+  'w',
+  'years?',
+  'yrs?',
+  'y'
+].join('|') +')?$', 'i');
+
+var second = 1000
+  , minute = second * 60
+  , hour = minute * 60
+  , day = hour * 24
+  , week = day * 7
+  , year = day * 365;
+
+/**
+ * Parse a time string and return the number value of it.
+ *
+ * @param {String} ms Time string.
+ * @returns {Number}
+ * @api private
+ */
+module.exports = function millisecond(ms) {
+  var type = typeof ms
+    , amount
+    , match;
+
+  if ('number' === type) return ms;
+  else if ('string' !== type || '0' === ms || !ms) return 0;
+  else if (+ms) return +ms;
+
+  //
+  // We are vulnerable to the regular expression denial of service (ReDoS).
+  // In order to mitigate this we don't parse the input string if it is too long.
+  // See https://nodesecurity.io/advisories/46.
+  //
+  if (ms.length > 10000 || !(match = regex.exec(ms))) return 0;
+
+  amount = parseFloat(match[1]);
+
+  switch (match[2].toLowerCase()) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return amount * year;
+
+    case 'weeks':
+    case 'week':
+    case 'wks':
+    case 'wk':
+    case 'w':
+      return amount * week;
+
+    case 'days':
+    case 'day':
+    case 'd':
+      return amount * day;
+
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return amount * hour;
+
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return amount * minute;
+
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return amount * second;
+
+    default:
+      return amount;
+  }
+};
+
+},{}],5:[function(_dereq_,module,exports){
+'use strict';
+
+/**
+ * Wrap callbacks to prevent double execution.
+ *
+ * @param {Function} fn Function that should only be called once.
+ * @returns {Function} A wrapped callback which prevents execution.
+ * @api public
+ */
+module.exports = function one(fn) {
+  var called = 0
+    , value;
+
+  /**
+   * The function that prevents double execution.
+   *
+   * @api private
+   */
+  function onetime() {
+    if (called) return value;
+
+    called = 1;
+    value = fn.apply(this, arguments);
+    fn = null;
+
+    return value;
+  }
+
+  //
+  // To make debugging more easy we want to use the name of the supplied
+  // function. So when you look at the functions that are assigned to event
+  // listeners you don't see a load of `onetime` functions but actually the
+  // names of the functions that this module will call.
+  //
+  onetime.displayName = fn.displayName || fn.name || onetime.displayName || onetime.name;
+  return onetime;
+};
+
+},{}],6:[function(_dereq_,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty;
@@ -430,7 +606,7 @@ function querystringify(obj, prefix) {
     }
   }
 
-  return prefix + pairs.join('&');
+  return pairs.length ? prefix + pairs.join('&') : '';
 }
 
 //
@@ -439,7 +615,7 @@ function querystringify(obj, prefix) {
 exports.stringify = querystringify;
 exports.parse = querystring;
 
-},{}],5:[function(_dereq_,module,exports){
+},{}],7:[function(_dereq_,module,exports){
 'use strict';
 
 var EventEmitter = _dereq_('eventemitter3')
@@ -661,92 +837,102 @@ Recovery.prototype.destroy = destroy('timers attempt _fn');
 //
 module.exports = Recovery;
 
-},{"demolish":1,"eventemitter3":3,"millisecond":6,"one-time":7,"tick-tock":8}],6:[function(_dereq_,module,exports){
-/**
- * Parse a time string and return the number value of it.
- *
- * @param {String} ms Time string.
- * @returns {Number}
- * @api private
- */
-module.exports = function millisecond(ms) {
-  'use strict';
-
-  if ('string' !== typeof ms || '0' === ms || +ms) return +ms;
-
-  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(ms)
-    , second = 1000
-    , minute = second * 60
-    , hour = minute * 60
-    , day = hour * 24
-    , amount;
-
-  if (!match) return 0;
-
-  amount = parseFloat(match[1]);
-
-  switch (match[2].toLowerCase()) {
-    case 'days':
-    case 'day':
-    case 'd':
-      return amount * day;
-
-    case 'hours':
-    case 'hour':
-    case 'hrs':
-    case 'hr':
-    case 'h':
-      return amount * hour;
-
-    case 'minutes':
-    case 'minute':
-    case 'mins':
-    case 'min':
-    case 'm':
-      return amount * minute;
-
-    case 'seconds':
-    case 'second':
-    case 'secs':
-    case 'sec':
-    case 's':
-      return amount * second;
-
-    default:
-      return amount;
-  }
-};
-
-},{}],7:[function(_dereq_,module,exports){
+},{"demolish":1,"eventemitter3":3,"millisecond":4,"one-time":5,"tick-tock":9}],8:[function(_dereq_,module,exports){
 'use strict';
 
 /**
- * Wrap callbacks to prevent double execution.
+ * Check if we're required to add a port number.
  *
- * @param {Function} fn Function that should only be called once.
- * @returns {Function} A wrapped callback which prevents execution.
- * @api public
+ * @see https://url.spec.whatwg.org/#default-port
+ * @param {Number|String} port Port number we need to check
+ * @param {String} protocol Protocol we need to check against.
+ * @returns {Boolean} Is it a default port for the given protocol
+ * @api private
  */
-module.exports = function one(fn) {
-  var called = false
-    , value;
+module.exports = function required(port, protocol) {
+  protocol = protocol.split(':')[0];
+  port = +port;
 
-  return function time() {
-    if (called) return value;
+  if (!port) return false;
 
-    called = true;
-    value = fn.apply(this, arguments);
-    fn = null;
+  switch (protocol) {
+    case 'http':
+    case 'ws':
+    return port !== 80;
 
-    return value;
-  };
+    case 'https':
+    case 'wss':
+    return port !== 443;
+
+    case 'ftp':
+    return port !== 21;
+
+    case 'gopher':
+    return port !== 70;
+
+    case 'file':
+    return false;
+  }
+
+  return port !== 0;
 };
 
-},{}],8:[function(_dereq_,module,exports){
+},{}],9:[function(_dereq_,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
   , ms = _dereq_('millisecond');
+
+/**
+ * Timer instance.
+ *
+ * @constructor
+ * @param {Object} timer New timer instance.
+ * @param {Function} clear Clears the timer instance.
+ * @param {Function} duration Duration of the timer.
+ * @param {Function} fn The functions that need to be executed.
+ * @api private
+ */
+function Timer(timer, clear, duration, fn) {
+  this.start = +(new Date());
+  this.duration = duration;
+  this.clear = clear;
+  this.timer = timer;
+  this.fns = [fn];
+}
+
+/**
+ * Calculate the time left for a given timer.
+ *
+ * @returns {Number} Time in milliseconds.
+ * @api public
+ */
+Timer.prototype.remaining = function remaining() {
+  return this.duration - this.taken();
+};
+
+/**
+ * Calculate the amount of time it has taken since we've set the timer.
+ *
+ * @returns {Number}
+ * @api public
+ */
+Timer.prototype.taken = function taken() {
+  return +(new Date()) - this.start;
+};
+
+/**
+ * Custom wrappers for the various of clear{whatever} functions. We cannot
+ * invoke them directly as this will cause thrown errors in Google Chrome with
+ * an Illegal Invocation Error
+ *
+ * @see #2
+ * @type {Function}
+ * @api private
+ */
+function unsetTimeout(id) { clearTimeout(id); }
+function unsetInterval(id) { clearInterval(id); }
+function unsetImmediate(id) { clearImmediate(id); }
 
 /**
  * Simple timer management.
@@ -783,6 +969,7 @@ Tick.prototype.tock = function ticktock(name, clear) {
       , i = 0;
 
     if (clear) tock.clear(name);
+    else tock.start = +new Date();
 
     for (; i < l; i++) {
       fns[i].call(tock.context);
@@ -800,18 +987,21 @@ Tick.prototype.tock = function ticktock(name, clear) {
  * @api public
  */
 Tick.prototype.setTimeout = function timeout(name, fn, time) {
-  var tick = this;
+  var tick = this
+    , tock;
 
   if (tick.timers[name]) {
     tick.timers[name].fns.push(fn);
     return tick;
   }
 
-  tick.timers[name] = {
-    timer: setTimeout(tick.tock(name, true), ms(time)),
-    clear: function clear(id) { clearTimeout(id); },
-    fns: [fn]
-  };
+  tock = ms(time);
+  tick.timers[name] = new Timer(
+    setTimeout(tick.tock(name, true), ms(time)),
+    unsetTimeout,
+    tock,
+    fn
+  );
 
   return tick;
 };
@@ -826,18 +1016,21 @@ Tick.prototype.setTimeout = function timeout(name, fn, time) {
  * @api public
  */
 Tick.prototype.setInterval = function interval(name, fn, time) {
-  var tick = this;
+  var tick = this
+    , tock;
 
   if (tick.timers[name]) {
     tick.timers[name].fns.push(fn);
     return tick;
   }
 
-  tick.timers[name] = {
-    timer: setInterval(tick.tock(name), ms(time)),
-    clear: function clear(id) { clearInterval(id); },
-    fns: [fn]
-  };
+  tock = ms(time);
+  tick.timers[name] = new Timer(
+    setInterval(tick.tock(name), ms(time)),
+    unsetInterval,
+    tock,
+    fn
+  );
 
   return tick;
 };
@@ -860,11 +1053,12 @@ Tick.prototype.setImmediate = function immediate(name, fn) {
     return tick;
   }
 
-  tick.timers[name] = {
-    timer: setImmediate(tick.tock(name, true)),
-    clear: function clear(id) { clearImmediate(id); },
-    fns: [fn]
-  };
+  tick.timers[name] = new Timer(
+    setImmediate(tick.tock(name, true)),
+    unsetImmediate,
+    0,
+    fn
+  );
 
   return tick;
 };
@@ -917,6 +1111,29 @@ Tick.prototype.clear = function clear() {
 };
 
 /**
+ * Adjust a timeout or interval to a new duration.
+ *
+ * @returns {Tick}
+ * @api public
+ */
+Tick.prototype.adjust = function adjust(name, time) {
+  var interval
+    , tick = this
+    , tock = ms(time)
+    , timer = tick.timers[name];
+
+  if (!timer) return tick;
+
+  interval = timer.clear === unsetInterval;
+  timer.clear(timer.timer);
+  timer.start = +(new Date());
+  timer.duration = tock;
+  timer.timer = (interval ? setInterval : setTimeout)(tick.tock(name, !interval), tock);
+
+  return tick;
+};
+
+/**
  * We will no longer use this module, prepare your self for global cleanups.
  *
  * @returns {Boolean}
@@ -931,34 +1148,362 @@ Tick.prototype.end = Tick.prototype.destroy = function end() {
   return true;
 };
 
-/**
- * Adjust a timeout or interval to a new duration.
- *
- * @returns {Tick}
- * @api public
- */
-Tick.prototype.adjust = function adjust(name, time) {
-  var interval
-    , tick = this
-    , timer = tick.timers[name];
-
-  if (!timer) return tick;
-
-  interval = timer.clear === clearInterval;
-  timer.clear(timer.timer);
-  timer.timer = (interval ? setInterval : setTimeout)(tick.tock(name, !interval), ms(time));
-
-  return tick;
-};
-
 //
 // Expose the timer factory.
 //
+Tick.Timer = Timer;
 module.exports = Tick;
 
-},{"millisecond":9}],9:[function(_dereq_,module,exports){
-arguments[4][6][0].apply(exports,arguments)
-},{"dup":6}],10:[function(_dereq_,module,exports){
+},{"millisecond":4}],10:[function(_dereq_,module,exports){
+'use strict';
+
+var required = _dereq_('requires-port')
+  , lolcation = _dereq_('./lolcation')
+  , qs = _dereq_('querystringify')
+  , relativere = /^\/(?!\/)/;
+
+/**
+ * These are the parse instructions for the URL parsers, it informs the parser
+ * about:
+ *
+ * 0. The char it Needs to parse, if it's a string it should be done using
+ *    indexOf, RegExp using exec and NaN means set as current value.
+ * 1. The property we should set when parsing this value.
+ * 2. Indication if it's backwards or forward parsing, when set as number it's
+ *    the value of extra chars that should be split off.
+ * 3. Inherit from location if non existing in the parser.
+ * 4. `toLowerCase` the resulting value.
+ */
+var instructions = [
+  ['#', 'hash'],                        // Extract from the back.
+  ['?', 'query'],                       // Extract from the back.
+  ['//', 'protocol', 2, 1, 1],          // Extract from the front.
+  ['/', 'pathname'],                    // Extract from the back.
+  ['@', 'auth', 1],                     // Extract from the front.
+  [NaN, 'host', undefined, 1, 1],       // Set left over value.
+  [/\:(\d+)$/, 'port'],                 // RegExp the back.
+  [NaN, 'hostname', undefined, 1, 1]    // Set left over.
+];
+
+/**
+ * The actual URL instance. Instead of returning an object we've opted-in to
+ * create an actual constructor as it's much more memory efficient and
+ * faster and it pleases my CDO.
+ *
+ * @constructor
+ * @param {String} address URL we want to parse.
+ * @param {Boolean|function} parser Parser for the query string.
+ * @param {Object} location Location defaults for relative paths.
+ * @api public
+ */
+function URL(address, location, parser) {
+  if (!(this instanceof URL)) {
+    return new URL(address, location, parser);
+  }
+
+  var relative = relativere.test(address)
+    , parse, instruction, index, key
+    , type = typeof location
+    , url = this
+    , i = 0;
+
+  //
+  // The following if statements allows this module two have compatibility with
+  // 2 different API:
+  //
+  // 1. Node.js's `url.parse` api which accepts a URL, boolean as arguments
+  //    where the boolean indicates that the query string should also be parsed.
+  //
+  // 2. The `URL` interface of the browser which accepts a URL, object as
+  //    arguments. The supplied object will be used as default values / fall-back
+  //    for relative paths.
+  //
+  if ('object' !== type && 'string' !== type) {
+    parser = location;
+    location = null;
+  }
+
+  if (parser && 'function' !== typeof parser) {
+    parser = qs.parse;
+  }
+
+  location = lolcation(location);
+
+  for (; i < instructions.length; i++) {
+    instruction = instructions[i];
+    parse = instruction[0];
+    key = instruction[1];
+
+    if (parse !== parse) {
+      url[key] = address;
+    } else if ('string' === typeof parse) {
+      if (~(index = address.indexOf(parse))) {
+        if ('number' === typeof instruction[2]) {
+          url[key] = address.slice(0, index);
+          address = address.slice(index + instruction[2]);
+        } else {
+          url[key] = address.slice(index);
+          address = address.slice(0, index);
+        }
+      }
+    } else if (index = parse.exec(address)) {
+      url[key] = index[1];
+      address = address.slice(0, address.length - index[0].length);
+    }
+
+    url[key] = url[key] || (instruction[3] || ('port' === key && relative) ? location[key] || '' : '');
+
+    //
+    // Hostname, host and protocol should be lowercased so they can be used to
+    // create a proper `origin`.
+    //
+    if (instruction[4]) {
+      url[key] = url[key].toLowerCase();
+    }
+  }
+
+  //
+  // Also parse the supplied query string in to an object. If we're supplied
+  // with a custom parser as function use that instead of the default build-in
+  // parser.
+  //
+  if (parser) url.query = parser(url.query);
+
+  //
+  // We should not add port numbers if they are already the default port number
+  // for a given protocol. As the host also contains the port number we're going
+  // override it with the hostname which contains no port number.
+  //
+  if (!required(url.port, url.protocol)) {
+    url.host = url.hostname;
+    url.port = '';
+  }
+
+  //
+  // Parse down the `auth` for the username and password.
+  //
+  url.username = url.password = '';
+  if (url.auth) {
+    instruction = url.auth.split(':');
+    url.username = instruction[0] || '';
+    url.password = instruction[1] || '';
+  }
+
+  //
+  // The href is just the compiled result.
+  //
+  url.href = url.toString();
+}
+
+/**
+ * This is convenience method for changing properties in the URL instance to
+ * insure that they all propagate correctly.
+ *
+ * @param {String} prop Property we need to adjust.
+ * @param {Mixed} value The newly assigned value.
+ * @returns {URL}
+ * @api public
+ */
+URL.prototype.set = function set(part, value, fn) {
+  var url = this;
+
+  if ('query' === part) {
+    if ('string' === typeof value && value.length) {
+      value = (fn || qs.parse)(value);
+    }
+
+    url[part] = value;
+  } else if ('port' === part) {
+    url[part] = value;
+
+    if (!required(value, url.protocol)) {
+      url.host = url.hostname;
+      url[part] = '';
+    } else if (value) {
+      url.host = url.hostname +':'+ value;
+    }
+  } else if ('hostname' === part) {
+    url[part] = value;
+
+    if (url.port) value += ':'+ url.port;
+    url.host = value;
+  } else if ('host' === part) {
+    url[part] = value;
+
+    if (/\:\d+/.test(value)) {
+      value = value.split(':');
+      url.hostname = value[0];
+      url.port = value[1];
+    }
+  } else {
+    url[part] = value;
+  }
+
+  url.href = url.toString();
+  return url;
+};
+
+/**
+ * Transform the properties back in to a valid and full URL string.
+ *
+ * @param {Function} stringify Optional query stringify function.
+ * @returns {String}
+ * @api public
+ */
+URL.prototype.toString = function toString(stringify) {
+  if (!stringify || 'function' !== typeof stringify) stringify = qs.stringify;
+
+  var query
+    , url = this
+    , result = url.protocol +'//';
+
+  if (url.username) {
+    result += url.username;
+    if (url.password) result += ':'+ url.password;
+    result += '@';
+  }
+
+  result += url.hostname;
+  if (url.port) result += ':'+ url.port;
+
+  result += url.pathname;
+
+  query = 'object' === typeof url.query ? stringify(url.query) : url.query;
+  if (query) result += '?' !== query.charAt(0) ? '?'+ query : query;
+
+  if (url.hash) result += url.hash;
+
+  return result;
+};
+
+//
+// Expose the URL parser and some additional properties that might be useful for
+// others.
+//
+URL.qs = qs;
+URL.location = lolcation;
+module.exports = URL;
+
+},{"./lolcation":11,"querystringify":6,"requires-port":8}],11:[function(_dereq_,module,exports){
+(function (global){
+'use strict';
+
+/**
+ * These properties should not be copied or inherited from. This is only needed
+ * for all non blob URL's as the a blob URL does not include a hash, only the
+ * origin.
+ *
+ * @type {Object}
+ * @private
+ */
+var ignore = { hash: 1, query: 1 }
+  , URL;
+
+/**
+ * The location object differs when your code is loaded through a normal page,
+ * Worker or through a worker using a blob. And with the blobble begins the
+ * trouble as the location object will contain the URL of the blob, not the
+ * location of the page where our code is loaded in. The actual origin is
+ * encoded in the `pathname` so we can thankfully generate a good "default"
+ * location from it so we can generate proper relative URL's again.
+ *
+ * @param {Object} loc Optional default location object.
+ * @returns {Object} lolcation object.
+ * @api public
+ */
+module.exports = function lolcation(loc) {
+  loc = loc || global.location || {};
+  URL = URL || _dereq_('./');
+
+  var finaldestination = {}
+    , type = typeof loc
+    , key;
+
+  if ('blob:' === loc.protocol) {
+    finaldestination = new URL(unescape(loc.pathname), {});
+  } else if ('string' === type) {
+    finaldestination = new URL(loc, {});
+    for (key in ignore) delete finaldestination[key];
+  } else if ('object' === type) for (key in loc) {
+    if (key in ignore) continue;
+    finaldestination[key] = loc[key];
+  }
+
+  return finaldestination;
+};
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./":10}],12:[function(_dereq_,module,exports){
+'use strict';
+
+var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
+  , length = 64
+  , map = {}
+  , seed = 0
+  , i = 0
+  , prev;
+
+/**
+ * Return a string representing the specified number.
+ *
+ * @param {Number} num The number to convert.
+ * @returns {String} The string representation of the number.
+ * @api public
+ */
+function encode(num) {
+  var encoded = '';
+
+  do {
+    encoded = alphabet[num % length] + encoded;
+    num = Math.floor(num / length);
+  } while (num > 0);
+
+  return encoded;
+}
+
+/**
+ * Return the integer value specified by the given string.
+ *
+ * @param {String} str The string to convert.
+ * @returns {Number} The integer value represented by the string.
+ * @api public
+ */
+function decode(str) {
+  var decoded = 0;
+
+  for (i = 0; i < str.length; i++) {
+    decoded = decoded * length + map[str.charAt(i)];
+  }
+
+  return decoded;
+}
+
+/**
+ * Yeast: A tiny growing id generator.
+ *
+ * @returns {String} A unique id.
+ * @api public
+ */
+function yeast() {
+  var now = encode(+new Date());
+
+  if (now !== prev) return seed = 0, prev = now;
+  return now +'.'+ encode(seed++);
+}
+
+//
+// Map each character to its index.
+//
+for (; i < length; i++) map[alphabet[i]] = i;
+
+//
+// Expose the `yeast`, `encode` and `decode` functions.
+//
+yeast.encode = encode;
+yeast.decode = decode;
+module.exports = yeast;
+
+},{}],13:[function(_dereq_,module,exports){
 /*globals require, define */
 'use strict';
 
@@ -966,7 +1511,10 @@ var EventEmitter = _dereq_('eventemitter3')
   , TickTock = _dereq_('tick-tock')
   , Recovery = _dereq_('recovery')
   , qs = _dereq_('querystringify')
-  , destroy = _dereq_('demolish');
+  , destroy = _dereq_('demolish')
+  , yeast = _dereq_('yeast')
+  , u2028 = /\u2028/g
+  , u2029 = /\u2029/g;
 
 /**
  * Context assertion, ensure that some of our public Primus methods are called
@@ -1006,7 +1554,7 @@ try {
 }
 
 /**
- * Primus in a real-time library agnostic framework for establishing real-time
+ * Primus is a real-time library agnostic framework for establishing real-time
  * connections with servers.
  *
  * Options:
@@ -1073,7 +1621,6 @@ function Primus(url, options) {
   primus.timers = new TickTock(this);           // Contains all our timers.
   primus.socket = null;                         // Reference to the internal connection.
   primus.latency = 0;                           // Latency between messages.
-  primus.stamps = 0;                            // Counter to make timestamps unique.
   primus.disconnect = false;                    // Did we receive a disconnect packet?
   primus.transport = options.transport;         // Transport options.
   primus.transformers = {                       // Message transformers.
@@ -1161,14 +1708,12 @@ Primus.require = function requires(name) {
 
 //
 // It's possible that we're running in Node.js or in a Node.js compatible
-// environment such as browserify. In these cases we want to use some build in
-// libraries to minimize our dependence on the DOM.
+// environment. In this cases we inherit from the Stream base class.
 //
-var Stream, parse;
+var Stream;
 
 try {
   Primus.Stream = Stream = Primus.require('stream');
-  parse = Primus.require('url').parse;
 
   //
   // Normally inheritance is done in the same way as we do in our catch
@@ -1182,79 +1727,6 @@ try {
 } catch (e) {
   Primus.Stream = EventEmitter;
   Primus.prototype = new EventEmitter();
-
-  //
-  // In the browsers we can leverage the DOM to parse the URL for us. It will
-  // automatically default to host of the current server when we supply it path
-  // etc.
-  //
-  parse = function parse(url) {
-    var a = document.createElement('a')
-      , data = {}
-      , key;
-
-    a.href = url;
-
-    //
-    // Transform it from a readOnly object to a read/writable object so we can
-    // change some parsed values. This is required if we ever want to override
-    // a port number etc. (as browsers remove port 443 and 80 from the URL's).
-    //
-    for (key in a) {
-      if ('string' === typeof a[key] || 'number' === typeof a[key]) {
-        data[key] = a[key];
-      }
-    }
-
-    //
-    // We need to make sure that the URL is properly encoded because IE doesn't
-    // do this automatically.
-    //
-    data.href = encodeURI(decodeURI(data.href));
-
-    //
-    // If we don't obtain a port number (e.g. when using zombie) then try
-    // and guess at a value from the 'href' value.
-    //
-    if (!data.port) {
-      var splits = (data.href || '').split('/');
-      if (splits.length > 2) {
-        var host = splits[2]
-          , atSignIndex = host.lastIndexOf('@');
-
-        if (~atSignIndex) host = host.slice(atSignIndex + 1);
-
-        splits = host.split(':');
-        if (splits.length === 2) data.port = splits[1];
-      }
-    }
-
-    //
-    // IE quirk: The `protocol` is parsed as ":" or "" when a protocol agnostic
-    // URL is used. In this case we extract the value from the `href` value.
-    //
-    if (!data.protocol || ':' === data.protocol) {
-      data.protocol = data.href.substr(0, data.href.indexOf(':') + 1);
-    }
-
-    //
-    // Safari 5.1.7 (windows) quirk: When parsing a URL without a port number
-    // the `port` in the data object will default to "0" instead of the expected
-    // "". We're going to do an explicit check on "0" and force it to "".
-    //
-    if ('0' === data.port) data.port = '';
-
-    //
-    // Browsers do not parse authorization information, so we need to extract
-    // that from the URL.
-    //
-    if (~data.href.indexOf('@') && !data.auth) {
-      var start = data.protocol.length + 2;
-      data.auth = data.href.slice(start, data.href.indexOf(data.pathname, start)).split('@')[0];
-    }
-
-    return data;
-  };
 }
 
 /**
@@ -1407,9 +1879,9 @@ Primus.prototype.initialise = function initialise(options) {
 
   primus.recovery
   .on('reconnected', primus.emits('reconnected'))
-  .on('reconnect failed', primus.emits('reconnect failed', function failed(data) {
+  .on('reconnect failed', primus.emits('reconnect failed', function failed(next) {
     primus.emit('end');
-    return data;
+    next();
   }))
   .on('reconnect timeout', primus.emits('reconnect timeout'))
   .on('reconnect scheduled', primus.emits('reconnect scheduled'))
@@ -1624,7 +2096,7 @@ Primus.prototype.initialise = function initialise(options) {
    *
    * @api private
    */
-  function offline() {
+  primus.offlineHandler = function offline() {
     if (!primus.online) return; // Already or still offline, bailout.
 
     primus.online = false;
@@ -1637,14 +2109,14 @@ Primus.prototype.initialise = function initialise(options) {
     // when the user goes online, it will attempt to reconnect freshly again.
     //
     primus.recovery.reset();
-  }
+  };
 
   /**
    * Handler for online notifications.
    *
    * @api private
    */
-  function online() {
+  primus.onlineHandler = function online() {
     if (primus.online) return; // Already or still online, bailout.
 
     primus.online = true;
@@ -1653,14 +2125,14 @@ Primus.prototype.initialise = function initialise(options) {
     if (~primus.options.strategy.indexOf('online')) {
       primus.recovery.reconnect();
     }
-  }
+  };
 
   if (window.addEventListener) {
-    window.addEventListener('offline', offline, false);
-    window.addEventListener('online', online, false);
+    window.addEventListener('offline', primus.offlineHandler, false);
+    window.addEventListener('online', primus.onlineHandler, false);
   } else if (document.body.attachEvent){
-    document.body.attachEvent('onoffline', offline);
-    document.body.attachEvent('ononline', online);
+    document.body.attachEvent('onoffline', primus.offlineHandler);
+    document.body.attachEvent('ononline', primus.onlineHandler);
   }
 
   return primus;
@@ -1686,7 +2158,7 @@ Primus.prototype.protocol = function protocol(msg) {
 
   switch (msg.slice(8,  last)) {
     case 'pong':
-      this.emit('incoming::pong', value);
+      this.emit('incoming::pong', +value);
     break;
 
     case 'server':
@@ -1859,10 +2331,23 @@ Primus.prototype._write = function write(data) {
 
   primus.encoder(data, function encoded(err, packet) {
     //
-    // Do a "save" emit('error') when we fail to parse a message. We don't
+    // Do a "safe" emit('error') when we fail to parse a message. We don't
     // want to throw here as listening to errors should be optional.
     //
     if (err) return primus.listeners('error').length && primus.emit('error', err);
+
+    //
+    // Hack 1: \u2028 and \u2029 are allowed inside a JSON string, but JavaScript
+    // defines them as newline separators. Unescaped control characters are not
+    // allowed inside JSON strings, so this causes an error at parse time. We
+    // work around this issue by escaping these characters. This can cause
+    // errors with JSONP requests or if the string is just evaluated.
+    //
+    if ('string' === typeof packet) {
+      if (~packet.indexOf('\u2028')) packet = packet.replace(u2028, '\\u2028');
+      if (~packet.indexOf('\u2029')) packet = packet.replace(u2029, '\\u2029');
+    }
+
     primus.emit('outgoing::data', packet);
   });
 
@@ -1974,7 +2459,11 @@ Primus.prototype.timeout = function timeout() {
 Primus.prototype.end = function end(data) {
   context(this, 'end');
 
-  if (this.readyState === Primus.CLOSED && !this.timers.active('connect')) {
+  if (
+      this.readyState === Primus.CLOSED
+    && !this.timers.active('connect')
+    && !this.timers.active('open')
+  ) {
     //
     // If we are reconnecting stop the reconnection procedure.
     //
@@ -2014,7 +2503,17 @@ Primus.prototype.end = function end(data) {
  */
 Primus.prototype.destroy = destroy('url timers options recovery socket transport transformers', {
   before: 'end',
-  after: 'removeAllListeners'
+  after: ['removeAllListeners', function detach() {
+    if (!this.NETWORK_EVENTS) return;
+
+    if (window.addEventListener) {
+      window.removeEventListener('offline', this.offlineHandler);
+      window.removeEventListener('online', this.onlineHandler);
+    } else if (document.body.attachEvent){
+      document.body.detachEvent('onoffline', this.offlineHandler);
+      document.body.detachEvent('ononline', this.onlineHandler);
+    }
+  }]
 });
 
 /**
@@ -2057,7 +2556,7 @@ Primus.prototype.merge = function merge(target) {
  * @returns {Object} Parsed connection.
  * @api private
  */
-Primus.prototype.parse = parse;
+Primus.prototype.parse = _dereq_('url-parse');
 
 /**
  * Parse a query string.
@@ -2094,13 +2593,24 @@ Primus.prototype.uri = function uri(options) {
   if (options.query) qsa = true;
 
   options = options || {};
-  options.protocol = 'protocol' in options ? options.protocol : 'http';
-  options.query = url.search && 'query' in options ? (url.search.charAt(0) === '?' ? url.search.slice(1) : url.search) : false;
-  options.secure = 'secure' in options ? options.secure : (url.protocol === 'https:' || url.protocol === 'wss:');
-  options.auth = 'auth' in options ? options.auth : url.auth;
-  options.pathname = 'pathname' in options ? options.pathname : this.pathname.slice(1);
-  options.port = 'port' in options ? +options.port : +url.port || (options.secure ? 443 : 80);
-  options.host = 'host' in options ? options.host : url.hostname || url.host.replace(':'+ url.port, '');
+  options.protocol = 'protocol' in options
+    ? options.protocol
+    : 'http:';
+  options.query = url.query && qsa
+    ? url.query.slice(1)
+    : false;
+  options.secure = 'secure' in options
+    ? options.secure
+    : url.protocol === 'https:' || url.protocol === 'wss:';
+  options.auth = 'auth' in options
+    ? options.auth
+    : url.auth;
+  options.pathname = 'pathname' in options
+    ? options.pathname
+    : this.pathname;
+  options.port = 'port' in options
+    ? +options.port
+    : +url.port || (options.secure ? 443 : 80);
 
   //
   // Allow transformation of the options before we construct a full URL from it.
@@ -2108,36 +2618,27 @@ Primus.prototype.uri = function uri(options) {
   this.emit('outgoing::url', options);
 
   //
-  // `url.host` might be undefined (e.g. when using zombie) so we use the
-  // hostname and port defined above.
-  //
-  var host = (443 !== options.port && 80 !== options.port)
-    ? options.host +':'+ options.port
-    : options.host;
-
-  //
   // We need to make sure that we create a unique connection URL every time to
   // prevent back forward cache from becoming an issue. We're doing this by
   // forcing an cache busting query string in to the URL.
   //
   var querystring = this.querystring(options.query || '');
-  querystring._primuscb = +new Date() +'-'+ this.stamps++;
+  querystring._primuscb = yeast();
   options.query = this.querystringify(querystring);
 
   //
-  // Automatically suffix the protocol so we can supply `ws` and `http` and it gets
-  // transformed correctly.
+  // Automatically suffix the protocol so we can supply `ws:` and `http:` and
+  // it gets transformed correctly.
   //
-  server.push(options.secure ? options.protocol +'s:' : options.protocol +':', '');
+  server.push(options.secure ? options.protocol.replace(':', 's:') : options.protocol, '');
 
-  if (options.auth) server.push(options.auth +'@'+ host);
-  else server.push(host);
+  server.push(options.auth ? options.auth +'@'+ url.host : url.host);
 
   //
   // Pathnames are optional as some Transformers would just use the pathname
   // directly.
   //
-  if (options.pathname) server.push(options.pathname);
+  if (options.pathname) server.push(options.pathname.slice(1));
 
   //
   // Optionally add a search query.
@@ -2244,8 +2745,8 @@ Primus.prototype.client = function client() {
     // Primus when we connect.
     //
     try {
-      var prot = primus.url.protocol === 'ws+unix:' ? 'ws+unix' : 'ws'
-        , qsa = prot === 'ws';
+      var prot = primus.url.protocol === 'ws+unix:' ? 'ws+unix:' : 'ws:'
+        , qsa = prot === 'ws:';
 
       //
       // Only allow primus.transport object in Node.js, it will throw in
@@ -2327,43 +2828,7 @@ Primus.prototype.decoder = function decoder(data, fn) {
 
   fn(err, data);
 };
-Primus.prototype.version = "3.0.2";
-
-//
-// Hack 1: \u2028 and \u2029 are allowed inside string in JSON. But JavaScript
-// defines them as newline separators. Because no literal newlines are allowed
-// in a string this causes a ParseError. We work around this issue by replacing
-// these characters with a properly escaped version for those chars. This can
-// cause errors with JSONP requests or if the string is just evaluated.
-//
-// This could have been solved by replacing the data during the "outgoing::data"
-// event. But as it affects the JSON encoding in general I've opted for a global
-// patch instead so all JSON.stringify operations are save.
-//
-if (
-    'object' === typeof JSON
- && 'function' === typeof JSON.stringify
- && JSON.stringify(['\u2028\u2029']) === '["\u2028\u2029"]'
-) {
-  JSON.stringify = function replace(stringify) {
-    var u2028 = /\u2028/g
-      , u2029 = /\u2029/g;
-
-    return function patched(value, replacer, spaces) {
-      var result = stringify.call(this, value, replacer, spaces);
-
-      //
-      // Replace the bad chars.
-      //
-      if (result) {
-        if (~result.indexOf('\u2028')) result = result.replace(u2028, '\\u2028');
-        if (~result.indexOf('\u2029')) result = result.replace(u2029, '\\u2029');
-      }
-
-      return result;
-    };
-  }(JSON.stringify);
-}
+Primus.prototype.version = "4.0.3";
 
 if (
      'undefined' !== typeof document
@@ -2412,7 +2877,7 @@ if (
 //
 module.exports = Primus;
 
-},{"demolish":1,"emits":2,"eventemitter3":3,"querystringify":4,"recovery":5,"tick-tock":8}]},{},[10])(10);
+},{"demolish":1,"emits":2,"eventemitter3":3,"querystringify":6,"recovery":7,"tick-tock":9,"url-parse":10,"yeast":12}]},{},[13])(13);
   return Primus;
 });
 
@@ -2436,6 +2901,7 @@ var ActionheroClient = function(options, client){
   }
 
   if(client){
+    self.externalClient = true;
     self.client = client;
   }
 }
@@ -2459,12 +2925,19 @@ ActionheroClient.prototype.defaults = function(){
 ActionheroClient.prototype.connect = function(callback){
   var self = this;
   self.messageCount = 0;
-  
-  if(!self.client){
+
+
+  if(self.client && self.externalClient !== true){
+    self.client.end();
+    self.client.removeAllListeners();
+    delete self.client;
     self.client = Primus.connect(self.options.url, self.options);
-  }else{
+  }
+  if(self.client && self.externalClient === true){
     self.client.end();
     self.client.open();
+  }else{
+    self.client = Primus.connect(self.options.url, self.options);
   }
 
   self.client.on('open', function(){
@@ -2492,6 +2965,19 @@ ActionheroClient.prototype.connect = function(callback){
     self.emit('reconnecting');
     self.state = 'reconnecting';
     self.emit('disconnected');
+  });
+
+  self.client.on('timeout', function(){
+    self.state = 'timeout';
+    self.emit('timeout');
+  });
+
+  self.client.on('close', function(){
+    self.messageCount = 0;
+    if(self.state !== 'disconnected'){
+      self.state = 'disconnected';
+      self.emit('disconnected');
+    }
   });
 
   self.client.on('end', function(){
@@ -2578,13 +3064,18 @@ ActionheroClient.prototype.action = function(action, params, callback){
 ActionheroClient.prototype.actionWeb = function(params, callback) {
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function () {
+    var response;
     if(xmlhttp.readyState === 4) {
       if(xmlhttp.status === 200) {
-        var response = JSON.parse(xmlhttp.responseText);
-        callback(null, response);
-      } else {
-        callback(xmlhttp.statusText, xmlhttp.responseText);
+        response = JSON.parse(xmlhttp.responseText);
+      }else{
+        try{
+          response = JSON.parse(xmlhttp.responseText);
+        }catch(e){
+          response = { error: {statusText: xmlhttp.statusText, responseText: xmlhttp.responseText} };
+        }
       }
+      callback(response);
     }
   };
   
@@ -2592,7 +3083,7 @@ ActionheroClient.prototype.actionWeb = function(params, callback) {
   var url = this.options.url + this.options.apiPath + '?action=' + params.action;
   xmlhttp.open(method, url, true);
   xmlhttp.setRequestHeader('Content-Type', 'application/json');
-  xmlhttp.send(JSON.stringify(params));	
+  xmlhttp.send(JSON.stringify(params)); 
 }
 
 
@@ -2623,7 +3114,7 @@ ActionheroClient.prototype.roomView = function(room, callback){
 ActionheroClient.prototype.roomAdd = function(room, callback){
   var self = this;
   self.send({event: 'roomAdd', room: room}, function(data){
-    self.configure(function(details){
+    self.configure(function(){
       if(typeof callback === 'function'){ callback(data); }
     });
   });
@@ -2634,7 +3125,7 @@ ActionheroClient.prototype.roomLeave = function(room, callback){
   var index = self.rooms.indexOf(room);
   if(index > -1){ self.rooms.splice(index, 1); }
   this.send({event: 'roomLeave', room: room}, function(data){
-    self.configure(function(details){
+    self.configure(function(){
       if(typeof callback === 'function'){ callback(data); }
     });
   });

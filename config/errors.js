@@ -1,9 +1,47 @@
 // error messages can be strings of objects
+var util = require('util');
 
 exports.default = {
   errors: function(api){
     return {
-      '_toExpand': false, 
+      '_toExpand': false,
+
+      /////////////////
+      // SERIALIZERS //
+      /////////////////
+
+      serializers: {
+        servers: {
+          web: function(error){
+            if(util.isError(error)){
+              return String( error.message ); 
+            }else{
+              return error;
+            }
+          },
+          websocket: function(error){
+            if(util.isError(error)){
+              return String( error.message ); 
+            }else{
+              return error;
+            }
+          },
+          socket: function(error){
+            if(util.isError(error)){
+              return String( error.message ); 
+            }else{
+              return error;
+            }
+          },
+          specHelper: function(error){
+            if(util.isError(error)){
+              return 'Error: ' + String( error.message ); 
+            }else{
+              return error;
+            }
+          },
+        }
+      },
 
       ////////////////////
       // GENERAL ERRORS //
@@ -17,6 +55,11 @@ exports.default = {
       /////////////
       // ACTIONS //
       /////////////
+
+      // When a params for an action is invalid
+      invalidParams: function(params){
+        return params.join(", ");
+      },
 
       // When a required param for an action is not provided
       missingParams: function(params){
@@ -46,7 +89,7 @@ exports.default = {
 
       // a poorly designed action could try to call next() more than once
       doubleCallbackError: function(){
-        return 'Double callback prevented within action'; 
+        return 'Double callback prevented within action';
       },
 
       /////////////////
@@ -78,7 +121,7 @@ exports.default = {
       // CONNECTIONS //
       /////////////////
 
-      verbNotFound: function(veb){
+      verbNotFound: function(verb){
         return 'I do not know know to perform this verb';
       },
 
@@ -100,10 +143,6 @@ exports.default = {
 
       connectionRoomHasBeenDeleted: function(room){
         return 'this room has been deleted';
-      },
-
-      connectionNotAuthorized: function(room){
-        return 'not authorized to join room';
       },
 
       connectionRoomNotExist: function(room){

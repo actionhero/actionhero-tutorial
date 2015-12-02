@@ -1,4 +1,4 @@
-var ntwitter = require("ntwitter");
+var twitter = require("twitter");
 
 var initialize = function(api, options, next){
 
@@ -25,27 +25,29 @@ var initialize = function(api, options, next){
 
   server.start = function(next){
     var self = this;
-    api.twitter = new ntwitter({
-      consumer_key:        api.config.servers.twitter.consumer_key,
-      consumer_secret:     api.config.servers.twitter.consumer_secret,
-      access_token_key:    api.config.servers.twitter.access_token_key,
-      access_token_secret: api.config.servers.twitter.access_token_secret
-    });
 
-    api.twitter.verifyCredentials(function (err, data) {
-      if(!err){
-        api.twitter.stream('statuses/filter', {track:'#' + api.config.servers.twitter.hashtag}, function(stream) {
-          api.twitterStram = stream;
-          api.twitterStram.on('data', function (tweet) {
-            self.addTweet(tweet);
-          });
-          next();
+    if(api.env !== 'test'){
+      api.twitter = new twitter({
+        consumer_key:        api.config.servers.twitter.consumer_key,
+        consumer_secret:     api.config.servers.twitter.consumer_secret,
+        access_token_key:    api.config.servers.twitter.access_token_key,
+        access_token_secret: api.config.servers.twitter.access_token_secret
+      });
+
+      api.log('twitter tracking: #' + api.config.servers.twitter.hashtag);
+      api.twitter.stream('statuses/filter', {track: api.config.servers.twitter.hashtag}, function(stream) {
+        stream.on('data', function(tweet) {
+          self.addTweet(tweet);
         });
-      }else{
-        api.log("Twitter Error: " + err, "error");
-        next();
-      }
-    });
+       
+        stream.on('error', function(error) {
+          api.log(error, 'error');
+          throw error;
+        });
+      });
+    }
+
+    next();
   };
 
   server.addTweet = function(tweet){

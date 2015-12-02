@@ -4,3 +4,4 @@ log
 pids
 npm-debug.log
 .idea
+config/servers/twitter.js
