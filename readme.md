@@ -268,7 +268,7 @@ Now we can get the list of posts for user `evan` with `curl -X GET "http://local
 
 - [package.json](https://github.com/evantahler/actionhero-tutorial/blob/master/package.json)
 - [test/_setup.js](https://github.com/evantahler/actionhero-tutorial/blob/master/test/_setup.js)
-- [test/integration.js](https://github.com/evantahler/actionhero-tutorial/blob/master/test/integration.js)
+- [test/integration (folder)](https://github.com/evantahler/actionhero-tutorial/tree/master/test/integration)
 
 There are many testing tools and packages which exist for nodejs.  actionhero is not opinionated about which testing framework you should use, but nonetheless, testing is important!  actionhero exposes a number of utilities to make it easy to boot up a server with configuration overrides to make testing easier.  
 
