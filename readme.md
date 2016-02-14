@@ -102,7 +102,7 @@ The port `8080` is defined in `/config/servers/web.js`, along with all other set
 
 Restart your server by pressing `ctrl+c` in the terminal window running actionhero.  Start up the server again and visit `http://localhost:8080/` and you should see the welcome page.  You will note that the setting we just changed was under the `servers.web` section.  This is because this setting is only relevant to HTTP clients, and not the others (socket, websocket, etc).  We will talk about these more later.
 
-We should also enable all the servers which ship with actionhero (web, websocket, and socket).  Enable their sections in thier config files
+We should also enable all the servers which ship with actionhero (web, websocket, and socket).  Enable their sections in their config files
 
 Lets change one more thing in `config/api.js`: development mode.  Change `api.config.general.developmentMode = true;`  Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.
 
