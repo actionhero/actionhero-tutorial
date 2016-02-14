@@ -3,9 +3,9 @@
 <img src="https://raw.github.com/evantahler/actionhero/master/public/logo/actionhero.png" height="300"/>
 
 - created: June 22, 2013
-- updated: Apirl 20, 2015
+- updated: February 14, 2016
 
-[![Build Status](https://secure.travis-ci.org/evantahler/actionhero-tutorial.png?branch=master)](http://travis-ci.org/evantahler/actionhero-tutorial) 
+[![Build Status](https://secure.travis-ci.org/evantahler/actionhero-tutorial.png?branch=master)](http://travis-ci.org/evantahler/actionhero-tutorial)
 ---
 
 This guide will walk you through the creation of the application in this repository, and in the process you will learn some of the basics of [actionhero](http://actionherojs.com).
@@ -57,7 +57,7 @@ You will become comfortable with the following topics:
   - `npm start`
   - There are a few extra steps needed to persists data to redis and to use the twitter server example discussed below.
 - This project uses redis as a database.  actionhero comes with [fakeRedis](https://github.com/hdachev/fakeredis), which is an in-process redis server, but it does not persist data.  If you want to use this project in a cluster or across multiple servers, you need to install and use a real redis server.  Change the appropriate `redis` sections in `/config/redis.js` to enable this.
-- Remember that actionhero is an API server, so we will be focusing on creating an API for blogging and chatting, and *applying* that to a website rather than creating a beautiful website itself. 
+- Remember that actionhero is an API server, so we will be focusing on creating an API for blogging and chatting, and *applying* that to a website rather than creating a beautiful website itself.
 
 ## Getting Started with a new actionhero Project
 
@@ -73,7 +73,7 @@ actionhero is a node.js package.  Be sure you have node.js (version >= 8.0.0) in
 
 This guide was written on OSX 10.8  It should be appropriate for any version of OSX > 10.6.  It should also work on most Linux distributions (Ubuntu, CentOs, Fedora, etc).  The concepts presented here should also be appropriate for windows users, but many of the "Getting Started" commands will not work as described here.  If you are looking for help on getting started on Windows, Mark Tucker has [a video tutorial for windows users](http://www.youtube.com/watch?v=PwbuJM03XFc)
 
-Create a new directory for this project and enter it (in the terminal): 
+Create a new directory for this project and enter it (in the terminal):
 
 - `mkdir ~/actionhero-tutorial`
 - `cd ~/actionhero-tutorial`
@@ -90,11 +90,11 @@ Use the actionhero generator to build your project
 
 Install any project dependancies
 
-- `npm install` 
+- `npm install`
 
 Try to boot the actionhero server
 
-- `npm start` 
+- `npm start`
 
 You should see the default actionhero welcome page at `http://localhost:8080/public` (visit in your browser)
 
@@ -143,7 +143,7 @@ api.blog = {
   postEdit: function(userName, title, content, next){},
   postDelete: function(userName, title, next){},
   // comments
-  commentAdd: function(userName, title, commenterName, comment, next){}, 
+  commentAdd: function(userName, title, commenterName, comment, next){},
   commentsView: function(userName, title, next){},
   commentDelete: function(userName, title, commentId, next){},
 }
@@ -155,7 +155,7 @@ A few things to note:
 - we always make asynchronous functions, and they always return `callback(error, data)`, a common node.js pattern.
 - at this layer, we don't worry about authentication or validations
 
-## Users & Authentication 
+## Users & Authentication
 
 **files discussed in this section:**
 
@@ -181,7 +181,7 @@ api.users = {
 ```
 
 Notes:
-- We are again storing all data in a redis hash 
+- We are again storing all data in a redis hash
 - If we delete a user, we should delete all the posts and comments from them
 - We are only using md5 as a hashing algorithm for our user's passwords.  There are more secure options which you should use in production, like [BCrypt](https://github.com/ncb000gt/node.bcrypt.js/)
 
@@ -231,17 +231,17 @@ Note how we added `action.authenticated = true` on the actions which required se
 
 Now we can use CURL to test out our API!  Note that right now, all HTTP methods will work (get, post, etc).  We'll be setting up routing next.  Be sure to URL-encode all your input.
 
-- Add a user: 
+- Add a user:
   - `curl -X POST -d "userName=evan" -d "password=password" "http://localhost:8080/api/userAdd"`
-- Check that you can log in: 
+- Check that you can log in:
   - `curl -X POST -d "userName=evan" -d "password=password" "http://localhost:8080/api/authenticate"`
-- Add a post: 
+- Add a post:
   - `curl -X POST -d "userName=evan" -d "password=password" -d "title=first-post" -d "content=My%20first%20post.%20%20Yay." "http://localhost:8080/api/postAdd"`
-- View the post 
+- View the post
   - `curl -X POST -d "userName=evan" -d "title=first-post" "http://localhost:8080/api/postView"`
-- Add a comment 
+- Add a comment
   - `curl -X POST -d "userName=evan" -d "title=first-post" -d "comment=cool%20post" -d "commenterName=someoneElse" "http://localhost:8080/api/commentAdd"`
-- View the comments 
+- View the comments
   - `curl -X POST -d "userName=evan" -d "title=first-post" "http://localhost:8080/api/commentsView"`
 
 ## Routes
@@ -256,7 +256,7 @@ Now we can use CURL to test out our API!  Note that right now, all HTTP methods 
 
 We have the basics of our API working, but it might be tedious to keep using GET and POST params. It's time to set up routes.  Routes allow different HTTP verbs to preform a different action on the same URL.  We'll use a `routes.js` file to transform our API into restful resources for users, comments, and posts.  You can derive input variables from the structure of URLs with routing as well.
 
-Now we can get the list of posts for user `evan` with `curl -X GET "http://localhost:8080/api/posts/evan"` and we don't need to pass any parameters. 
+Now we can get the list of posts for user `evan` with `curl -X GET "http://localhost:8080/api/posts/evan"` and we don't need to pass any parameters.
 
 - I can get a list of my posts with `http://localhost:8080/api/posts/evan`
 - I can view a post with `http://localhost:8080/api/post/evan/first-post`
@@ -278,7 +278,7 @@ Lets setup a test with the `mocha` and `should` packages.  We'll use the `reques
 
 First, lets create a spec helper in `test/_setup.js`
 
-Now we can use our `_setup.js` in a test.  Let's create an integration test `/test/integration.js` for post creation and reading.  Note how we are using `fakeredis` so we have an isolated in-process test database to work with. 
+Now we can use our `_setup.js` in a test.  Let's create an integration test `/test/integration.js` for post creation and reading.  Note how we are using `fakeredis` so we have an isolated in-process test database to work with.
 
 We can now run the test with the `mocha` command.  In our `package.json` we can also setup `npm test` to run the test suite how we would like it: `"test": "NODE_ENV=test ./node_modules/.bin/mocha --reporter spec ./test"`
 
@@ -448,14 +448,14 @@ exports.default = {
 
 - Generate a new custom server `./node_modules/.bin/actionhero generateServer --name=twitter`
 
-notes: 
+notes:
 - we didn't actually allow these clients to join the chatroom (`attributes.canChat = false`) because we don't want them to really appear as members of the chat room.
 - we are however using the server-side chat api (`api.chatRoom.socketRoomBroadcast`) to send a custom message to the folks in the `twitter` chat room about the tweet
 
 ## Next Steps / TODO
 
 - Use cookie-based authentication rather than requiring the password and userName to be sent with each request
-- Migrate to another database 
-- Implement a UI for the API 
+- Migrate to another database
+- Implement a UI for the API
 - Tests should be more inclusive, and test failure cases
 - Pagination for all the `*view` actions

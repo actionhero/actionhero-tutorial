@@ -412,149 +412,6 @@ if ('undefined' !== typeof module) {
 },{}],4:[function(_dereq_,module,exports){
 'use strict';
 
-var regex = new RegExp('^((?:\\d+)?\\.?\\d+) *('+ [
-  'milliseconds?',
-  'msecs?',
-  'ms',
-  'seconds?',
-  'secs?',
-  's',
-  'minutes?',
-  'mins?',
-  'm',
-  'hours?',
-  'hrs?',
-  'h',
-  'days?',
-  'd',
-  'weeks?',
-  'wks?',
-  'w',
-  'years?',
-  'yrs?',
-  'y'
-].join('|') +')?$', 'i');
-
-var second = 1000
-  , minute = second * 60
-  , hour = minute * 60
-  , day = hour * 24
-  , week = day * 7
-  , year = day * 365;
-
-/**
- * Parse a time string and return the number value of it.
- *
- * @param {String} ms Time string.
- * @returns {Number}
- * @api private
- */
-module.exports = function millisecond(ms) {
-  var type = typeof ms
-    , amount
-    , match;
-
-  if ('number' === type) return ms;
-  else if ('string' !== type || '0' === ms || !ms) return 0;
-  else if (+ms) return +ms;
-
-  //
-  // We are vulnerable to the regular expression denial of service (ReDoS).
-  // In order to mitigate this we don't parse the input string if it is too long.
-  // See https://nodesecurity.io/advisories/46.
-  //
-  if (ms.length > 10000 || !(match = regex.exec(ms))) return 0;
-
-  amount = parseFloat(match[1]);
-
-  switch (match[2].toLowerCase()) {
-    case 'years':
-    case 'year':
-    case 'yrs':
-    case 'yr':
-    case 'y':
-      return amount * year;
-
-    case 'weeks':
-    case 'week':
-    case 'wks':
-    case 'wk':
-    case 'w':
-      return amount * week;
-
-    case 'days':
-    case 'day':
-    case 'd':
-      return amount * day;
-
-    case 'hours':
-    case 'hour':
-    case 'hrs':
-    case 'hr':
-    case 'h':
-      return amount * hour;
-
-    case 'minutes':
-    case 'minute':
-    case 'mins':
-    case 'min':
-    case 'm':
-      return amount * minute;
-
-    case 'seconds':
-    case 'second':
-    case 'secs':
-    case 'sec':
-    case 's':
-      return amount * second;
-
-    default:
-      return amount;
-  }
-};
-
-},{}],5:[function(_dereq_,module,exports){
-'use strict';
-
-/**
- * Wrap callbacks to prevent double execution.
- *
- * @param {Function} fn Function that should only be called once.
- * @returns {Function} A wrapped callback which prevents execution.
- * @api public
- */
-module.exports = function one(fn) {
-  var called = 0
-    , value;
-
-  /**
-   * The function that prevents double execution.
-   *
-   * @api private
-   */
-  function onetime() {
-    if (called) return value;
-
-    called = 1;
-    value = fn.apply(this, arguments);
-    fn = null;
-
-    return value;
-  }
-
-  //
-  // To make debugging more easy we want to use the name of the supplied
-  // function. So when you look at the functions that are assigned to event
-  // listeners you don't see a load of `onetime` functions but actually the
-  // names of the functions that this module will call.
-  //
-  onetime.displayName = fn.displayName || fn.name || onetime.displayName || onetime.name;
-  return onetime;
-};
-
-},{}],6:[function(_dereq_,module,exports){
-'use strict';
-
 var has = Object.prototype.hasOwnProperty;
 
 /**
@@ -615,7 +472,7 @@ function querystringify(obj, prefix) {
 exports.stringify = querystringify;
 exports.parse = querystring;
 
-},{}],7:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 'use strict';
 
 var EventEmitter = _dereq_('eventemitter3')
@@ -837,47 +694,142 @@ Recovery.prototype.destroy = destroy('timers attempt _fn');
 //
 module.exports = Recovery;
 
-},{"demolish":1,"eventemitter3":3,"millisecond":4,"one-time":5,"tick-tock":9}],8:[function(_dereq_,module,exports){
+},{"demolish":1,"eventemitter3":3,"millisecond":6,"one-time":7,"tick-tock":8}],6:[function(_dereq_,module,exports){
+'use strict';
+
+var regex = new RegExp('^((?:\\d+)?\\.?\\d+) *('+ [
+  'milliseconds?',
+  'msecs?',
+  'ms',
+  'seconds?',
+  'secs?',
+  's',
+  'minutes?',
+  'mins?',
+  'm',
+  'hours?',
+  'hrs?',
+  'h',
+  'days?',
+  'd',
+  'weeks?',
+  'wks?',
+  'w',
+  'years?',
+  'yrs?',
+  'y'
+].join('|') +')?$', 'i');
+
+var second = 1000
+  , minute = second * 60
+  , hour = minute * 60
+  , day = hour * 24
+  , week = day * 7
+  , year = day * 365;
+
+/**
+ * Parse a time string and return the number value of it.
+ *
+ * @param {String} ms Time string.
+ * @returns {Number}
+ * @api private
+ */
+module.exports = function millisecond(ms) {
+  if ('string' !== typeof ms || '0' === ms || +ms) return +ms;
+
+  var match = regex.exec(ms)
+    , amount;
+
+  if (!match) return 0;
+
+  amount = parseFloat(match[1]);
+
+  switch (match[2].toLowerCase()) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return amount * year;
+
+    case 'weeks':
+    case 'week':
+    case 'wks':
+    case 'wk':
+    case 'w':
+      return amount * week;
+
+    case 'days':
+    case 'day':
+    case 'd':
+      return amount * day;
+
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return amount * hour;
+
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return amount * minute;
+
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return amount * second;
+
+    default:
+      return amount;
+  }
+};
+
+},{}],7:[function(_dereq_,module,exports){
 'use strict';
 
 /**
- * Check if we're required to add a port number.
+ * Wrap callbacks to prevent double execution.
  *
- * @see https://url.spec.whatwg.org/#default-port
- * @param {Number|String} port Port number we need to check
- * @param {String} protocol Protocol we need to check against.
- * @returns {Boolean} Is it a default port for the given protocol
- * @api private
+ * @param {Function} fn Function that should only be called once.
+ * @returns {Function} A wrapped callback which prevents execution.
+ * @api public
  */
-module.exports = function required(port, protocol) {
-  protocol = protocol.split(':')[0];
-  port = +port;
+module.exports = function one(fn) {
+  var called = 0
+    , value;
 
-  if (!port) return false;
+  /**
+   * The function that prevents double execution.
+   *
+   * @api private
+   */
+  function onetime() {
+    if (called) return value;
 
-  switch (protocol) {
-    case 'http':
-    case 'ws':
-    return port !== 80;
+    called = 1;
+    value = fn.apply(this, arguments);
+    fn = null;
 
-    case 'https':
-    case 'wss':
-    return port !== 443;
-
-    case 'ftp':
-    return port !== 21;
-
-    case 'gopher':
-    return port !== 70;
-
-    case 'file':
-    return false;
+    return value;
   }
 
-  return port !== 0;
+  //
+  // To make debugging more easy we want to use the name of the supplied
+  // function. So when you look at the functions that are assigned to event
+  // listeners you don't see a load of `onetime` functions but actually the
+  // names of the functions that this module will call.
+  //
+  onetime.displayName = fn.displayName || fn.name || onetime.displayName || onetime.name;
+  return onetime;
 };
 
-},{}],9:[function(_dereq_,module,exports){
+},{}],8:[function(_dereq_,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -1154,7 +1106,9 @@ Tick.prototype.end = Tick.prototype.destroy = function end() {
 Tick.Timer = Timer;
 module.exports = Tick;
 
-},{"millisecond":4}],10:[function(_dereq_,module,exports){
+},{"millisecond":9}],9:[function(_dereq_,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],10:[function(_dereq_,module,exports){
 'use strict';
 
 var required = _dereq_('requires-port')
@@ -1384,7 +1338,7 @@ URL.qs = qs;
 URL.location = lolcation;
 module.exports = URL;
 
-},{"./lolcation":11,"querystringify":6,"requires-port":8}],11:[function(_dereq_,module,exports){
+},{"./lolcation":11,"querystringify":4,"requires-port":12}],11:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -1434,6 +1388,46 @@ module.exports = function lolcation(loc) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./":10}],12:[function(_dereq_,module,exports){
+'use strict';
+
+/**
+ * Check if we're required to add a port number.
+ *
+ * @see https://url.spec.whatwg.org/#default-port
+ * @param {Number|String} port Port number we need to check
+ * @param {String} protocol Protocol we need to check against.
+ * @returns {Boolean} Is it a default port for the given protocol
+ * @api private
+ */
+module.exports = function required(port, protocol) {
+  protocol = protocol.split(':')[0];
+  port = +port;
+
+  if (!port) return false;
+
+  switch (protocol) {
+    case 'http':
+    case 'ws':
+    return port !== 80;
+
+    case 'https':
+    case 'wss':
+    return port !== 443;
+
+    case 'ftp':
+    return port !== 22;
+
+    case 'gopher':
+    return port !== 70;
+
+    case 'file':
+    return false;
+  }
+
+  return port !== 0;
+};
+
+},{}],13:[function(_dereq_,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -1503,7 +1497,7 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}],13:[function(_dereq_,module,exports){
+},{}],14:[function(_dereq_,module,exports){
 /*globals require, define */
 'use strict';
 
@@ -2828,7 +2822,7 @@ Primus.prototype.decoder = function decoder(data, fn) {
 
   fn(err, data);
 };
-Primus.prototype.version = "4.0.3";
+Primus.prototype.version = "4.0.5";
 
 if (
      'undefined' !== typeof document
@@ -2877,7 +2871,7 @@ if (
 //
 module.exports = Primus;
 
-},{"demolish":1,"emits":2,"eventemitter3":3,"querystringify":6,"recovery":7,"tick-tock":9,"url-parse":10,"yeast":12}]},{},[13])(13);
+},{"demolish":1,"emits":2,"eventemitter3":3,"querystringify":4,"recovery":5,"tick-tock":8,"url-parse":10,"yeast":13}]},{},[14])(14);
   return Primus;
 });
 
@@ -2904,7 +2898,7 @@ var ActionheroClient = function(options, client){
     self.externalClient = true;
     self.client = client;
   }
-}
+};
 
 if(typeof Primus === 'undefined'){
   var util = require('util');
@@ -2932,8 +2926,7 @@ ActionheroClient.prototype.connect = function(callback){
     self.client.removeAllListeners();
     delete self.client;
     self.client = Primus.connect(self.options.url, self.options);
-  }
-  if(self.client && self.externalClient === true){
+  } else if(self.client && self.externalClient === true){
     self.client.end();
     self.client.open();
   }else{
@@ -3005,7 +2998,7 @@ ActionheroClient.prototype.configure = function(callback){
     self.fingerprint = details.data.fingerprint;
     self.rooms       = details.data.rooms;
     callback(details);
-  }); 
+  });
 }
 
 ///////////////
@@ -3053,7 +3046,7 @@ ActionheroClient.prototype.action = function(action, params, callback){
   }
   if(!params){ params = {}; }
   params.action = action;
-  
+
   if(this.state !== 'connected'){
     this.actionWeb(params, callback);
   }else{
@@ -3078,12 +3071,12 @@ ActionheroClient.prototype.actionWeb = function(params, callback) {
       callback(response);
     }
   };
-  
+
   var method = params.httpMethod || 'POST';
   var url = this.options.url + this.options.apiPath + '?action=' + params.action;
   xmlhttp.open(method, url, true);
   xmlhttp.setRequestHeader('Content-Type', 'application/json');
-  xmlhttp.send(JSON.stringify(params)); 
+  xmlhttp.send(JSON.stringify(params));
 }
 
 

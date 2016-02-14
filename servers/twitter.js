@@ -35,11 +35,11 @@ var initialize = function(api, options, next){
       });
 
       api.log('twitter tracking: #' + api.config.servers.twitter.hashtag);
-      api.twitter.stream('statuses/filter', {track: api.config.servers.twitter.hashtag}, function(stream) {
+      api.twitter.stream('statuses/filter', {track: api.config.servers.twitter.hashtag}, function(stream){
         stream.on('data', function(tweet) {
           self.addTweet(tweet);
         });
-       
+
         stream.on('error', function(error) {
           api.log(error, 'error');
           throw error;
@@ -59,12 +59,12 @@ var initialize = function(api, options, next){
     }
     server.buildConnection({
       id: tweet.id,
-      rawConnection  : { 
+      rawConnection  : {
         hashtag: api.config.servers.twitter.hashtag,
         clientId: tweet.id,
         message: tweet.text,
         twitterUser: twitterUser
-      }, 
+      },
       remoteAddress  : 0,
       remotePort     : 0 ,
     }); // will emit "connection"
@@ -90,8 +90,9 @@ var initialize = function(api, options, next){
         twitterUser: connection.rawConnection.twitterUser,
         hashtag: connection.rawConnection.hashtag,
       });
+      api.log('[tweet] ' + connection.rawConnection.message );
       connection.destroy();
-    });    
+    });
   });
 
   /////////////
