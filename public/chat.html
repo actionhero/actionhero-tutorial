@@ -14,14 +14,14 @@
     var client;
     var boot = function(){
       client = new ActionheroClient;
-    
+
       client.on('connected',    function(){ console.log('connected!') })
       client.on('disconnected', function(){ console.log('disconnected :(') })
 
       client.on('error',        function(err){ console.log('error', err.stack) })
       client.on('reconnect',    function(){ console.log('reconnect') })
       client.on('reconnecting', function(){ console.log('reconnecting') })
-      
+
       // client.on('message',      function(message){ console.log(message) })
 
       client.on('alert',        function(message){ alert( JSON.stringify(message) ) })
@@ -35,10 +35,11 @@
           console.log(err);
         }else{
           client.roomAdd("defaultRoom");
+          // client.roomAdd("twitter");
           document.getElementById("name").innerHTML = "<span style=\"color:#" + intToARGB(hashCode(client.id)) + "\">" + client.id + "</span>"
         }
       });
-        
+
     }
 
     var appendMessage = function(message){
@@ -68,12 +69,6 @@
       var message = div.value;
       div.value = "";
       client.say(client.rooms[0], message);
-      appendMessage({
-        me: true,
-        message: message,
-        from: client.id,
-        sentAt: new Date().getTime()
-      })
     }
 
     var formatTime = function(timestamp){
@@ -86,7 +81,7 @@
            hash = str.charCodeAt(i) + ((hash << 5) - hash);
         }
         return hash;
-    } 
+    }
 
     function intToARGB(i){
         var color =
@@ -98,7 +93,7 @@
     }
 
     </script>
-    
+
   </head>
 
   <body onload="boot()">
@@ -127,7 +122,7 @@
         <div class="col-4 col-sm-4 col-lg-4">
 
           Hello, <strong><span id="name"></span></strong>
-          
+
           <form id="messageForm" class="form-inline">
             <div class="form-group">
               <label class="sr-only">Chat Message</label>
