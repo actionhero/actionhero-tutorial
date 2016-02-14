@@ -90,6 +90,7 @@ var initialize = function(api, options, next){
         twitterUser: connection.rawConnection.twitterUser,
         hashtag: connection.rawConnection.hashtag,
       });
+      api.log('[tweet] ' + connection.rawConnection.message );
       connection.destroy();
     });
   });
