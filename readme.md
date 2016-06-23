@@ -3,7 +3,7 @@
 <img src="https://raw.github.com/evantahler/actionhero/master/public/logo/actionhero.png" height="300"/>
 
 - created: June 22, 2013
-- updated: February 14, 2016
+- updated: June 23, 2016
 
 [![Build Status](https://secure.travis-ci.org/evantahler/actionhero-tutorial.png?branch=master)](http://travis-ci.org/evantahler/actionhero-tutorial)
 ---
@@ -44,6 +44,7 @@ You will become comfortable with the following topics:
 - [NPM](https://npmjs.org/package/actionhero)
 - [Documentation](http://actionherojs.com/docs)
 - [GitHub](https://github.com/evantahler/actionhero)
+- [Chat / Slack](http://slack.actionherojs.com)
 - [Mailing List](https://groups.google.com/forum/?fromgroups=#!forum/actionhero-js)
 
 ## Notes
