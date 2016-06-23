@@ -3,7 +3,7 @@
 module.exports = {
 
   initialize: function(api, next){
-    var redis = api.redis.client;
+    var redis = api.config.redis.client;
 
     api.blog = {
 
@@ -14,7 +14,7 @@ module.exports = {
       commentPrefix: "comments:",
 
       // posts
-      
+
       postAdd: function(userName, title, content, next){
         var key = this.buildTitleKey(userName, title);
         var data = {
@@ -51,7 +51,7 @@ module.exports = {
           next(error, titles);
         });
       },
-      
+
       postEdit: function(userName, title, content, next){
         var key = this.buildTitleKey(userName, title);
         this.viewPost(key, function(error, data){
@@ -67,7 +67,7 @@ module.exports = {
           });
         });
       },
-      
+
       postDelete: function(userName, title, next){
         var self = this;
         var key = self.buildTitleKey(userName, title);
@@ -96,7 +96,7 @@ module.exports = {
         redis.hset(key, commentId, JSON.stringify(data), function(error){
           next(error);
         });
-      }, 
+      },
 
       commentsView: function(userName, title, next){
         var key = this.buildCommentKey(userName, title);
@@ -108,7 +108,7 @@ module.exports = {
           next(error, comments);
         });
       },
-      
+
       commentDelete: function(userName, title, commentId, next){
         var key = this.buildCommentKey(userName, title);
         redis.hdel(key, commentId, function(error){
