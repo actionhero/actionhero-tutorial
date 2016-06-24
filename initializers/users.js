@@ -5,7 +5,7 @@ var salt = "asdjkafhjewiovnjksdv"; // in production, you will want to change thi
 module.exports = {
 
   initialize: function(api, next){
-    var redis = api.config.redis.client;
+    var redis = api.redis.clients.client;
 
     api.users = {
 

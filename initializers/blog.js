@@ -3,7 +3,7 @@
 module.exports = {
 
   initialize: function(api, next){
-    var redis = api.config.redis.client;
+    var redis = api.redis.clients.client;
 
     api.blog = {
 
