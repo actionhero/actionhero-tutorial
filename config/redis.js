@@ -1,17 +1,15 @@
-var host     = process.env.REDIS_HOST || '127.0.0.1';
-var port     = process.env.REDIS_PORT || 6379;
-var db       = process.env.REDIS_DB   || 0;
-var password = process.env.REDIS_PASS || null;
+var host = process.env.REDIS_HOST || '127.0.0.1'
+var port = process.env.REDIS_PORT || 6379
+var db = process.env.REDIS_DB || 0
+var password = process.env.REDIS_PASS || null
 
 exports['default'] = {
-  redis: function(api){
-
+  redis: function (api) {
     // konstructor: The redis client constructor method
     // args: The arguments to pass to the constructor
     // buildNew: is it `new konstructor()` or just `konstructor()`?
 
-    if(process.env.FAKEREDIS === 'false' || process.env.REDIS_HOST !== undefined){
-
+    if (process.env.FAKEREDIS === 'false' || process.env.REDIS_HOST !== undefined) {
       return {
         '_toExpand': false,
         client: {
@@ -29,10 +27,8 @@ exports['default'] = {
           args: [{ port: port, host: host, password: password, db: db }],
           buildNew: true
         }
-      };
-
-    }else{
-
+      }
+    } else {
       return {
         '_toExpand': false,
         client: {
@@ -50,8 +46,7 @@ exports['default'] = {
           args: [port, host, {fast: true}],
           buildNew: false
         }
-      };
-
+      }
     }
   }
-};
+}

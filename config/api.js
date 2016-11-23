@@ -1,5 +1,7 @@
+var path = require('path')
+
 exports.default = {
-  general: function(api){
+  general: function (api) {
     return {
       apiVersion: '0.0.1',
       serverName: 'actionhero API',
@@ -29,57 +31,57 @@ exports.default = {
       // values that signify missing params
       missingParamChecks: [null, '', undefined],
       // The default filetype to server when a user requests a directory
-      directoryFileType : 'index.html',
+      directoryFileType: 'index.html',
       // The default priority level given to middleware of all types (action, connection, and say)
-      defaultMiddlewarePriority : 100,
+      defaultMiddlewarePriority: 100,
       // Which channel to use on redis pub/sub for RPC communication
       channel: 'actionhero',
       // How long to wait for an RPC call before considering it a failure
       rpcTimeout: 5000,
       // configuration for your actionhero project structure
       paths: {
-        'action':      [ __dirname + '/../actions'      ] ,
-        'task':        [ __dirname + '/../tasks'        ] ,
-        'public':      [ __dirname + '/../public'       ] ,
-        'pid':         [ __dirname + '/../pids'         ] ,
-        'log':         [ __dirname + '/../log'          ] ,
-        'server':      [ __dirname + '/../servers'      ] ,
-        'initializer': [ __dirname + '/../initializers' ] ,
-        'plugin':      [ __dirname + '/../node_modules' ] ,
-        'locale':      [ __dirname + '/../locales'      ]
+        'action': [path.join(__dirname, '/../actions')],
+        'task': [path.join(__dirname, '/../tasks')],
+        'public': [path.join(__dirname, '/../public')],
+        'pid': [path.join(__dirname, '/../pids')],
+        'log': [path.join(__dirname, '/../log')],
+        'server': [path.join(__dirname, '/../servers')],
+        'initializer': [path.join(__dirname, '/../initializers')],
+        'plugin': [path.join(__dirname, '/../node_modules')],
+        'locale': [path.join(__dirname, '/../locales')]
       },
       // hash containing chat rooms you wish to be created at server boot
       startingChatRooms: {
         // format is {roomName: {authKey, authValue}}
-        //'secureRoom': {authorized: true},
+        // 'secureRoom': {authorized: true},
         'defaultRoom': {},
         'anotherRoom': {},
         'twitter': {}
       }
-    };
+    }
   }
-};
+}
 
 exports.test = {
-  general: function(api){
+  general: function (api) {
     return {
       id: 'test-server',
       developmentMode: true,
       startingChatRooms: {
         'defaultRoom': {},
-        'otherRoom': {},
+        'otherRoom': {}
       },
       paths: {
         'locale': [ '/tmp/locale' ]
       }
-    };
+    }
   }
-};
+}
 
 exports.production = {
-  general: function(api){
+  general: function (api) {
     return {
       developmentMode: false
-    };
+    }
   }
-};
+}

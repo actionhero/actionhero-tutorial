@@ -1,6 +1,6 @@
 exports.default = {
   servers: {
-    web: function(api){
+    web: function (api) {
       return {
         enabled: true,
         // HTTP or HTTPS?
@@ -13,39 +13,39 @@ exports.default = {
         // Set to `null` when listening to socket
         bindIP: '0.0.0.0',
         // Any additional headers you want actionhero to respond with
-        httpHeaders : {
-          'X-Powered-By'                : api.config.general.serverName,
-          'Access-Control-Allow-Origin' : '*',
+        httpHeaders: {
+          'X-Powered-By': api.config.general.serverName,
+          'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'HEAD, GET, POST, PUT, PATCH, DELETE, OPTIONS, TRACE',
-          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Headers': 'Content-Type'
         },
         // Route that actions will be served from; secondary route against this route will be treated as actions,
         //  IE: /api/?action=test == /api/test/
-        urlPathForActions : 'api',
+        urlPathForActions: 'api',
         // Route that static files will be served from;
         //  path (relative to your project root) to serve static content from
         //  set to `null` to disable the file server entirely
-        urlPathForFiles : 'public',
+        urlPathForFiles: 'public',
         // When visiting the root URL, should visitors see 'api' or 'file'?
         //  Visitors can always visit /api and /public as normal
-        rootEndpointType : 'file',
+        rootEndpointType: 'file',
         // simple routing also adds an 'all' route which matches /api/:action for all actions
-        simpleRouting : true,
+        simpleRouting: true,
         // queryRouting allows an action to be defined via a URL param, ie: /api?action=:action
-        queryRouting : true,
+        queryRouting: true,
         // The header which will be returned for all flat file served from /public; defined in seconds
-        flatFileCacheDuration : 60,
+        flatFileCacheDuration: 60,
         // How many times should we try to boot the server?
         // This might happen if the port is in use by another process or the socketfile is claimed
         bootAttempts: 1,
         // Settings for determining the id of an http(s) request (browser-fingerprint)
-        fingerprintOptions : {
+        fingerprintOptions: {
           cookieKey: 'sessionID',
           toSetCookie: true,
           onlyStaticElements: false,
           settings: {
             path: '/',
-            expires: 3600000,
+            expires: 3600000
           }
         },
         // Options to be applied to incoming file uploads.
@@ -71,29 +71,29 @@ exports.default = {
         compress: false,
         // options to pass to the query parser
         // learn more about the options @ https://github.com/hapijs/qs
-        queryParseOptions: {},
-      };
+        queryParseOptions: {}
+      }
     }
   }
-};
+}
 
 exports.production = {
   servers: {
-    web: function(api){
+    web: function (api) {
       return {
         padding: null,
         metadataOptions: {
           serverInformation: false,
           requesterInformation: false
         }
-      };
+      }
     }
   }
-};
+}
 
 exports.test = {
   servers: {
-    web: function(api){
+    web: function (api) {
       return {
         secure: false,
         port: 8081,
@@ -102,7 +102,7 @@ exports.test = {
           serverInformation: true,
           requesterInformation: true
         }
-      };
+      }
     }
   }
-};
+}
