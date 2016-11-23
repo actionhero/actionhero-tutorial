@@ -12,21 +12,32 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
-    "actionhero": "^15.0.0",
+    "actionhero": "^16.0.0",
     "fakeredis": "^1.0.3",
-    "ioredis": "^2.1.0",
+    "ioredis": "^2.4.0",
     "twitter": "x"
   },
   "devDependencies": {
     "should": "x",
     "mocha": "x",
+    "standard": "^8.6.0",
     "request": "x"
+  },
+  "standard": {
+    "globals": [
+      "describe",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach",
+      "it"
+    ]
   },
   "scripts": {
     "help": "actionhero help",
     "start": "actionhero start",
     "actionhero": "actionhero",
     "startCluster": "actionhero startCluster",
-    "test": "mocha"
+    "test": "standard && mocha"
   }
 }
