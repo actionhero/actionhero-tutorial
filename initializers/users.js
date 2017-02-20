@@ -57,7 +57,7 @@ module.exports = {
             next(error)
           } else {
             data = JSON.parse(data)
-            if(!(data && ('hashedPassword' in data))){
+            if (!(data && ('hashedPassword' in data))) {
               next('userName does not exist')
             } else {
               self.comparePassword(data.hashedPassword, password, function (error, match) {
