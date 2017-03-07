@@ -1,5 +1,7 @@
 # actionhero Tutorial
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/actionhero/actionhero-tutorial.svg)](https://greenkeeper.io/)
+
 <img src="https://raw.github.com/evantahler/actionhero/master/public/logo/actionhero.png" height="300"/>
 
 - created: June 22, 2013
