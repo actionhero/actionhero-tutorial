@@ -1,6 +1,6 @@
 # actionhero Tutorial
 
-<img src="https://raw.github.com/evantahler/actionhero/master/public/logo/actionhero.png" height="300"/>
+<img src="https://raw.github.com/actionhero/actionhero/master/public/logo/actionhero.png" height="300"/>
 
 - created: June 22, 2013
 - updated: November 23, 2016
