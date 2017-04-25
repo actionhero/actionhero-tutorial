@@ -12,7 +12,7 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
-    "actionhero": "^16.0.0",
+    "actionhero": "^17.0.0",
     "fakeredis": "^2.0.0",
     "ioredis": "^2.4.0",
     "twitter": "x"

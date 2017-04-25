@@ -5,5 +5,4 @@ pids
 npm-debug.log
 .idea
 config/servers/twitter.js
-locales/*
 public/javascript/actionheroClient*

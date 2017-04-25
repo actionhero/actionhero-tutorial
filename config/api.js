@@ -10,8 +10,6 @@ exports.default = {
       //  id: 'myActionHeroServer',
       // A unique token to your application that servers will use to authenticate to each other
       serverToken: 'change-me',
-      // The welcome message seen by TCP and webSocket clients upon connection
-      welcomeMessage: 'Hello! Welcome to the actionhero api',
       // the redis prefix for actionhero's cache objects
       cachePrefix: 'actionhero:cache:',
       // the redis prefix for actionhero's cache/lock objects
@@ -46,6 +44,7 @@ exports.default = {
         'pid': [path.join(__dirname, '/../pids')],
         'log': [path.join(__dirname, '/../log')],
         'server': [path.join(__dirname, '/../servers')],
+        'cli': [path.join(__dirname, '/../bin')],
         'initializer': [path.join(__dirname, '/../initializers')],
         'plugin': [path.join(__dirname, '/../node_modules')],
         'locale': [path.join(__dirname, '/../locales')]
@@ -70,9 +69,6 @@ exports.test = {
       startingChatRooms: {
         'defaultRoom': {},
         'otherRoom': {}
-      },
-      paths: {
-        'locale': [ '/tmp/locale' ]
       }
     }
   }
