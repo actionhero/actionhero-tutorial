@@ -3,7 +3,7 @@
 <img src="https://raw.github.com/actionhero/actionhero/master/public/logo/actionhero.png" height="300"/>
 
 - created: June 22, 2013
-- updated: November 23, 2016
+- updated: April 24, 2017
 
 [![Build Status](https://secure.travis-ci.org/actionhero/actionhero-tutorial.png?branch=master)](http://travis-ci.org/evantahler/actionhero-tutorial)
 ---
