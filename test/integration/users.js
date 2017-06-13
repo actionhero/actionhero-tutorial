@@ -53,8 +53,8 @@ describe('integration', function () {
         request.get(setup.testUrl + '/usersList', function (error, response, body) {
           should.not.exist(error)
           body = JSON.parse(body)
-          body.users.length.should.greaterThan(1)
-          body.users.indexOf('evan').should.equal(0)
+          body.users.length.should.be.greaterThan(1)
+          body.users.indexOf('evan').should.be.greaterThan(-1)
           should.not.exist(body.error)
           done()
         })
