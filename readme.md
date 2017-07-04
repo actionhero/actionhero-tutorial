@@ -135,19 +135,19 @@ Our blogging methods are:
 ```javascript
 api.blog = {
   // constants
-  separator: ";",
-  postPrefix: "posts",
-  commentPrefix: "comments:",
+  separator: ';',
+  postPrefix: 'posts',
+  commentPrefix: 'comments:',
   // posts
-  postAdd: function(userName, title, content, next){},
-  postView: function(userName, title, next){},
-  postsList: function(userName, next){},
-  postEdit: function(userName, title, content, next){},
-  postDelete: function(userName, title, next){},
+  postAdd: function (userName, title, content, next) {},
+  postView: function (userName, title, next) {},
+  postsList: function (userName, next) {},
+  postEdit: function (userName, title, content, next) {},
+  postDelete: function (userName, title, next) {},
   // comments
-  commentAdd: function(userName, title, commenterName, comment, next){},
-  commentsView: function(userName, title, next){},
-  commentDelete: function(userName, title, commentId, next){},
+  commentAdd: function (userName, title, commenterName, comment, next) {},
+  commentsView: function (userName, title, next) {},
+  commentDelete: function (userName, title, commentId, next) {},
 }
 ```
 
@@ -173,12 +173,12 @@ Our user methods are:
 ```javascript
 api.users = {
   // constants
-  usersHash: "users",
+  usersHash: 'users',
   // methods
-  add: function(userName, password, next){},
-  list: function(next){},
-  authenticate: function(userName, password, next){},
-  delete: function(userName, password, next){},
+  add: function (userName, password, next) {},
+  list: function (next) {},
+  authenticate: function (userName, password, next) {},
+  delete: function (userName, password, next) {},
 }
 ```
 
