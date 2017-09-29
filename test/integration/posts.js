@@ -1,61 +1,53 @@
-var request = require('request')
-var should = require('should')
-var setup = require('./../_setup.js')._setup
+const chai = require('chai')
+const dirtyChai = require('dirty-chai')
+const expect = chai.expect
+chai.use(dirtyChai)
 
-describe('integration', function () {
-  before(function (done) {
-    setup.init(function () {
-      request.post(setup.testUrl + '/userAdd', {form: {userName: 'testPoster', password: 'password'}}, function (error, response, body) {
-        should.not.exist(error)
-        done()
-      })
+const r2 = require('r2')
+const ActionHero = require('actionhero')
+const actionhero = new ActionHero.Process()
+let api
+let url
+
+describe('integration', () => {
+  describe('posts', () => {
+    before(async () => {
+      api = await actionhero.start()
+      url = `http://localhost:${api.config.servers.web.port}/api`
+
+      const body = await r2.post(`${url}/user`, {json: {userName: 'testPoster', password: 'password'}}).json
+      expect(body.error).not.to.exist()
     })
-  })
 
-  describe('posts', function () {
-    it('I can add a post', function (done) {
-      request.post(setup.testUrl + '/postAdd', {form: {
-        userName: 'testPoster',
+    after(async () => { await actionhero.stop() })
+
+    it('saves a post', async () => {
+      const body = await r2.post(`${url}/post/testPoster`, {json: {
         password: 'password',
         title: 'test post title',
         content: 'post content'
-      }}, function (error, response, body) {
-        should.not.exist(error)
-        body = JSON.parse(body)
-        should.not.exist(body.error)
-        done()
-      })
+      }}).json
+
+      expect(body.error).not.to.exist()
     })
 
-    it('I can view a post', function (done) {
-      request.post(setup.testUrl + '/postView', {form: {userName: 'testPoster', password: 'password', title: 'test post title'}}, function (error, response, body) {
-        should.not.exist(error)
-        body = JSON.parse(body)
-        body.post.title.should.equal('test post title')
-        body.post.content.should.equal('post content')
-        should.not.exist(body.error)
-        done()
-      })
+    it('views a post', async () => {
+      const body = await r2.get(`${url}/post/testPoster/${encodeURI('test post title')}`).json
+      expect(body.post.title).to.equal('test post title')
+      expect(body.post.content).to.equal('post content')
+      expect(body.error).not.to.exist()
     })
 
-    it('The new post should be in the list of posts', function (done) {
-      request.post(setup.testUrl + '/postsList', {form: {userName: 'testPoster'}}, function (error, response, body) {
-        should.not.exist(error)
-        body = JSON.parse(body)
-        body.posts.indexOf('test post title').should.equal(0)
-        should.not.exist(body.error)
-        done()
-      })
+    it('lists posts by user', async () => {
+      const body = await r2.get(`${url}/posts/testPoster`).json
+      expect(body.posts).to.include('test post title')
+      expect(body.error).not.to.exist()
     })
 
-    it('The new post should not be in the list of posts for another user', function (done) {
-      request.post(setup.testUrl + '/postsList', {form: {userName: 'someoneElse'}}, function (error, response, body) {
-        should.not.exist(error)
-        body = JSON.parse(body)
-        body.posts.should.not.containEql('test post title')
-        should.not.exist(body.error)
-        done()
-      })
+    it('does not mix posts for other users', async () => {
+      const body = await r2.get(`${url}/posts/someoneElse`).json
+      expect(body.posts).not.to.include('test post title')
+      expect(body.error).not.to.exist()
     })
   })
 })

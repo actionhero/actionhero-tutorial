@@ -1,64 +1,54 @@
-var request = require('request')
-var should = require('should')
-var setup = require('./../_setup.js')._setup
+const chai = require('chai')
+const dirtyChai = require('dirty-chai')
+const expect = chai.expect
+chai.use(dirtyChai)
 
-describe('integration', function () {
-  before(function (done) {
-    setup.init(done)
+const r2 = require('r2')
+const ActionHero = require('actionhero')
+const actionhero = new ActionHero.Process()
+let api
+let url
+
+describe('integration', () => {
+  before(async () => {
+    api = await actionhero.start()
+    url = `http://localhost:${api.config.servers.web.port}/api`
   })
 
-  describe('users', function () {
-    it('I can create a user', function (done) {
-      request.post(setup.testUrl + '/userAdd', {form: {userName: 'evan', password: 'password'}}, function (error, response, body) {
-        should.not.exist(error)
-        body = JSON.parse(body)
-        should.not.exist(body.error)
-        done()
-      })
+  after(async () => { await actionhero.stop() })
+
+  describe('users', () => {
+    it('creates a user', async () => {
+      const body = await r2.post(`${url}/user`, {json: {userName: 'evan', password: 'password'}}).json
+      expect(body.error).to.not.exist()
     })
 
-    it('Creating a dupliate user will fail', function (done) {
-      request.post(setup.testUrl + '/userAdd', {form: {userName: 'evan', password: 'password'}}, function (error, response, body) {
-        should.not.exist(error)
-        body = JSON.parse(body)
-        body.error.should.equal('userName already exists')
-        done()
-      })
+    it('prevents duplicate uesers from being created', async () => {
+      const body = await r2.post(`${url}/user`, {json: {userName: 'evan', password: 'password'}}).json
+      expect(body.error).to.equal('userName already exists')
     })
 
-    it('I can log in', function (done) {
-      request.post(setup.testUrl + '/authenticate', {form: {userName: 'evan', password: 'password'}}, function (error, response, body) {
-        should.not.exist(error)
-        body = JSON.parse(body)
-        body.authenticated.should.equal(true)
-        should.not.exist(body.error)
-        done()
-      })
+    it('authenticates with the propper password', async () => {
+      const body = await r2.post(`${url}/authenticate`, {json: {userName: 'evan', password: 'password'}}).json
+      expect(body.authenticated).to.equal(true)
+      expect(body.error).to.not.exist()
     })
 
-    it('The wrong password will prevent logging in', function (done) {
-      request.post(setup.testUrl + '/authenticate', {form: {userName: 'evan', password: 'xxx'}}, function (error, response, body) {
-        should.not.exist(error)
-        body = JSON.parse(body)
-        body.authenticated.should.equal(false)
-        body.error.should.equal('unable to log in')
-        done()
-      })
+    it('does not authenticate with the propper password', async () => {
+      const body = await r2.post(`${url}/authenticate`, {json: {userName: 'evan', password: 'xxx'}}).json
+      expect(body.authenticated).to.equal(false)
+      expect(body.error).to.equal('unable to log in')
     })
 
-    it('I should be in the list of users', function (done) {
-      request.post(setup.testUrl + '/userAdd', {form: {userName: 'someoneElse', password: 'password'}}, function (error, response, body) {
-        should.not.exist(error)
-        should.not.exist(body.error)
-        request.get(setup.testUrl + '/usersList', function (error, response, body) {
-          should.not.exist(error)
-          body = JSON.parse(body)
-          body.users.length.should.be.greaterThan(1)
-          body.users.indexOf('evan').should.be.greaterThan(-1)
-          should.not.exist(body.error)
-          done()
-        })
-      })
+    it('returns a list of users', async () => {
+      const body = await r2.post(`${url}/user`, {json: {userName: 'someoneElse', password: 'password'}}).json
+      expect(body.error).to.not.exist()
+
+      const usersBody = await r2.get(`${url}/usersList`).json
+      expect(usersBody.users.length).to.be.above(1)
+      expect(usersBody.users).to.include('evan')
+      expect(usersBody.users).to.include('someoneElse')
+      expect(usersBody.error).to.not.exist()
     })
   })
 })

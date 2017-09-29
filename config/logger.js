@@ -1,9 +1,11 @@
-var fs = require('fs')
-var cluster = require('cluster')
+'use strict'
 
-exports.default = {
-  logger: function (api) {
-    var logger = { transports: [] }
+const fs = require('fs')
+const cluster = require('cluster')
+
+exports['default'] = {
+  logger: (api) => {
+    let logger = {transports: []}
 
     // console logger
     if (cluster.isMaster) {
@@ -11,28 +13,28 @@ exports.default = {
         return new (winston.transports.Console)({
           colorize: true,
           level: 'info',
-          timestamp: true
+          timestamp: function () { return api.id + ' @ ' + new Date().toISOString() }
         })
       })
     }
 
     // file logger
-    if (api.config.general.paths.log.length === 1) {
-      var logDirectory = api.config.general.paths.log[0]
-      try {
-        fs.mkdirSync(logDirectory)
-      } catch (e) {
-        if (e.code !== 'EEXIST') {
-          throw (new Error('Cannot create log directory @ ' + logDirectory))
+    logger.transports.push(function (api, winston) {
+      if (api.config.general.paths.log.length === 1) {
+        const logDirectory = api.config.general.paths.log[0]
+        try {
+          fs.mkdirSync(logDirectory)
+        } catch (e) {
+          if (e.code !== 'EEXIST') {
+            throw (new Error('Cannot create log directory @ ' + logDirectory))
+          }
         }
       }
-    }
 
-    logger.transports.push(function (api, winston) {
       return new (winston.transports.File)({
         filename: api.config.general.paths.log[0] + '/' + api.pids.title + '.log',
         level: 'info',
-        timestamp: true
+        timestamp: function () { return api.id + ' @ ' + new Date().toISOString() }
       })
     })
 
@@ -50,7 +52,7 @@ exports.default = {
 }
 
 exports.test = {
-  logger: function (api) {
+  logger: (api) => {
     return {
       transports: null
     }

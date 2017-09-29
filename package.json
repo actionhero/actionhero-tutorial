@@ -6,39 +6,44 @@
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/evantahler/actionhero-tutorial.git"
+    "url": "https://github.com/actionhero/actionhero-tutorial.git"
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=8.0.0"
   },
   "dependencies": {
-    "actionhero": "^17.0.0",
-    "fakeredis": "^2.0.0",
-    "ioredis": "^2.4.0",
-    "twitter": "x"
+    "actionhero": "18.0.0-beta.1",
+    "bcrypt": "^1.0.3",
+    "fakeredis": "latest",
+    "ioredis": "latest",
+    "ws": "latest"
   },
   "devDependencies": {
-    "should": "x",
-    "mocha": "x",
-    "standard": "^8.6.0",
-    "request": "x"
+    "cross-env": "latest",
+    "chai": "latest",
+    "dirty-chai": "latest",
+    "mocha": "latest",
+    "standard": "latest",
+    "r2": "^2.0.0"
+  },
+  "scripts": {
+    "start": "actionhero start",
+    "actionhero": "actionhero",
+    "pretest": "standard",
+    "test": "cross-env NODE_ENV=test mocha"
   },
   "standard": {
+    "ignore": [
+      "public/javascript/actionheroClient.*"
+    ],
     "globals": [
       "describe",
       "before",
       "beforeEach",
       "after",
       "afterEach",
-      "it"
+      "it",
+      "expect"
     ]
-  },
-  "scripts": {
-    "help": "actionhero help",
-    "start": "actionhero start",
-    "actionhero": "actionhero",
-    "startCluster": "actionhero startCluster",
-    "test": "mocha",
-    "pretest": "standard"
   }
 }

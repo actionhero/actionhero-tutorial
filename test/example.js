@@ -1,29 +1,26 @@
-process.env.NODE_ENV = 'test'
+'use strict'
 
-var should = require('should')
-var ActionheroPrototype = require('actionhero')
-var actionhero = new ActionheroPrototype()
-var api
+const chai = require('chai')
+const dirtyChai = require('dirty-chai')
+const expect = chai.expect
+chai.use(dirtyChai)
 
-describe('actionhero Tests', function () {
-  before(function (done) {
-    actionhero.start(function (error, a) {
-      if (error) { return done(error) }
-      api = a
-      done()
-    })
+const ActionHero = require('actionhero')
+const actionhero = new ActionHero.Process()
+let api
+
+describe('actionhero Tests', () => {
+  before(async () => { api = await actionhero.start() })
+  after(async () => { await actionhero.stop() })
+
+  it('should have booted into the test env', () => {
+    expect(process.env.NODE_ENV).to.equal('test')
+    expect(api.env).to.equal('test')
+    expect(api.id).to.be.ok()
   })
 
-  after(function (done) {
-    actionhero.stop(function (error) {
-      if (error) { return done(error) }
-      done()
-    })
-  })
-
-  it('should have booted into the test env', function () {
-    process.env.NODE_ENV.should.equal('test')
-    api.env.should.equal('test')
-    should.exist(api.id)
+  it('can retrieve server uptime via the status action', async () => {
+    let {uptime} = await api.specHelper.runAction('status')
+    expect(uptime).to.be.above(0)
   })
 })

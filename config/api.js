@@ -1,10 +1,14 @@
-var path = require('path')
+'use strict'
 
-exports.default = {
-  general: function (api) {
+const path = require('path')
+
+exports['default'] = {
+  general: (api) => {
+    const packageJSON = require(api.projectRoot + path.sep + 'package.json')
+
     return {
-      apiVersion: '0.0.1',
-      serverName: 'actionhero API',
+      apiVersion: packageJSON.version,
+      serverName: packageJSON.name,
       // id can be set here, or it will be generated dynamically.
       //  Be sure that every server you run has a unique ID (which will happen when generated dynamically)
       //  id: 'myActionHeroServer',
@@ -30,12 +34,16 @@ exports.default = {
       missingParamChecks: [null, '', undefined],
       // The default filetype to server when a user requests a directory
       directoryFileType: 'index.html',
-      // The default priority level given to middleware of all types (action, connection, and say)
+      // What log-level should we use for file requests?
+      fileRequestLogLevel: 'info',
+      // The default priority level given to middleware of all types (action, connection, say, and task)
       defaultMiddlewarePriority: 100,
       // Which channel to use on redis pub/sub for RPC communication
       channel: 'actionhero',
       // How long to wait for an RPC call before considering it a failure
       rpcTimeout: 5000,
+      // should CLI methods and help include internal ActionHero CLI methods?
+      cliIncludeInternal: true,
       // configuration for your actionhero project structure
       paths: {
         'action': [path.join(__dirname, '/../actions')],
@@ -53,30 +61,36 @@ exports.default = {
       startingChatRooms: {
         // format is {roomName: {authKey, authValue}}
         // 'secureRoom': {authorized: true},
-        'defaultRoom': {},
-        'anotherRoom': {},
-        'twitter': {}
       }
     }
   }
 }
 
 exports.test = {
-  general: function (api) {
+  general: (api) => {
     return {
-      id: 'test-server',
+      id: 'test-server-' + process.pid,
+      serverToken: 'serverToken-' + process.pid,
       developmentMode: true,
       startingChatRooms: {
         'defaultRoom': {},
         'otherRoom': {}
-      }
+      },
+      paths: {
+        'locale': [
+          // require('os').tmpdir() + require('path').sep + 'locales',
+          path.join(__dirname, '/../locales')
+        ]
+      },
+      rpcTimeout: 3000
     }
   }
 }
 
 exports.production = {
-  general: function (api) {
+  general: (api) => {
     return {
+      fileRequestLogLevel: 'debug',
       developmentMode: false
     }
   }

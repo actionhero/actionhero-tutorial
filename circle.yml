@@ -1,8 +1,6 @@
 machine:
   node:
     version: 8
-  environment:
-    FAKEREDIS: false
   services:
     - redis
 

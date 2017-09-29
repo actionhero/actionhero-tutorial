@@ -1,8 +1,10 @@
+'use strict'
+
 // Note that to use the websocket server, you also need the web server enabled
 
-exports.default = {
+exports['default'] = {
   servers: {
-    websocket: function (api) {
+    websocket: (api) => {
       return {
         enabled: true,
         // you can pass a FQDN (string) here or 'window.location.origin'
@@ -47,6 +49,14 @@ exports.default = {
           // queueSize:        Infinity,
         }
       }
+    }
+  }
+}
+
+exports['test'] = {
+  servers: {
+    websocket: (api) => {
+      return { clientUrl: null }
     }
   }
 }

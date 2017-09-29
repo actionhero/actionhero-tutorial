@@ -10,9 +10,10 @@ exports.default = {
       ],
 
       post: [
-        { path: '/users', action: 'userAdd' },
-        { path: '/comments/:userName/:title', action: 'commentAdd' },
-        { path: '/posts/:userName/', action: 'postAdd' }
+        { path: '/authenticate', action: 'authenticate' },
+        { path: '/user', action: 'userAdd' },
+        { path: '/comment/:userName/:title', action: 'commentAdd' },
+        { path: '/post/:userName/', action: 'postAdd' }
       ],
 
       put: [
