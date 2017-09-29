@@ -1,27 +1,26 @@
-module.exports = {
+const {Initializer, api} = require('actionhero')
 
-  initialize: function (api, next) {
-    var authenticationMiddleware = {
-      name: 'authentication Middleware',
+module.exports = class AuthenticationMidleware extends Initializer {
+  constructor () {
+    super()
+    this.name = 'authentication_middleware'
+  }
+
+  async initialize () {
+    const middleware = {
+      name: this.name,
       global: true,
-      preProcessor: function (data, next) {
-        if (data.actionTemplate.authenticated === true) {
-          api.users.authenticate(data.params.userName, data.params.password, function (error, match) {
-            if (match === true) {
-              next()
-            } else {
-              error = new Error('Authentication Failed.  userName and password required')
-              next(error)
-            }
-          })
-        } else {
-          next()
+      preProcessor: ({actionTemplate, params}) => {
+        if (actionTemplate.authenticated === true) {
+          let match = api.users.authenticate(params.userName, params.password)
+          if (!match) { throw Error('Authentication Failed.  userName and password required') }
         }
       }
     }
 
-    api.actions.addMiddleware(authenticationMiddleware)
-
-    next()
+    api.actions.addMiddleware(middleware)
   }
+
+  // async start () {}
+  // async stop () {}
 }

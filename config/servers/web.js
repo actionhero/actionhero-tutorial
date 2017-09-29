@@ -1,12 +1,19 @@
-exports.default = {
+'use strict'
+
+const os = require('os')
+
+exports['default'] = {
   servers: {
-    web: function (api) {
+    web: (api) => {
       return {
         enabled: true,
         // HTTP or HTTPS?
         secure: false,
         // Passed to https.createServer if secure=true. Should contain SSL certificates
         serverOptions: {},
+        // Should we redirect all traffic to the first host in this array if hte request header doesn't match?
+        // i.e.: [ 'https://www.site.com' ]
+        allowedRequestHosts: process.env.ALLOWED_HOSTS ? process.env.ALLOWED_HOSTS.split(',') : [],
         // Port or Socket Path
         port: process.env.PORT || 8080,
         // Which IP to listen on (use '0.0.0.0' for all; '::' for all on ipv4 and ipv6)
@@ -33,8 +40,14 @@ exports.default = {
         simpleRouting: true,
         // queryRouting allows an action to be defined via a URL param, ie: /api?action=:action
         queryRouting: true,
-        // The header which will be returned for all flat file served from /public; defined in seconds
+        // The cache or (if etags are enabled) next-revalidation time to be returned for all flat files served from /public; defined in seconds
         flatFileCacheDuration: 60,
+        // Add an etag header to requested flat files which acts as fingerprint that changes when the file is updated;
+        // Client will revalidate the fingerprint at latest after flatFileCacheDuration and reload it if the etag (and therfore the file) changed
+        // or continue to use the cached file if it's still valid
+        enableEtag: true,
+        // should we save the un-parsed HTTP POST/PUT payload to connection.rawConnection.params.rawBody?
+        saveRawBody: false,
         // How many times should we try to boot the server?
         // This might happen if the port is in use by another process or the socketfile is claimed
         bootAttempts: 1,
@@ -51,7 +64,7 @@ exports.default = {
         // Options to be applied to incoming file uploads.
         //  More options and details at https://github.com/felixge/node-formidable
         formOptions: {
-          uploadDir: '/tmp',
+          uploadDir: os.tmpdir(),
           keepExtensions: false,
           maxFieldsSize: 1024 * 1024 * 100
         },
@@ -64,7 +77,7 @@ exports.default = {
           requesterInformation: true
         },
         // When true, returnErrorCodes will modify the response header for http(s) clients if connection.error is not null.
-        //  You can also set connection.rawConnection.responseHttpCode to specify a code per request.
+        // You can also set connection.rawConnection.responseHttpCode to specify a code per request.
         returnErrorCodes: true,
         // should this node server attempt to gzip responses if the client can accept them?
         // this will slow down the performance of actionhero, and if you need this funcionality, it is recommended that you do this upstream with nginx or your load balancer
@@ -79,7 +92,7 @@ exports.default = {
 
 exports.production = {
   servers: {
-    web: function (api) {
+    web: (api) => {
       return {
         padding: null,
         metadataOptions: {
@@ -93,10 +106,10 @@ exports.production = {
 
 exports.test = {
   servers: {
-    web: function (api) {
+    web: (api) => {
       return {
         secure: false,
-        port: 8081,
+        port: process.env.PORT || 1000 + (process.pid % 64535),
         matchExtensionMime: true,
         metadataOptions: {
           serverInformation: true,

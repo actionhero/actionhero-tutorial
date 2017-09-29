@@ -1,112 +1,66 @@
-// initializers/users.js
-var crypto = require('crypto')
-var salt = 'asdjkafhjewiovnjksdv' // in production, you will want to change this, and probably have a unique salt for each user.
+const bcrypt = require('bcrypt')
+const {Initializer, api} = require('actionhero')
 
-module.exports = {
+module.exports = class Users extends Initializer {
+  constructor () {
+    super()
+    this.name = 'users'
+    this.saltRounds = 10
+    this.redis = api.redis.clients.client
+    this.usersHash = 'users'
+  }
 
-  initialize: function (api, next) {
-    var redis = api.redis.clients.client
+  async initialize () {
+    api.users = {}
 
-    api.users = {
+    api.users.add = async (userName, password) => {
+      const savedUser = await this.redis.hget(this.usersHash, userName)
+      if (savedUser) { throw new Error('userName already exists') }
+      const hashedPassword = await api.users.cryptPassword(password)
+      const data = {
+        userName: userName,
+        hashedPassword: hashedPassword,
+        createdAt: new Date().getTime()
+      }
+      await this.redis.hset(this.usersHash, userName, JSON.stringify(data))
+    }
 
-      // constants
-      usersHash: 'users',
+    api.users.list = async () => {
+      const userData = this.redis.hgetall(this.usersHash)
+      return userData.map((u) => {
+        let data = JSON.parse(u)
+        delete data.hashedPassword
+        return data
+      })
+    }
 
-      // methods
-      add: function (userName, password, next) {
-        var self = this
-        redis.hget(self.usersHash, userName, function (error, data) {
-          if (error) {
-            next(error)
-          } else if (data) {
-            next('userName already exists')
-          } else {
-            self.cryptPassword(password, function (error, hashedPassword) {
-              if (error) {
-                next(error)
-              } else {
-                var data = {
-                  userName: userName,
-                  hashedPassword: hashedPassword,
-                  createdAt: new Date().getTime()
-                }
-                redis.hset(self.usersHash, userName, JSON.stringify(data), function (error) {
-                  next(error)
-                })
-              }
-            })
-          }
-        })
-      },
-
-      list: function (next) {
-        var self = this
-        redis.hgetall(self.usersHash, function (error, users) {
-          var userData = []
-          for (var i in users) {
-            userData.push(JSON.parse(users[i]))
-          }
-          next(error, userData)
-        })
-      },
-
-      authenticate: function (userName, password, next) {
-        var self = this
-        redis.hget(self.usersHash, userName, function (error, data) {
-          if (error) {
-            next(error)
-          } else {
-            data = JSON.parse(data)
-            if (!(data && ('hashedPassword' in data))) {
-              next('userName does not exist')
-            } else {
-              self.comparePassword(data.hashedPassword, password, function (error, match) {
-                next(error, match)
-              })
-            }
-          }
-        })
-      },
-
-      delete: function (userName, password, next) {
-        var self = this
-        redis.del(self.usersHash, userName, function (error) {
-          if (error) { return next(error) }
-          api.blog.listUserPosts(userName, function (error, titles) {
-            if (titles.length === 0 || error) {
-              next(error)
-            } else {
-              var started = 0
-              titles.forEach(function (title) {
-                started++
-                api.blog.deletePost(userName, title, function (error) {
-                  if (error) { return next(error) }
-                  started--
-                  if (started === 0) {
-                    next()
-                  }
-                })
-              })
-            }
-          })
-        })
-      },
-
-      // helpers
-
-      cryptPassword: function (password, next) {
-        var hash = crypto.createHash('md5').update(salt + password).digest('hex')
-        next(null, hash)
-      },
-
-      comparePassword: function (hashedPassword, userPassword, next) {
-        var hash = crypto.createHash('md5').update(salt + userPassword).digest('hex')
-        var matched = (hash === hashedPassword)
-        next(null, matched)
+    api.users.authenticate = async (userName, password) => {
+      try {
+        let data = await this.redis.hget(this.usersHash, userName)
+        data = JSON.parse(data)
+        return api.users.comparePassword(data.hashedPassword, password)
+      } catch (error) {
+        throw new Error(`userName does not exist (${error})`)
       }
     }
 
-    next()
+    api.users.delete = async (userName, password) => {
+      await this.redis.del(this.usersHash, userName)
+      const titles = await api.blog.listUserPosts(userName)
+      for (let i in titles) {
+        await api.blog.deletePost(userName, titles[i])
+      }
+    }
+
+    api.users.cryptPassword = async (password) => {
+      return bcrypt.hash(password, this.saltRounds)
+    }
+
+    api.users.comparePassword = async (hashedPassword, userPassword) => {
+      return bcrypt.compare(userPassword, hashedPassword)
+    }
   }
 
+  // async start () {}
+  // async stop () {}
 }
