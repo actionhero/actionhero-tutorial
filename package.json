@@ -11,24 +11,26 @@
   "engines": {
     "node": ">=8.0.0"
   },
-  "dependencies" : {
-    "actionhero" : "18.0.0-beta.1",
-    "ws" : "latest",
-    "fakeredis" : "latest",
-    "ioredis" : "latest"
+  "dependencies": {
+    "actionhero": "18.0.0-beta.1",
+    "bcrypt": "^1.0.3",
+    "fakeredis": "latest",
+    "ioredis": "latest",
+    "ws": "latest"
   },
-  "devDependencies" : {
-    "cross-env" : "latest",
-    "chai" : "latest",
-    "dirty-chai" : "latest",
-    "mocha" : "latest",
-    "standard" : "latest"
+  "devDependencies": {
+    "cross-env": "latest",
+    "chai": "latest",
+    "dirty-chai": "latest",
+    "mocha": "latest",
+    "standard": "latest",
+    "r2": "^2.0.0"
   },
-  "scripts" : {
-    "start" : "actionhero start",
-    "actionhero" : "actionhero",
+  "scripts": {
+    "start": "actionhero start",
+    "actionhero": "actionhero",
     "pretest": "standard",
-    "test" : "cross-env NODE_ENV=test mocha"
+    "test": "cross-env NODE_ENV=test mocha"
   },
   "standard": {
     "ignore": [

@@ -6,15 +6,16 @@ module.exports = class Users extends Initializer {
     super()
     this.name = 'users'
     this.saltRounds = 10
-    this.redis = api.redis.clients.client
     this.usersHash = 'users'
   }
 
   async initialize () {
+    const redis = api.redis.clients.client
+
     api.users = {}
 
     api.users.add = async (userName, password) => {
-      const savedUser = await this.redis.hget(this.usersHash, userName)
+      const savedUser = await redis.hget(this.usersHash, userName)
       if (savedUser) { throw new Error('userName already exists') }
       const hashedPassword = await api.users.cryptPassword(password)
       const data = {
@@ -22,13 +23,14 @@ module.exports = class Users extends Initializer {
         hashedPassword: hashedPassword,
         createdAt: new Date().getTime()
       }
-      await this.redis.hset(this.usersHash, userName, JSON.stringify(data))
+
+      await redis.hset(this.usersHash, userName, JSON.stringify(data))
     }
 
     api.users.list = async () => {
-      const userData = this.redis.hgetall(this.usersHash)
-      return userData.map((u) => {
-        let data = JSON.parse(u)
+      const userData = await redis.hgetall(this.usersHash)
+      return Object.keys(userData).map((k) => {
+        let data = JSON.parse(userData[k])
         delete data.hashedPassword
         return data
       })
@@ -36,7 +38,7 @@ module.exports = class Users extends Initializer {
 
     api.users.authenticate = async (userName, password) => {
       try {
-        let data = await this.redis.hget(this.usersHash, userName)
+        let data = await redis.hget(this.usersHash, userName)
         data = JSON.parse(data)
         return api.users.comparePassword(data.hashedPassword, password)
       } catch (error) {
@@ -45,7 +47,7 @@ module.exports = class Users extends Initializer {
     }
 
     api.users.delete = async (userName, password) => {
-      await this.redis.del(this.usersHash, userName)
+      await redis.del(this.usersHash, userName)
       const titles = await api.blog.listUserPosts(userName)
       for (let i in titles) {
         await api.blog.deletePost(userName, titles[i])

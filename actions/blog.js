@@ -45,7 +45,9 @@ exports.postsList = class PostsList extends Action {
     this.description = 'I list all of a user\'s posts'
     this.outputExample = {}
     this.authenticated = false
-    this.inputs = {}
+    this.inputs = {
+      userName: {required: true}
+    }
   }
 
   async run ({response, params}) {

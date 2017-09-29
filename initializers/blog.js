@@ -4,10 +4,11 @@ module.exports = class Blog extends Initializer {
   constructor () {
     super()
     this.name = 'blog'
-    this.redis = api.redis.clients.client
   }
 
   async initialize () {
+    const redis = api.redis.clients.client
+
     api.blog = {
       separator: ';',
       postPrefix: 'posts',
@@ -15,25 +16,25 @@ module.exports = class Blog extends Initializer {
     }
 
     api.blog.postAdd = async (userName, title, content) => {
-      const key = this.buildTitleKey(userName, title)
+      const key = api.blog.buildTitleKey(userName, title)
       const data = {
-        content: content,
-        title: title,
-        userName: userName,
+        content,
+        title,
+        userName,
         createdAt: new Date().getTime(),
         updatedAt: new Date().getTime()
       }
-      await this.redis.hmset(key, data)
+      await redis.hmset(key, data)
     }
 
     api.blog.postView = async (userName, title) => {
-      const key = this.buildTitleKey(userName, title)
-      await this.redis.hgetall(key)
+      const key = api.blog.buildTitleKey(userName, title)
+      return redis.hgetall(key)
     }
 
     api.blog.postsList = async (userName) => {
       const search = [api.blog.postPrefix, userName, '*'].join(api.blog.separator)
-      const keys = await this.redis.keys(search)
+      const keys = await redis.keys(search)
       let titles = keys.map((key) => {
         let parts = key.split(api.blog.separator)
         return parts[(parts.length - 1)]
@@ -44,46 +45,50 @@ module.exports = class Blog extends Initializer {
     }
 
     api.blog.postEdit = async (userName, title, content) => {
-      const key = this.buildTitleKey(userName, title)
-      const data = await this.viewPost(key)
+      const key = api.blog.buildTitleKey(userName, title)
+      const data = await api.blog.postView(key)
       const newData = {
-        content: content,
-        title: title,
-        userName: userName,
+        content,
+        title,
+        userName,
         createdAt: data.createdAt,
         updatedAt: new Date().getTime()
       }
-      await this.redis.hmset(key, newData)
+      await redis.hmset(key, newData)
     }
 
     api.blog.postDelete = async (userName, title) => {
-      const key = this.buildTitleKey(userName, title)
-      await this.redis.del(key)
-      const commentKey = this.buildCommentKey(userName, title)
-      await this.redis.del(commentKey)
+      const key = api.blog.buildTitleKey(userName, title)
+      await redis.del(key)
+      const commentKey = api.blog.buildCommentKey(userName, title)
+      await redis.del(commentKey)
     }
 
     api.blog.commentAdd = async (userName, title, commenterName, comment) => {
-      const key = this.buildCommentKey(userName, title)
-      const commentId = this.buildCommentId(commenterName)
+      const key = api.blog.buildCommentKey(userName, title)
+      const commentId = api.blog.buildCommentId(commenterName)
       const data = {
-        comment: comment,
+        comment,
+        commenterName,
         createdAt: new Date().getTime(),
         commentId: commentId
       }
-      await this.redis.hset(key, commentId, JSON.stringify(data))
+      await redis.hset(key, commentId, JSON.stringify(data))
     }
 
     api.blog.commentsView = async (userName, title) => {
-      const key = this.buildCommentKey(userName, title)
-      const data = await this.redis.hgetall(key)
-      const comments = data.map((item) => { return JSON.parse(item) })
+      const key = api.blog.buildCommentKey(userName, title)
+      const data = await redis.hgetall(key)
+      const comments = Object.keys(data).map((key) => {
+        let comment = data[key]
+        return JSON.parse(comment)
+      })
       return comments
     }
 
     api.blog.commentDelete = async (userName, title, commentId) => {
-      const key = this.buildCommentKey(userName, title)
-      await this.redis.hdel(key, commentId)
+      const key = api.blog.buildCommentKey(userName, title)
+      await redis.hdel(key, commentId)
     }
 
     api.blog.buildTitleKey = (userName, title) => {

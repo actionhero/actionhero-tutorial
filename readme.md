@@ -268,7 +268,6 @@ Now we can get the list of posts for user `evan` with `curl -X GET "http://local
 **files discussed in this section:**
 
 - [package.json](https://github.com/actionhero/actionhero-tutorial/blob/master/package.json)
-- [test/_setup.js](https://github.com/actionhero/actionhero-tutorial/blob/master/test/_setup.js)
 - [test/integration (folder)](https://github.com/actionhero/actionhero-tutorial/tree/master/test/integration)
 
 There are many testing tools and packages which exist for nodejs.  ActionHero is not opinionated about which testing framework you should use, but nonetheless, testing is important!  ActionHero exposes a number of utilities to make it easy to boot up a server with configuration overrides to make testing easier.  
@@ -276,10 +275,6 @@ There are many testing tools and packages which exist for nodejs.  ActionHero is
 Lets setup a test with the `mocha` and `chai` packages.  We'll use the `request` package to make HTTP requests simpler in our tests.
 
 `npm install mocha should request` (and add them to your `package.json` in the `devDependencies` section).
-
-First, lets create a spec helper in `test/_setup.js`.  This is a helper which lets us have some reusable commands for starting and testing the server.
-
-Now we can use our `_setup.js` in a test.  Let's create an integration test `/test/integration.js` for post creation and reading.
 
 We can now run the test with the `mocha` command.  In our `package.json` we can also setup `npm test` to run the test suite how we would like it: `"test": "NODE_ENV=test ./node_modules/.bin/mocha --reporter spec ./test"`.  Note how we are calling `NODE_ENV=test` to tell ActionHero we are running this command in the 'test' environment this will signal ActionHero load any configChanges from the `/config/environments/test.js` file.  Here we setup redis and the servers how we want for testing.
 
