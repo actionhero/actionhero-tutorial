@@ -30,23 +30,17 @@ You will become comfortable with the following topics:
 - [Websockets](#websockets)
 - [Tasks](#tasks)
 
-**Creating a Custom Server**
-
-- [Custom Server](#custom-server)
-
 **Next Steps**
 
 - [actionhero Links](#actionhero-links)
 - [Notes](#notes)
 - [Next Steps / TODO](#next-steps--todo)
 
-## actionhero Resources
-- [Public Site](http://www.actionherojs.com)
-- [NPM](https://npmjs.org/package/actionhero)
-- [Documentation](http://actionherojs.com/docs)
+## ActionHero Resources
+- [WebSite](http://www.actionherojs.com)
+- [Documentation](https://docs.actionherojs.com)
 - [GitHub](https://github.com/actionhero/actionhero)
-- [Chat / Slack](http://slack.actionherojs.com)
-- [Mailing List](https://groups.google.com/forum/?fromgroups=#!forum/actionhero-js)
+- [Chat / Slack](https://slack.actionherojs.com)
 
 ## Notes
 
