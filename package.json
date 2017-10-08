@@ -12,19 +12,19 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "actionhero": "18.0.0-beta.1",
+    "actionhero": "^18.0.0",
     "bcrypt": "^1.0.3",
     "fakeredis": "latest",
     "ioredis": "latest",
     "ws": "latest"
   },
   "devDependencies": {
-    "cross-env": "latest",
     "chai": "latest",
+    "cross-env": "latest",
     "dirty-chai": "latest",
-    "mocha": "latest",
-    "standard": "latest",
-    "r2": "^2.0.0"
+    "mocha": "^4.0.1",
+    "r2": "^2.0.0",
+    "standard": "latest"
   },
   "scripts": {
     "start": "actionhero start",
