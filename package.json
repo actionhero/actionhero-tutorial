@@ -12,7 +12,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "actionhero": "^18.0.0",
+    "actionhero": "^18.0.1",
     "bcrypt": "^1.0.3",
     "fakeredis": "latest",
     "ioredis": "latest",
