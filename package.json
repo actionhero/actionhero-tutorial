@@ -12,7 +12,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "actionhero": "^18.0.1",
+    "actionhero": "^18.1.2",
     "bcrypt": "^1.0.3",
     "fakeredis": "latest",
     "ioredis": "latest",
@@ -22,7 +22,7 @@
     "chai": "latest",
     "cross-env": "latest",
     "dirty-chai": "latest",
-    "mocha": "^4.0.1",
+    "mocha": "^4.1.0",
     "r2": "^2.0.0",
     "standard": "latest"
   },
