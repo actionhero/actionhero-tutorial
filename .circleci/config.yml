@@ -3,7 +3,7 @@ version: 2
 refrences:
 
   cache-options: &cache-options
-    key: package-cache-{{ checksum "package.json" }}
+    key: package-cache-{{ .Revision }}-{{ checksum "package.json" }}
 
 jobs:
   build:
