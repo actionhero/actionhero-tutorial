@@ -12,17 +12,14 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "actionhero": "^18.1.2",
+    "actionhero": "latest",
     "bcrypt": "^1.0.3",
     "fakeredis": "latest",
     "ioredis": "latest",
     "ws": "latest"
   },
   "devDependencies": {
-    "chai": "latest",
-    "cross-env": "latest",
-    "dirty-chai": "latest",
-    "mocha": "^4.1.0",
+    "jest": "22.4.3",
     "r2": "^2.0.0",
     "standard": "latest"
   },
@@ -30,20 +27,20 @@
     "start": "actionhero start",
     "actionhero": "actionhero",
     "pretest": "standard",
-    "test": "cross-env NODE_ENV=test mocha"
+    "test": "jest"
   },
   "standard": {
     "ignore": [
       "public/javascript/actionheroClient.*"
     ],
     "globals": [
+      "expect",
       "describe",
-      "before",
+      "beforeAll",
       "beforeEach",
-      "after",
+      "afterAll",
       "afterEach",
-      "it",
-      "expect"
+      "test"
     ]
   }
 }

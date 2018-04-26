@@ -1,9 +1,29 @@
-.DS_Store
-node_modules
-log
-pids
+# local actionhero files
+
+pids/*
+tmp/*
+log/*
+cache/*
+coverage/*
+node_modules/*
+locales/test-env-*
+public/javascript/ActionheroWebsocketClient.js
+public/javascript/ActionheroWebsocketClient.min.js
+
+#JSDoc
+docs
+gh-pages-branch
+
+# Node / NPM
 npm-debug.log
-.idea
-config/servers/twitter.js
-public/javascript/ActionheroWebsocketClient*
-old
+
+# OS-specific wierdness
+.DS_Store
+
+# Redis
+dump.rdb
+cache.dump
+
+# Editor-specific
+/nbproject/*
+/.idea/*
