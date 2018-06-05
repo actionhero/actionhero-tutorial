@@ -16,11 +16,11 @@
     "bcrypt": "^1.0.3",
     "fakeredis": "latest",
     "ioredis": "latest",
-    "ws": "latest"
+    "ws": "^5.2.0"
   },
   "devDependencies": {
     "jest": "22.4.3",
-    "r2": "^2.0.0",
+    "r2": "^2.0.1",
     "standard": "latest"
   },
   "scripts": {
