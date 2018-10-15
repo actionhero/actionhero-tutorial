@@ -84,7 +84,7 @@ Use the ActionHero generator to build your project
 
 - `npx actionhero generate`
 
-Install any project dependancies
+Install any project dependencies
 
 - `npm install`
 
