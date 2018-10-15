@@ -1,4 +1,4 @@
-const {Initializer, api} = require('actionhero')
+const { Initializer, api } = require('actionhero')
 
 module.exports = class Blog extends Initializer {
   constructor () {

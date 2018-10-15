@@ -10,18 +10,18 @@ describe('integration', () => {
       api = await actionhero.start()
       url = `http://localhost:${api.config.servers.web.port}/api`
 
-      const body = await r2.post(`${url}/user`, {json: {userName: 'testPoster', password: 'password'}}).json
+      const body = await r2.post(`${url}/user`, { json: { userName: 'testPoster', password: 'password' } }).json
       expect(body.error).toBeUndefined()
     })
 
     afterAll(async () => { await actionhero.stop() })
 
     test('saves a post', async () => {
-      const body = await r2.post(`${url}/post/testPoster`, {json: {
+      const body = await r2.post(`${url}/post/testPoster`, { json: {
         password: 'password',
         title: 'test post title',
         content: 'post content'
-      }}).json
+      } }).json
 
       expect(body.error).toBeUndefined()
     })

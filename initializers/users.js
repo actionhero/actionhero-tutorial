@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt')
-const {Initializer, api} = require('actionhero')
+const { Initializer, api } = require('actionhero')
 
 module.exports = class Users extends Initializer {
   constructor () {

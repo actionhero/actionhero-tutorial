@@ -15,13 +15,13 @@
     "actionhero": "latest",
     "bcrypt": "^1.0.3",
     "fakeredis": "latest",
-    "ioredis": "latest",
-    "ws": "^5.2.1"
+    "ioredis": "^4.1.0",
+    "ws": "^5.2.2"
   },
   "devDependencies": {
     "jest": "22.4.3",
     "r2": "^2.0.1",
-    "standard": "latest"
+    "standard": "^12.0.1"
   },
   "scripts": {
     "start": "actionhero start",

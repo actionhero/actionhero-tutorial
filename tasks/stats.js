@@ -1,4 +1,4 @@
-const {api, Task} = require('actionhero')
+const { api, Task } = require('actionhero')
 
 exports.stats = class Stats extends Task {
   constructor () {
@@ -12,6 +12,6 @@ exports.stats = class Stats extends Task {
   async run () {
     const users = await api.users.list()
     const posts = await api.users.postsList()
-    api.log('*** STATUS ***', 'info', {users: users.length, posts: posts.length})
+    api.log('*** STATUS ***', 'info', { users: users.length, posts: posts.length })
   }
 }

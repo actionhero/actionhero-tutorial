@@ -1,4 +1,4 @@
-const {api, Action} = require('actionhero')
+const { api, Action } = require('actionhero')
 
 exports.postAdd = class PostAdd extends Action {
   constructor () {
@@ -8,14 +8,14 @@ exports.postAdd = class PostAdd extends Action {
     this.outputExample = {}
     this.authenticated = true
     this.inputs = {
-      userName: {required: true},
-      password: {required: true},
-      title: {required: true},
-      content: {required: true}
+      userName: { required: true },
+      password: { required: true },
+      title: { required: true },
+      content: { required: true }
     }
   }
 
-  async run ({params}) {
+  async run ({ params }) {
     await api.blog.postAdd(params.userName, params.title, params.content)
   }
 }
@@ -28,12 +28,12 @@ exports.postView = class PostView extends Action {
     this.outputExample = {}
     this.authenticated = false
     this.inputs = {
-      userName: {required: true},
-      title: {required: true}
+      userName: { required: true },
+      title: { required: true }
     }
   }
 
-  async run ({response, params}) {
+  async run ({ response, params }) {
     response.post = await api.blog.postView(params.userName, params.title)
   }
 }
@@ -46,11 +46,11 @@ exports.postsList = class PostsList extends Action {
     this.outputExample = {}
     this.authenticated = false
     this.inputs = {
-      userName: {required: true}
+      userName: { required: true }
     }
   }
 
-  async run ({response, params}) {
+  async run ({ response, params }) {
     response.posts = await api.blog.postsList(params.userName)
   }
 }
@@ -63,14 +63,14 @@ exports.postEdit = class PostEdit extends Action {
     this.outputExample = {}
     this.authenticated = true
     this.inputs = {
-      userName: {required: true},
-      password: {required: true},
-      title: {required: true},
-      content: {required: true}
+      userName: { required: true },
+      password: { required: true },
+      title: { required: true },
+      content: { required: true }
     }
   }
 
-  async run ({params}) {
+  async run ({ params }) {
     await api.blog.postEdit(params.userName, params.title, params.content)
   }
 }
@@ -83,13 +83,13 @@ exports.postDelete = class PostDelete extends Action {
     this.outputExample = {}
     this.authenticated = true
     this.inputs = {
-      userName: {required: true},
-      password: {required: true},
-      title: {required: true}
+      userName: { required: true },
+      password: { required: true },
+      title: { required: true }
     }
   }
 
-  async run ({params}) {
+  async run ({ params }) {
     await api.blog.postDelete(params.userName, params.title)
   }
 }
@@ -102,14 +102,14 @@ exports.commentAdd = class CommentAdd extends Action {
     this.outputExample = {}
     this.authenticated = false
     this.inputs = {
-      userName: {required: true},
-      commenterName: {required: true},
-      title: {required: true},
-      comment: {required: true}
+      userName: { required: true },
+      commenterName: { required: true },
+      title: { required: true },
+      comment: { required: true }
     }
   }
 
-  async run ({params}) {
+  async run ({ params }) {
     await api.blog.commentAdd(params.userName, params.title, params.commenterName, params.comment)
   }
 }
@@ -122,12 +122,12 @@ exports.commentsView = class CommentsView extends Action {
     this.outputExample = {}
     this.authenticated = false
     this.inputs = {
-      userName: {required: true},
-      title: {required: true}
+      userName: { required: true },
+      title: { required: true }
     }
   }
 
-  async run ({response, params}) {
+  async run ({ response, params }) {
     response.comments = await api.blog.commentsView(params.userName, params.title)
   }
 }
@@ -140,14 +140,14 @@ exports.commentDelete = class CommentDelete extends Action {
     this.outputExample = {}
     this.authenticated = true
     this.inputs = {
-      userName: {required: true},
-      password: {required: true},
-      commentId: {required: true},
-      title: {required: true}
+      userName: { required: true },
+      password: { required: true },
+      commentId: { required: true },
+      title: { required: true }
     }
   }
 
-  async run ({params}) {
+  async run ({ params }) {
     await api.blog.commentDelete(params.userName, params.title, params.commentId)
   }
 }

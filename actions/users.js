@@ -1,4 +1,4 @@
-const {api, Action} = require('actionhero')
+const { api, Action } = require('actionhero')
 
 exports.userAdd = class UserAdd extends Action {
   constructor () {
@@ -8,12 +8,12 @@ exports.userAdd = class UserAdd extends Action {
     this.outputExample = {}
     this.authenticated = false
     this.inputs = {
-      userName: {required: true},
-      password: {required: true}
+      userName: { required: true },
+      password: { required: true }
     }
   }
 
-  async run ({params}) {
+  async run ({ params }) {
     await api.users.add(params.userName, params.password)
   }
 }
@@ -26,12 +26,12 @@ exports.userDelete = class UserDelete extends Action {
     this.outputExample = {}
     this.authenticated = true
     this.inputs = {
-      userName: {required: true},
-      password: {required: true}
+      userName: { required: true },
+      password: { required: true }
     }
   }
 
-  async run ({params}) {
+  async run ({ params }) {
     await api.users.delete(params.userName, params.password)
   }
 }
@@ -46,7 +46,7 @@ exports.usersList = class UsersList extends Action {
     this.inputs = {}
   }
 
-  async run ({response, params}) {
+  async run ({ response, params }) {
     let users = await api.users.list()
     response.users = users.map((user) => { return user.userName })
   }
@@ -60,12 +60,12 @@ exports.authenticate = class Authenticate extends Action {
     this.outputExample = {}
     this.authenticated = false
     this.inputs = {
-      userName: {required: true},
-      password: {required: true}
+      userName: { required: true },
+      password: { required: true }
     }
   }
 
-  async run ({response, params}) {
+  async run ({ response, params }) {
     response.authenticated = await api.users.authenticate(params.userName, params.password)
     if (!response.authenticated) { throw new Error('unable to log in') }
   }

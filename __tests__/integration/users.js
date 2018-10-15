@@ -14,29 +14,29 @@ describe('integration', () => {
 
   describe('users', () => {
     test('creates a user', async () => {
-      const body = await r2.post(`${url}/user`, {json: {userName: 'evan', password: 'password'}}).json
+      const body = await r2.post(`${url}/user`, { json: { userName: 'evan', password: 'password' } }).json
       expect(body.error).toBeUndefined()
     })
 
     test('prevents duplicate uesers from being created', async () => {
-      const body = await r2.post(`${url}/user`, {json: {userName: 'evan', password: 'password'}}).json
+      const body = await r2.post(`${url}/user`, { json: { userName: 'evan', password: 'password' } }).json
       expect(body.error).toEqual('userName already exists')
     })
 
     test('authenticates with the propper password', async () => {
-      const body = await r2.post(`${url}/authenticate`, {json: {userName: 'evan', password: 'password'}}).json
+      const body = await r2.post(`${url}/authenticate`, { json: { userName: 'evan', password: 'password' } }).json
       expect(body.authenticated).toEqual(true)
       expect(body.error).toBeUndefined()
     })
 
     test('does not authenticate with the propper password', async () => {
-      const body = await r2.post(`${url}/authenticate`, {json: {userName: 'evan', password: 'xxx'}}).json
+      const body = await r2.post(`${url}/authenticate`, { json: { userName: 'evan', password: 'xxx' } }).json
       expect(body.authenticated).toEqual(false)
       expect(body.error).toEqual('unable to log in')
     })
 
     test('returns a list of users', async () => {
-      const body = await r2.post(`${url}/user`, {json: {userName: 'someoneElse', password: 'password'}}).json
+      const body = await r2.post(`${url}/user`, { json: { userName: 'someoneElse', password: 'password' } }).json
       expect(body.error).toBeUndefined()
 
       const usersBody = await r2.get(`${url}/usersList`).json
