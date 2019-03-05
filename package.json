@@ -12,11 +12,11 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "actionhero": "^19.0.4",
-    "bcrypt": "^3.0.2",
+    "actionhero": "^19.1.2",
+    "bcrypt": "^3.0.4",
     "fakeredis": "latest",
-    "ioredis": "^4.3.0",
-    "ws": "^6.1.2"
+    "ioredis": "^4.6.2",
+    "ws": "^6.1.4"
   },
   "devDependencies": {
     "jest": "23.6.0",
