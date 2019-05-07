@@ -12,14 +12,14 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "actionhero": "^19.1.2",
-    "bcrypt": "^3.0.4",
+    "actionhero": "^19.1.3",
+    "bcrypt": "^3.0.6",
     "fakeredis": "latest",
-    "ioredis": "^4.6.2",
-    "ws": "^6.1.4"
+    "ioredis": "^4.9.3",
+    "ws": "^7.0.0"
   },
   "devDependencies": {
-    "jest": "23.6.0",
+    "jest": "24.8.0",
     "r2": "^2.0.1",
     "standard": "^12.0.1"
   },
