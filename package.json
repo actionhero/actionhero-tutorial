@@ -16,7 +16,8 @@
     "bcrypt": "^3.0.6",
     "fakeredis": "latest",
     "ioredis": "^4.9.3",
-    "ws": "^7.0.0"
+    "ws": "^7.0.0",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "jest": "24.8.0",
@@ -27,7 +28,9 @@
     "start": "actionhero start",
     "actionhero": "actionhero",
     "pretest": "standard",
-    "test": "jest"
+    "test": "jest",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "standard": {
     "ignore": [
@@ -42,5 +45,6 @@
       "afterEach",
       "test"
     ]
-  }
+  },
+  "snyk": true
 }
