@@ -30,7 +30,7 @@ module.exports = class Users extends Initializer {
     api.users.list = async () => {
       const userData = await redis.hgetall(this.usersHash)
       return Object.keys(userData).map((k) => {
-        let data = JSON.parse(userData[k])
+        const data = JSON.parse(userData[k])
         delete data.hashedPassword
         return data
       })
@@ -48,8 +48,8 @@ module.exports = class Users extends Initializer {
 
     api.users.delete = async (userName, password) => {
       await redis.del(this.usersHash, userName)
-      const titles = await api.blog.listUserPosts(userName)
-      for (let i in titles) {
+      const titles = await api.blog.postsList(userName)
+      for (const i in titles) {
         await api.blog.deletePost(userName, titles[i])
       }
     }

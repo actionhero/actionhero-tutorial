@@ -47,7 +47,7 @@ exports.usersList = class UsersList extends Action {
   }
 
   async run ({ response, params }) {
-    let users = await api.users.list()
+    const users = await api.users.list()
     response.users = users.map((user) => { return user.userName })
   }
 }

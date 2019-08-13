@@ -35,8 +35,8 @@ module.exports = class Blog extends Initializer {
     api.blog.postsList = async (userName) => {
       const search = [api.blog.postPrefix, userName, '*'].join(api.blog.separator)
       const keys = await redis.keys(search)
-      let titles = keys.map((key) => {
-        let parts = key.split(api.blog.separator)
+      const titles = keys.map((key) => {
+        const parts = key.split(api.blog.separator)
         return parts[(parts.length - 1)]
       })
 
@@ -80,7 +80,7 @@ module.exports = class Blog extends Initializer {
       const key = api.blog.buildCommentKey(userName, title)
       const data = await redis.hgetall(key)
       const comments = Object.keys(data).map((key) => {
-        let comment = data[key]
+        const comment = data[key]
         return JSON.parse(comment)
       })
       return comments

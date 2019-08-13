@@ -1,4 +1,4 @@
-const r2 = require('r2')
+const request = require('request-promise-native')
 const ActionHero = require('actionhero')
 const actionhero = new ActionHero.Process()
 let api
@@ -10,40 +10,64 @@ describe('integration', () => {
     url = `http://localhost:${api.config.servers.web.port}/api`
   })
 
+  beforeAll(async () => {
+    try {
+      await request.del(`${url}/user/evan`, { body: { password: 'password' }, json: true })
+    } catch (error) {
+      if (error.statusCode !== 400) { throw error }
+    }
+
+    try {
+      await request.del(`${url}/user/someoneElse`, { body: { password: 'password' }, json: true })
+    } catch (error) {
+      if (error.statusCode !== 400) { throw error }
+    }
+  })
+
   afterAll(async () => { await actionhero.stop() })
 
   describe('users', () => {
     test('creates a user', async () => {
-      const body = await r2.post(`${url}/user`, { json: { userName: 'evan', password: 'password' } }).json
-      expect(body.error).toBeUndefined()
+      const response = await request.post(`${url}/user`, { body: { userName: 'evan', password: 'password' }, json: true })
+      expect(response.error).toBeUndefined()
     })
 
     test('prevents duplicate uesers from being created', async () => {
-      const body = await r2.post(`${url}/user`, { json: { userName: 'evan', password: 'password' } }).json
-      expect(body.error).toEqual('userName already exists')
+      try {
+        await request.post(`${url}/user`, { body: { userName: 'evan', password: 'password' }, json: true })
+        throw new Error('should not get here')
+      } catch (error) {
+        expect(error.statusCode).toEqual(400)
+        expect(error.error.error).toEqual('userName already exists')
+      }
     })
 
     test('authenticates with the propper password', async () => {
-      const body = await r2.post(`${url}/authenticate`, { json: { userName: 'evan', password: 'password' } }).json
-      expect(body.authenticated).toEqual(true)
-      expect(body.error).toBeUndefined()
+      const response = await request.post(`${url}/authenticate`, { body: { userName: 'evan', password: 'password' }, json: true })
+      expect(response.authenticated).toEqual(true)
+      expect(response.error).toBeUndefined()
     })
 
     test('does not authenticate with the propper password', async () => {
-      const body = await r2.post(`${url}/authenticate`, { json: { userName: 'evan', password: 'xxx' } }).json
-      expect(body.authenticated).toEqual(false)
-      expect(body.error).toEqual('unable to log in')
+      try {
+        await request.post(`${url}/authenticate`, { body: { userName: 'evan', password: 'xxx' }, json: true })
+        throw new Error('should not get here')
+      } catch (error) {
+        expect(error.statusCode).toEqual(400)
+        expect(error.error.authenticated).toEqual(false)
+        expect(error.error.error).toEqual('unable to log in')
+      }
     })
 
     test('returns a list of users', async () => {
-      const body = await r2.post(`${url}/user`, { json: { userName: 'someoneElse', password: 'password' } }).json
-      expect(body.error).toBeUndefined()
+      const response = await request.post(`${url}/user`, { body: { userName: 'someoneElse', password: 'password' }, json: true })
+      expect(response.error).toBeUndefined()
 
-      const usersBody = await r2.get(`${url}/usersList`).json
-      expect(usersBody.users.length).toBeGreaterThan(1)
-      expect(usersBody.users).toContain('evan')
-      expect(usersBody.users).toContain('someoneElse')
-      expect(usersBody.error).toBeUndefined()
+      const usersResponse = await request.get(`${url}/usersList`, { json: true })
+      expect(usersResponse.users.length).toBeGreaterThan(1)
+      expect(usersResponse.users).toContain('evan')
+      expect(usersResponse.users).toContain('someoneElse')
+      expect(usersResponse.error).toBeUndefined()
     })
   })
 })
