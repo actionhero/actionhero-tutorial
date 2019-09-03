@@ -3,7 +3,7 @@
 const fs = require('fs')
 const cluster = require('cluster')
 
-exports['default'] = {
+exports.default = {
   logger: (api) => {
     const logger = { transports: [] }
 

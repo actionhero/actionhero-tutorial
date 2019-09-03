@@ -12,16 +12,16 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "actionhero": "^19.2.1",
+    "actionhero": "^19.2.2",
     "bcrypt": "^3.0.6",
     "fakeredis": "latest",
     "ioredis": "^4.14.0",
     "ws": "^7.1.2"
   },
   "devDependencies": {
-    "jest": "24.8.0",
+    "jest": "24.9.0",
     "request-promise-native": "^1.0.7",
-    "standard": "^13.1.0"
+    "standard": "^14.1.0"
   },
   "scripts": {
     "start": "actionhero start",
