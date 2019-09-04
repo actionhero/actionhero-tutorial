@@ -1,6 +1,8 @@
 # actionhero Tutorial
 
-<img src="https://raw.github.com/actionhero/actionhero/master/public/logo/actionhero.png" height="300"/>
+<div align="center">
+  <img src="https://raw.github.com/actionhero/actionhero/master/public/logo/actionhero-small.png" alt="ActionHero Logo" />
+</div>
 
 - created: June 22, 2013
 - updated: April 25, 2018
@@ -9,7 +11,7 @@
 
 ---
 
-This guide will walk you through the creation of the application in this repository, and in the process you will learn some of the basics of [ActionHero](http://actionherojs.com).
+This guide will walk you through the creation of the application in this repository, and in the process, you will learn some of the basics of [ActionHero](http://actionherojs.com).
 
 You will become comfortable with the following topics:
 
@@ -51,8 +53,8 @@ You will become comfortable with the following topics:
   - `cd actionhero-tutorial`
   - `npm install`
   - `npm start`
-  - There are a few extra steps needed to persists data to redis.
-- This project uses redis as a database.  You will need to have it installed on your computer.
+  - There are a few extra steps needed to persists data to Redis.
+- This project uses Redis as a database.  You will need to have it installed on your computer.
 - Remember that ActionHero is an API server, so we will be focusing on creating an API for blogging and chatting, and *applying* that to a website rather than creating a beautiful website itself.
 
 ## Getting Started with a new actionhero Project
@@ -63,7 +65,7 @@ You will become comfortable with the following topics:
 
 **relevant documentation section:**
 
-- [Getting Started](http://www.actionherojs.com/docs/#getting-started)
+- [Getting Started](https://www.actionherojs.com/get-started#getting-started)
 
 ActionHero is a node.js package.  Be sure you have node.js (version >= 8.0.0) installed.  Node comes with [npm](http://npmjs.org), the node package manager.  `npm` includes a command `npx` we can use to run actionhero simply.
 
@@ -94,13 +96,13 @@ Try to boot the ActionHero server
 
 You should see the default ActionHero welcome page at `http://localhost:8080/public` (visit in your browser)
 
-The port `8080` is defined in `/config/servers/web.js`, along with all other settings for ActionHero.  ActionHero has two types of http routes: static files and api routes.  static files are served from `/public` and the api is served from `/api`.  These routes are configurable.  ActionHero also picks one of these to be the default root route.  This is defined by `api.config.servers.web.rootEndpointType`.  As we want to make a website, lets change that from `api` to `file`.
+The port `8080` is defined in `/config/servers/web.js`, along with all other settings for ActionHero.  ActionHero has two types of Http routes: static files and api routes.  static files are served from `/public` and the API is served from `/api`.  These routes are configurable.  ActionHero also picks one of these to be the default root route.  This is defined by `api.config.servers.web.rootEndpointType`.  As we want to make a website, let's change that from `api` to `file`.
 
 Restart your server by pressing `ctrl+c` in the terminal window running ActionHero.  Start up the server again (`npm start`) and visit `http://localhost:8080/` and you should see the welcome page.  You will note that the setting we just changed was under the `servers.web` section.  This is because this setting is only relevant to HTTP clients, and not the others (socket, websocket, etc).  We will talk about these more later.
 
 We should also enable all the servers which ship with ActionHero (web, websocket, and socket).  Enable their sections in their config files
 
-Lets change one more thing in `config/api.js`: development mode.  Change `api.config.general.developmentMode = true`  Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.
+Let's change one more thing in `config/api.js`: development mode.  Change `api.config.general.developmentMode = true`  Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.
 
 ActionHero uses the variable `NODE_ENV` to determine which modification file to load from `/config/*` to load to modify the default values in `api.config`.  This is how you can set different variables per environment.  We will use this for testing later.
 
@@ -112,11 +114,11 @@ ActionHero uses the variable `NODE_ENV` to determine which modification file to 
 
 **relevant documentation section:**
 
-- [Initializers](http://www.actionherojs.com/docs/#initializers)
+- [Initializers](https://docs.actionherojs.com/tutorial-initializers.html)
 
 Initializers in ActionHero are places to save common code which other parts of your application will use.  Here is where you might connect to your database or define middlewares.  Normally, you append your new classes to the `api` object so it becomes available in scope for your actions and tasks (like `api.mysql` or `api.game`).  When your server boots, you can optionally execute code within a `start` method.
 
-Because we are building a blog, first we will need a place to store our entries and comments.  As ActionHero already has redis available under `api.redis.client`, lets use that for our data store.
+Because we are building a blog, first we will need a place to store our entries and comments.  As ActionHero already has Redis available under `api.redis.client`, let's use that for our data store.
 
 Create a new initializer for the blog's common functions:
 
@@ -158,7 +160,7 @@ A few things to note:
 - [initializers/users.js](https://github.com/actionhero/actionhero-tutorial/blob/master/initializers/users.js)
 - [package.json](https://github.com/actionhero/actionhero-tutorial/blob/master/package.json)
 
-We know we will need to authenticate users to our blog, so lets make another initializer to handle this as well.
+We know we will need to authenticate users to our blog, so let's make another initializer to handle this as well.
 
 - `npx actionhero generate initializer --name=users`
 
@@ -188,7 +190,7 @@ Notes:
 
 **relevant documentation section:**
 
-- [Middleware](http://www.actionherojs.com/docs/#middleware)
+- [Middleware](https://docs.actionherojs.com/tutorial-middleware.html)
 
 In the steps above, we created a `api.users.authenticate` method, but didn't use it anywhere.  There are clearly methods which should be protected (like adding a post, or deleting a user), but we need to safeguard them somehow.  
 
@@ -213,11 +215,11 @@ Middlewares are stored to the api by adding them via `api.actions.addMiddleware(
 
 **relevant documentation section:**
 
-- [Actions](http://www.actionherojs.com/docs/#actions)
+- [Actions](https://docs.actionherojs.com/tutorial-actions.html)
 
 Now that we have our helpers for getting and setting blog posts, how can we allow users to use them?  Actions!
 
-Action files can define a few actions each, so lets create one for comments and one for posts.
+Action files can define a few actions each, so let's create one for comments and one for posts.
 
 - `npx actionhero generate action --name=users`
 - `npx actionhero generate action --name=blog`
@@ -247,7 +249,7 @@ Now we can use CURL to test out our API!  Note that right now, all HTTP methods 
 
 **relevant documentation section:**
 
-- [Web](http://www.actionherojs.com/docs/#web-server)
+- [Web](https://docs.actionherojs.com/tutorial-web-server.html)
 
 We have the basics of our API working, but it might be tedious to keep using GET and POST params. It's time to set up routes.  Routes allow different HTTP verbs to preform a different action on the same URL.  We'll use a `config/routes.js` file to transform our API into restful resources for users, comments, and posts.  You can derive input variables from the structure of URLs with routing as well.
 
@@ -266,11 +268,11 @@ Now we can get the list of posts for user `evan` with `curl -X GET "http://local
 
 There are many testing tools and packages which exist for nodejs.  ActionHero is not opinionated about which testing framework you should use, but nonetheless, testing is important!  ActionHero exposes a number of utilities to make it easy to boot up a server with configuration overrides to make testing easier.  
 
-Lets setup a test with the `jest` package.  We'll use the `request` package to make HTTP requests simpler in our tests.
+Let's set up a test with the `jest` package.  We'll use the `request` package to make HTTP requests simpler in our tests.
 
 `npm install --save-dev jest request` (and add them to your `package.json` in the `devDependencies` section).
 
-We can now run the test with the `jest` command.  In our `package.json` we can also setup `npm test` to run the test suite how we would like it: `"test": "jest"`.  Jest will automatically set `NODE_ENV=test` for us, to tell ActionHero we are running this command in the 'test' environment this will signal ActionHero load any configChanges from the `/config/environments/test.js` file.  Here we setup redis and the servers how we want for testing.
+We can now run the test with the `jest` command.  In our `package.json` we can also set up `npm test` to run the test suite how we would like it: `"test": "jest"`.  Jest will automatically set `NODE_ENV=test` for us, to tell ActionHero we are running this command in the 'test' environment this will signal ActionHero load any config changes from the `/config/environments/test.js` file.  Here we setup redis and the servers how we want for testing.
 
 A successful test run looks like this:
 
@@ -286,19 +288,19 @@ We also use the npm lifecycle command `pretest` to run a linter, `standard`.  Th
 
 **relevant documentation section:**
 
-- [Web](http://www.actionherojs.com/docs/#web-server)
+- [Web](https://docs.actionherojs.com/tutorial-web-server.html)
 
 <img src="https://raw.github.com/actionhero/actionhero-tutorial/master/images/index.html.png"/>
 
 ActionHero is primarily an API server, but it can still serve static files for you.  In `config/api.js`, the `api.config.general.paths.public` directive is where your web site's "root" is.  You can also use actions to manipulate file content with the `api.staticFile.get` method.  ActionHero is also a great choice to power your front-end applications (angular.js, ember, etc).
 
-Provided in `index.html` is a simple page which demonstrates how simple it is to call an action from the web to document the API we have created.  If you visit the the `showDocumentation` action (generated with a new project), ActionHero will describe it's capabilities, and we can then render them on our web page.
+Provided in `index.html` is a simple page that demonstrates how simple it is to call an action from the web to document the API we have created.  If you visit the `showDocumentation` action (generated with a new project), ActionHero will describe it's capabilities, and we can then render them on our web page.
 
 ## Sockets
 
 **relevant documentation section:**
 
-- [Socket](http://www.actionherojs.com/docs/#websocket-server)
+- [Socket](https://docs.actionherojs.com/tutorial-websocket-server.html)
 
 While this application probably makes the most sense being used in a web browser, ActionHero can still provide a TCP/Socket API for clients who wish to use it.   There is nothing new you need to do to enable it other than set `enabled` in `./config/servers/socket.js`.  
 
@@ -342,7 +344,7 @@ exit
 
 **relevant documentation section:**
 
-- [Websocket](http://www.actionherojs.com/docs/#websocket-server)
+- [Websocket](https://docs.actionherojs.com/tutorial-websocket-server.html)
 
 <img src="https://raw.github.com/actionhero/actionhero-tutorial/master/images/chat.html.png"/>
 
@@ -350,7 +352,7 @@ exit
 
 Note that we include both the javascript `actionheroWebSocket.js`
 
-Note how we make use of the event libraries of `actionheroWebsocket` and build our events around it.  This librars is accessed by including `/public/javascript/actionHeroClient.min.js` in your html page.:
+Note how we make use of the event libraries of `actionheroWebsocket` and build our events around it.  This library is accessed by including `/public/javascript/actionHeroClient.min.js` in your html page.:
 
 ``` javascript
 A = new actionheroWebSocket;
@@ -386,15 +388,15 @@ A.connect(function(err, details){
 
 **relevant documentation section:**
 
-- [Tasks](http://www.actionherojs.com/docs/#tasks)
+- [Tasks](https://docs.actionherojs.com/tutorial-tasks.html)
 
-ActionHero comes with a robust task system for delayed / recurring tasks.  For our example, we are going to create a task which will log some stats to the command line every 30 seconds.   You can do much more with ActionHero's task system, including distributed tasks, recurring tasks, and more.
+ActionHero comes with a robust task system for delayed/recurring tasks.  For our example, we are going to create a task which will log some stats to the command line every 30 seconds.   You can do much more with ActionHero's task system, including distributed tasks, recurring tasks, and more.
 
 `npx actionhero generate task --name=stats --queue=default --frequency=30000`
 
 - note how we set the `task.frequency` to run every 30 seconds
 - to enable our server to run tasks, we need to configure 'workers' to run.  You can enable `minTaskProcessors` and `maxTaskProcesssors` in `/config/tasks.js` (set them both to 1).
-- to re-scheudle a job like ours, you will also need to enable the scheduler process in `/config/tasks.js`.
+- to re-schedule a job like ours, you will also need to enable the scheduler process in `/config/tasks.js`.
 
 ## Next Steps / TODO
 
