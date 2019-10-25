@@ -200,7 +200,7 @@ Let's create a new initializer for this:
 
 - `npx actionhero generate initializer --name=middleware`
 
-There are arrays of functions in ActionHero which will be run before an after every action.  Here, we only need a check before to see if an action should be run.  You have access to the action itself, along with the connection.  
+There are arrays of functions in ActionHero which will be run before and after every action.  Here, we only need a check before to see if an action should be run.  You have access to the action itself, along with the connection.  
 
 The middleware we created allows us to simply append `action.authenticated = true` to the action definition, and the middleware will be invoked.
 
