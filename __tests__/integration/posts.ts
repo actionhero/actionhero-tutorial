@@ -1,33 +1,21 @@
-import request from "request-promise-native";
-import { Process } from "actionhero";
+import axios from "axios";
+import { Process, config, api } from "actionhero";
 const actionhero = new Process();
-let api;
 let url;
 
 describe("integration", () => {
   describe("posts", () => {
     beforeAll(async () => {
-      api = await actionhero.start();
-      url = `http://localhost:${api.config.servers.web.port}/api`;
+      await actionhero.start();
+      url = `http://localhost:${config.servers.web.port}/api`;
     });
 
     beforeAll(async () => {
-      try {
-        await request.del(`${url}/user/testPoster`, {
-          body: { password: "password" },
-          json: true
-        });
-      } catch (error) {
-        if (error.statusCode !== 400) {
-          throw error;
-        }
-      }
-    });
+      await api.redis.clients.client.flushdb();
 
-    beforeAll(async () => {
-      await request.post(`${url}/user`, {
-        body: { userName: "testPoster", password: "password" },
-        json: true
+      await axios.post(`${url}/user`, {
+        userName: "testPoster",
+        password: "password"
       });
     });
 
@@ -36,42 +24,34 @@ describe("integration", () => {
     });
 
     test("saves a post", async () => {
-      const response = await request.post(`${url}/post/testPoster`, {
-        json: true,
-        body: {
-          password: "password",
-          title: "test post title",
-          content: "post content"
-        }
+      const response = await axios.post(`${url}/post/testPoster`, {
+        password: "password",
+        title: "test post title",
+        content: "post content"
       });
 
-      expect(response.error).toBeUndefined();
+      expect(response.data.error).toBeUndefined();
     });
 
     test("views a post", async () => {
-      const response = await request.get(
-        `${url}/post/testPoster/${encodeURI("test post title")}`,
-        { json: true }
+      const response = await axios.get(
+        `${url}/post/testPoster/${encodeURI("test post title")}`
       );
-      expect(response.post.title).toEqual("test post title");
-      expect(response.post.content).toEqual("post content");
-      expect(response.error).toBeUndefined();
+      expect(response.data.post.title).toEqual("test post title");
+      expect(response.data.post.content).toEqual("post content");
+      expect(response.data.error).toBeUndefined();
     });
 
     test("lists posts by user", async () => {
-      const response = await request.get(`${url}/posts/testPoster`, {
-        json: true
-      });
-      expect(response.posts).toContain("test post title");
-      expect(response.error).toBeUndefined();
+      const response = await axios.get(`${url}/posts/testPoster`);
+      expect(response.data.posts).toContain("test post title");
+      expect(response.data.error).toBeUndefined();
     });
 
     test("does not mix posts for other users", async () => {
-      const response = await request.get(`${url}/posts/someoneElse`, {
-        json: true
-      });
-      expect(response.posts).not.toContain("test post title");
-      expect(response.error).toBeUndefined();
+      const response = await axios.get(`${url}/posts/someoneElse`);
+      expect(response.data.posts).not.toContain("test post title");
+      expect(response.data.error).toBeUndefined();
     });
   });
 });
