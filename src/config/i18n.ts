@@ -1,11 +1,11 @@
-exports.default = {
-  i18n: (api) => {
+export const DEFAULT = {
+  i18n: config => {
     return {
       // visit https://github.com/mashpie/i18n-node to see all configuration options
-      // locale path can be configired from within ./config/api.js
-      locales: ['en'],
+      // locale path can be configured from within ./config/api.js
+      locales: ["en"],
 
-      // how would you like your lanaguages to fall back if a translation string is missing?
+      // how would you like your languages to fall back if a translation string is missing?
       fallbacks: {
         // 'es': 'en'
       },
@@ -17,20 +17,13 @@ exports.default = {
       updateFiles: true,
 
       // this will configure logging and error messages in the log(s)
-      defaultLocale: 'en',
+      defaultLocale: "en",
 
       // the name of the method by which to determine the connection's locale
       // by default, every request will be in the 'en' locale
-      // this method will be called witin the localiazation middleware on all requests
-      determineConnectionLocale: 'api.i18n.determineConnectionLocale'
-    }
+      // this method will be called within the localization middleware on all requests
+      // this method should be set on the `i18n` object exported by actionhero.
+      determineConnectionLocale: "determineConnectionLocale"
+    };
   }
-}
-
-exports.test = {
-  i18n: (api) => {
-    return {
-      updateFiles: true
-    }
-  }
-}
+};
