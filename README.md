@@ -28,7 +28,6 @@ You will become comfortable with the following topics:
 
 **Adding a chat room**
 
-- [Sockets](#sockets)
 - [Websockets](#websockets)
 - [Tasks](#tasks)
 
@@ -95,9 +94,9 @@ You should see the default ActionHero welcome page at `http://localhost:8080/pub
 
 The port `8080` is defined in `/config/servers/web.ts`, along with all other settings for ActionHero. ActionHero has two types of HTTP routes: static files and api routes. static files are served from `/public` and the API is served from `/api`. These routes are configurable. ActionHero also picks one of these to be the default root route. This is defined by `api.config.servers.web.rootEndpointType`. As we want to make a website, let's change that from `api` to `file`.
 
-Restart your server by pressing `ctrl+c` in the terminal window running ActionHero. Start up the server again (`npm start`) and visit `http://localhost:8080/` and you should see the welcome page. You will note that the setting we just changed was under the `servers.web` section. This is because this setting is only relevant to HTTP clients, and not the others (socket, websocket, etc). We will talk about these more later.
+Restart your server by pressing `ctrl+c` in the terminal window running ActionHero. Start up the server again (`npm start`) and visit `http://localhost:8080/` and you should see the welcome page. You will note that the setting we just changed was under the `servers.web` section. This is because this setting is only relevant to HTTP clients, and not the others (websocket, etc). We will talk about these more later.
 
-We should also enable all the servers which ship with ActionHero (web, websocket, and socket). Enable their sections in their config files
+We should also enable all the servers which ship with ActionHero (web, websocket). Enable their sections in their config files
 
 Let's change one more thing in `config/api.ts`: development mode. Change `api.config.general.developmentMode = true` Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.
 
@@ -274,45 +273,6 @@ We also use the npm lifecycle command `pretest` to run a linter, `standard`. Thi
 ActionHero is primarily an API server, but it can still serve static files for you. In `config/api.ts`, the `api.config.general.paths.public` directive is where your web site's "root" is. You can also use actions to manipulate file content with the `api.staticFile.get` method. ActionHero is also a great choice to power your front-end applications (angular.ts, ember, etc).
 
 Provided in `index.html` is a simple page that demonstrates how simple it is to call an action from the web to document the API we have created. If you visit the `showDocumentation` action (generated with a new project), ActionHero will describe it's capabilities, and we can then render them on our web page.
-
-## Sockets
-
-**relevant documentation section:**
-
-- [Socket](https://docs.actionherojs.com/tutorial-websocket-server.html)
-
-While this application probably makes the most sense being used in a web browser, ActionHero can still provide a TCP/Socket API for clients who wish to use it. There is nothing new you need to do to enable it other than set `enabled` in `./config/servers/socket.ts`.
-
-Let's add a comment with the socket API and Telnet. We'll make some mistakes so you can see how error responses are handled. You will also notice how with TCP clients, params are 'sticky' by default, and you only need to set them once per session.
-
-```bash
-> telnet localhost 5000
-
-Trying 127.0.0.1...
-Connected to localhost.
-Escape character is '^]'.
-
-{"welcome":"Hello! Welcome to the actionhero api","room":"defaultRoom","context":"api"}
-paramAdd userName=evan
-{"status":"OK","context":"response","data":null,"messageCount":1}
-paramAdd title=first-post
-{"status":"OK","context":"response","data":null,"messageCount":2}
-paramsView
-{"status":"OK","context":"response","data":{"limit":100,"offset":0,"userName":"evan","title":"first-post"},"messageCount":3}
-postsList
-{"posts":["first-post"],"context":"response","messageCount":4}
-paramAdd comment=a-comment-from-tcp
-{"status":"OK","context":"response","data":null,"messageCount":5}
-commentAdd
-{"error":"Error: commenterName is a required parameter for this action","context":"response","messageCount":6}
-paramAdd commenterName=tcp-client
-{"status":"OK","context":"response","data":null,"messageCount":7}
-commentAdd
-{"context":"response","messageCount":8}
-commentsView
-{"comments":[{"comment":"a-comment-from-tcp","createdAt":1372223802362,"commentId":"tcp-client1372223802362"}],"context":"response","messageCount":9}
-exit
-```
 
 ## Websockets
 
