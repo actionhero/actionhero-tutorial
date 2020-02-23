@@ -13,7 +13,7 @@ export class Users extends Initializer {
   }
 
   async initialize() {
-    const { redis } = api.redis.clients;
+    const redis = api.redis.clients.client;
 
     api.users = {};
 

@@ -1,37 +1,16 @@
-import request from "request-promise-native";
-import { Process } from "actionhero";
+import axios from "axios";
+import { Process, config, api } from "actionhero";
 const actionhero = new Process();
-let api;
 let url;
 
 describe("integration", () => {
   beforeAll(async () => {
-    api = await actionhero.start();
-    url = `http://localhost:${api.config.servers.web.port}/api`;
+    await actionhero.start();
+    url = `http://localhost:${config.servers.web.port}/api`;
   });
 
   beforeAll(async () => {
-    try {
-      await request.del(`${url}/user/evan`, {
-        body: { password: "password" },
-        json: true
-      });
-    } catch (error) {
-      if (error.statusCode !== 400) {
-        throw error;
-      }
-    }
-
-    try {
-      await request.del(`${url}/user/someoneElse`, {
-        body: { password: "password" },
-        json: true
-      });
-    } catch (error) {
-      if (error.statusCode !== 400) {
-        throw error;
-      }
-    }
+    await api.redis.clients.client.flushdb();
   });
 
   afterAll(async () => {
@@ -40,63 +19,62 @@ describe("integration", () => {
 
   describe("users", () => {
     test("creates a user", async () => {
-      const response = await request.post(`${url}/user`, {
-        body: { userName: "evan", password: "password" },
-        json: true
+      const response = await axios.post(`${url}/user`, {
+        userName: "evan",
+        password: "password"
       });
-      expect(response.error).toBeUndefined();
+
+      expect(response.data.error).toBeUndefined();
     });
 
-    test("prevents duplicate uesers from being created", async () => {
+    test("prevents duplicate users from being created", async () => {
       try {
-        await request.post(`${url}/user`, {
-          body: { userName: "evan", password: "password" },
-          json: true
+        await axios.post(`${url}/user`, {
+          userName: "evan",
+          password: "password"
         });
         throw new Error("should not get here");
       } catch (error) {
-        expect(error.statusCode).toEqual(400);
-        expect(error.error.error).toEqual("userName already exists");
+        expect(error.response.status).toEqual(400);
+        expect(error.response.data.error).toEqual("userName already exists");
       }
     });
 
-    test("authenticates with the propper password", async () => {
-      const response = await request.post(`${url}/authenticate`, {
-        body: { userName: "evan", password: "password" },
-        json: true
+    test("authenticates with the correct password", async () => {
+      const response = await axios.post(`${url}/authenticate`, {
+        userName: "evan",
+        password: "password"
       });
-      expect(response.authenticated).toEqual(true);
-      expect(response.error).toBeUndefined();
+      expect(response.data.authenticated).toEqual(true);
+      expect(response.data.error).toBeUndefined();
     });
 
-    test("does not authenticate with the propper password", async () => {
+    test("does not authenticate with the correct password", async () => {
       try {
-        await request.post(`${url}/authenticate`, {
-          body: { userName: "evan", password: "xxx" },
-          json: true
+        await axios.post(`${url}/authenticate`, {
+          userName: "evan",
+          password: "xxx"
         });
         throw new Error("should not get here");
       } catch (error) {
-        expect(error.statusCode).toEqual(400);
-        expect(error.error.authenticated).toEqual(false);
-        expect(error.error.error).toEqual("unable to log in");
+        expect(error.response.status).toEqual(400);
+        expect(error.response.data.authenticated).toEqual(false);
+        expect(error.response.data.error).toEqual("unable to log in");
       }
     });
 
     test("returns a list of users", async () => {
-      const response = await request.post(`${url}/user`, {
-        body: { userName: "someoneElse", password: "password" },
-        json: true
+      const response = await axios.post(`${url}/user`, {
+        userName: "someoneElse",
+        password: "password"
       });
-      expect(response.error).toBeUndefined();
+      expect(response.data.error).toBeUndefined();
 
-      const usersResponse = await request.get(`${url}/usersList`, {
-        json: true
-      });
-      expect(usersResponse.users.length).toBeGreaterThan(1);
-      expect(usersResponse.users).toContain("evan");
-      expect(usersResponse.users).toContain("someoneElse");
-      expect(usersResponse.error).toBeUndefined();
+      const usersResponse = await axios.get(`${url}/usersList`);
+      expect(usersResponse.data.users.length).toBeGreaterThan(1);
+      expect(usersResponse.data.users).toContain("evan");
+      expect(usersResponse.data.users).toContain("someoneElse");
+      expect(usersResponse.data.error).toBeUndefined();
     });
   });
 });
