@@ -4,8 +4,8 @@
   <img src="https://raw.github.com/actionhero/actionhero/master/public/logo/actionhero-small.png" alt="ActionHero Logo" />
 </div>
 
-- created: June 22, 2013
-- updated: April 25, 2018
+- Created: June 22, 2013
+- Updated: Feb 23, 2020
 
 [![Build Status](https://circleci.com/gh/actionhero/actionhero-tutorial.png)](https://circleci.com/gh/actionhero/actionhero-tutorial.png)
 
