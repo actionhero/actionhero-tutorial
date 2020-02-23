@@ -1,5 +1,6 @@
 import { api } from "actionhero";
 import { AuthenticatedAction } from "./../classes/authenticatedAction";
+import * as Users from "./../modules/users";
 
 exports.userAdd = class UserAdd extends AuthenticatedAction {
   constructor() {
@@ -15,7 +16,7 @@ exports.userAdd = class UserAdd extends AuthenticatedAction {
   }
 
   async run({ params }) {
-    await api.users.add(params.userName, params.password);
+    await Users.add(params.userName, params.password);
   }
 };
 
@@ -33,7 +34,7 @@ exports.userDelete = class UserDelete extends AuthenticatedAction {
   }
 
   async run({ params }) {
-    await api.users.delete(params.userName, params.password);
+    await Users.del(params.userName);
   }
 };
 
@@ -48,7 +49,7 @@ exports.usersList = class UsersList extends AuthenticatedAction {
   }
 
   async run({ response, params }) {
-    const users = await api.users.list();
+    const users = await Users.list();
     response.users = users.map(user => {
       return user.userName;
     });
@@ -69,7 +70,7 @@ exports.authenticate = class Authenticate extends AuthenticatedAction {
   }
 
   async run({ response, params }) {
-    response.authenticated = await api.users.authenticate(
+    response.authenticated = await Users.authenticate(
       params.userName,
       params.password
     );

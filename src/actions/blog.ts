@@ -1,5 +1,6 @@
 import { api } from "actionhero";
 import { AuthenticatedAction } from "./../classes/authenticatedAction";
+import * as Blog from "./../modules/blog";
 
 export class PostAdd extends AuthenticatedAction {
   constructor() {
@@ -17,7 +18,7 @@ export class PostAdd extends AuthenticatedAction {
   }
 
   async run({ params }) {
-    await api.blog.postAdd(params.userName, params.title, params.content);
+    await Blog.postAdd(params.userName, params.title, params.content);
   }
 }
 
@@ -35,7 +36,7 @@ export class PostView extends AuthenticatedAction {
   }
 
   async run({ response, params }) {
-    response.post = await api.blog.postView(params.userName, params.title);
+    response.post = await Blog.postView(params.userName, params.title);
   }
 }
 
@@ -52,7 +53,7 @@ export class PostsList extends AuthenticatedAction {
   }
 
   async run({ response, params }) {
-    response.posts = await api.blog.postsList(params.userName);
+    response.posts = await Blog.postsList(params.userName);
   }
 }
 
@@ -72,7 +73,7 @@ export class PostEdit extends AuthenticatedAction {
   }
 
   async run({ params }) {
-    await api.blog.postEdit(params.userName, params.title, params.content);
+    await Blog.postEdit(params.userName, params.title, params.content);
   }
 }
 
@@ -91,7 +92,7 @@ export class PostDelete extends AuthenticatedAction {
   }
 
   async run({ params }) {
-    await api.blog.postDelete(params.userName, params.title);
+    await Blog.postDelete(params.userName, params.title);
   }
 }
 
@@ -111,7 +112,7 @@ export class CommentAdd extends AuthenticatedAction {
   }
 
   async run({ params }) {
-    await api.blog.commentAdd(
+    await Blog.commentAdd(
       params.userName,
       params.title,
       params.commenterName,
@@ -134,10 +135,7 @@ export class CommentsView extends AuthenticatedAction {
   }
 
   async run({ response, params }) {
-    response.comments = await api.blog.commentsView(
-      params.userName,
-      params.title
-    );
+    response.comments = await Blog.commentsView(params.userName, params.title);
   }
 }
 
@@ -157,10 +155,6 @@ export class CommentDelete extends AuthenticatedAction {
   }
 
   async run({ params }) {
-    await api.blog.commentDelete(
-      params.userName,
-      params.title,
-      params.commentId
-    );
+    await Blog.commentDelete(params.userName, params.title, params.commentId);
   }
 }
