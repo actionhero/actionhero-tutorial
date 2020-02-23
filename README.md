@@ -1,7 +1,7 @@
-# actionhero Tutorial
+# Actionhero Tutorial
 
 <div align="center">
-  <img src="https://raw.github.com/actionhero/actionhero/master/public/logo/actionhero-small.png" alt="ActionHero Logo" />
+  <img src="https://raw.github.com/actionhero/actionhero/master/public/logo/actionhero-small.png" alt="Actionhero Logo" />
 </div>
 
 - Created: June 22, 2013
@@ -11,13 +11,13 @@
 
 ---
 
-This guide will walk you through the creation of the application in this repository, and in the process, you will learn some of the basics of [ActionHero](http://actionherojs.com).
+This guide will walk you through the creation of the application in this repository, and in the process, you will learn some of the basics of [Actionhero](http://actionherojs.com).
 
 You will become comfortable with the following topics:
 
 **A simple Blogging API & site:**
 
-- [Getting Started with a new ActionHero Project](#getting-started-with-a-new-actionhero-project)
+- [Getting Started with a new Actionhero Project](#getting-started-with-a-new-actionhero-project)
 - [Creating Initializers](#creating-initializers)
 - [Users & Authentication](#users--authentication)
 - [Public and Private actions with Middleware](#public-and-private-actions-with-middleware)
@@ -37,7 +37,7 @@ You will become comfortable with the following topics:
 - [Notes](#notes)
 - [Next Steps / TODO](#next-steps--todo)
 
-## ActionHero Resources
+## Actionhero Resources
 
 - [WebSite](http://www.actionherojs.com)
 - [Documentation](https://docs.actionherojs.com)
@@ -55,7 +55,7 @@ You will become comfortable with the following topics:
   - `npm start`
   - There are a few extra steps needed to persists data to Redis.
 - This project uses Redis as a database. You will need to have it installed on your computer.
-- Remember that ActionHero is an API server, so we will be focusing on creating an API for blogging and chatting, and _applying_ that to a website rather than creating a beautiful website itself.
+- Remember that Actionhero is an API server, so we will be focusing on creating an API for blogging and chatting, and _applying_ that to a website rather than creating a beautiful website itself.
 
 ## Getting Started with a new actionhero Project
 
@@ -67,7 +67,7 @@ You will become comfortable with the following topics:
 
 - [Getting Started](https://www.actionherojs.com/get-started#getting-started)
 
-ActionHero is a node.ts package. Be sure you have node.ts (version >= 8.0.0) installed. Node comes with [npm](http://npmjs.org), the node package manager. `npm` includes a command `npx` we can use to run actionhero simply.
+Actionhero is a node.ts package. Be sure you have node.ts (version >= 8.0.0) installed. Node comes with [npm](http://npmjs.org), the node package manager. `npm` includes a command `npx` we can use to run actionhero simply.
 
 This guide was written on OSX It should be appropriate for any version of OSX > 10.6. It should also work on most Linux distributions (Ubuntu, CentOs, Fedora, etc). The concepts presented here should also be appropriate for windows users, but many of the "Getting Started" commands will not work as described here. If you are looking for help on getting started on Windows, Mark Tucker has [a video tutorial for windows users](http://www.youtube.com/watch?v=PwbuJM03XFc)
 
@@ -78,7 +78,7 @@ Create a new directory for this project and enter it (in the terminal):
 
 **note:** From this point forward, it is assumed that all commands listed are run from within the `~/actionhero-tutorial` directory.
 
-Use the ActionHero generator to build your project
+Use the Actionhero generator to build your project
 
 - `npx actionhero generate`
 
@@ -86,21 +86,21 @@ Install any project dependencies
 
 - `npm install`
 
-Try to boot the ActionHero server
+Try to boot the Actionhero server
 
 - `npm start`
 
-You should see the default ActionHero welcome page at `http://localhost:8080/public` (visit in your browser)
+You should see the default Actionhero welcome page at `http://localhost:8080/public` (visit in your browser)
 
-The port `8080` is defined in `/config/servers/web.ts`, along with all other settings for ActionHero. ActionHero has two types of HTTP routes: static files and api routes. static files are served from `/public` and the API is served from `/api`. These routes are configurable. ActionHero also picks one of these to be the default root route. This is defined by `api.config.servers.web.rootEndpointType`. As we want to make a website, let's change that from `api` to `file`.
+The port `8080` is defined in `/config/servers/web.ts`, along with all other settings for Actionhero. Actionhero has two types of HTTP routes: static files and api routes. static files are served from `/public` and the API is served from `/api`. These routes are configurable. Actionhero also picks one of these to be the default root route. This is defined by `api.config.servers.web.rootEndpointType`. As we want to make a website, let's change that from `api` to `file`.
 
-Restart your server by pressing `ctrl+c` in the terminal window running ActionHero. Start up the server again (`npm start`) and visit `http://localhost:8080/` and you should see the welcome page. You will note that the setting we just changed was under the `servers.web` section. This is because this setting is only relevant to HTTP clients, and not the others (websocket, etc). We will talk about these more later.
+Restart your server by pressing `ctrl+c` in the terminal window running Actionhero. Start up the server again (`npm start`) and visit `http://localhost:8080/` and you should see the welcome page. You will note that the setting we just changed was under the `servers.web` section. This is because this setting is only relevant to HTTP clients, and not the others (websocket, etc). We will talk about these more later.
 
-We should also enable all the servers which ship with ActionHero (web, websocket). Enable their sections in their config files
+We should also enable all the servers which ship with Actionhero (web, websocket). Enable their sections in their config files
 
 Let's change one more thing in `config/api.ts`: development mode. Change `api.config.general.developmentMode = true` Development mode is helpful while creating a new application as it will automatically restart your server on configuration changes, and watch and reload your actions and tasks as you change them.
 
-ActionHero uses the variable `NODE_ENV` to determine which modification file to load from `/config/*` to load to modify the default values in `config`. This is how you can set different variables per environment. We will use this for testing later.
+Actionhero uses the variable `NODE_ENV` to determine which modification file to load from `/config/*` to load to modify the default values in `config`. This is how you can set different variables per environment. We will use this for testing later.
 
 ## Creating Modules
 
@@ -146,7 +146,7 @@ A few things to note:
 
 - posts are hashes with the content and some additional meta data
 - comments are also hashes, a key for each comment
-- we always make asynchronous functions, using `async/await`. ActionHero does not use the callback pattern.
+- we always make asynchronous functions, using `async/await`. Actionhero does not use the callback pattern.
 - at this layer, we don't worry about authentication or validations
 - we are making use of `api.redis.clients.client` to talk to redis. Since we don't know when in the Actionhero lifecycle this module will be first loaded, we cannot be sure that the client is ready. That's why we made a getter method, `redis()`
 
@@ -162,13 +162,13 @@ A few things to note:
 
 In the steps above, we created a `users.authenticate` method, but didn't use it anywhere. There are actions which should be protected (like adding a post, or deleting a user), but we need to safeguard them somehow.
 
-In ActionHero, we know that we will wrap any use of our initializers' methods by users in `actions`, so we can create a middleware which we can apply to these `actions`.
+In Actionhero, we know that we will wrap any use of our initializers' methods by users in `actions`, so we can create a middleware which we can apply to these `actions`.
 
 Let's create a new initializer for this:
 
 - `npx actionhero generate initializer --name=middleware`
 
-There are arrays of functions in ActionHero which will be run before and after every action. Here, we only need a check before to see if an action should be run. You have access to the action itself, along with the connection.
+There are arrays of functions in Actionhero which will be run before and after every action. Here, we only need a check before to see if an action should be run. You have access to the action itself, along with the connection.
 
 The middleware we created allows us to simply append `action.authenticated = true` to the action definition, and the middleware will be invoked.
 
@@ -244,13 +244,13 @@ Now we can get the list of posts for user `evan` with `curl -X GET "http://local
 - [package.tson](https://github.com/actionhero/actionhero-tutorial/blob/master/package.tson)
 - [test/integration (folder)](https://github.com/actionhero/actionhero-tutorial/tree/master/__tests__/integration)
 
-There are many testing tools and packages which exist for nodejs. ActionHero is not opinionated about which testing framework you should use, but nonetheless, testing is important! ActionHero exposes a number of utilities to make it easy to boot up a server with configuration overrides to make testing easier.
+There are many testing tools and packages which exist for nodejs. Actionhero is not opinionated about which testing framework you should use, but nonetheless, testing is important! Actionhero exposes a number of utilities to make it easy to boot up a server with configuration overrides to make testing easier.
 
 Let's set up a test with the `jest` package. We'll use the `request` package to make HTTP requests simpler in our tests.
 
 `npm install --save-dev jest request` (and add them to your `package.tson` in the `devDependencies` section).
 
-We can now run the test with the `jest` command. In our `package.tson` we can also set up `npm test` to run the test suite how we would like it: `"test": "jest"`. Jest will automatically set `NODE_ENV=test` for us, to tell ActionHero we are running this command in the 'test' environment this will signal ActionHero load any config changes from the `/config/environments/test.ts` file. Here we setup redis and the servers how we want for testing.
+We can now run the test with the `jest` command. In our `package.tson` we can also set up `npm test` to run the test suite how we would like it: `"test": "jest"`. Jest will automatically set `NODE_ENV=test` for us, to tell Actionhero we are running this command in the 'test' environment this will signal Actionhero load any config changes from the `/config/environments/test.ts` file. Here we setup redis and the servers how we want for testing.
 
 A successful test run looks like this:
 
@@ -270,9 +270,9 @@ We also use the npm lifecycle command `pretest` to run a linter, `standard`. Thi
 
 <img src="https://raw.github.com/actionhero/actionhero-tutorial/master/images/index.html.png"/>
 
-ActionHero is primarily an API server, but it can still serve static files for you. In `config/api.ts`, the `api.config.general.paths.public` directive is where your web site's "root" is. You can also use actions to manipulate file content with the `api.staticFile.get` method. ActionHero is also a great choice to power your front-end applications (angular.ts, ember, etc).
+Actionhero is primarily an API server, but it can still serve static files for you. In `config/api.ts`, the `api.config.general.paths.public` directive is where your web site's "root" is. You can also use actions to manipulate file content with the `api.staticFile.get` method. Actionhero is also a great choice to power your front-end applications (angular.ts, ember, etc).
 
-Provided in `index.html` is a simple page that demonstrates how simple it is to call an action from the web to document the API we have created. If you visit the `showDocumentation` action (generated with a new project), ActionHero will describe it's capabilities, and we can then render them on our web page.
+Provided in `index.html` is a simple page that demonstrates how simple it is to call an action from the web to document the API we have created. If you visit the `showDocumentation` action (generated with a new project), Actionhero will describe it's capabilities, and we can then render them on our web page.
 
 ## Websockets
 
@@ -287,7 +287,7 @@ Provided in `index.html` is a simple page that demonstrates how simple it is to 
 
 <img src="https://raw.github.com/actionhero/actionhero-tutorial/master/images/chat.html.png"/>
 
-`/public/chat.ts` demonstrates how to use ActionHero's websockets. The `websocket` is a first-class protocol in ActionHero and has all the capabilities of `web` and `socket`. Like `socket`, it is a persistent connection which also enables ActionHero's chat room features. We will make use of them here.
+`/public/chat.ts` demonstrates how to use Actionhero's websockets. The `websocket` is a first-class protocol in Actionhero and has all the capabilities of `web` and `socket`. Like `socket`, it is a persistent connection which also enables Actionhero's chat room features. We will make use of them here.
 
 Note that we include both the javascript `actionheroWebSocket.ts`
 
@@ -329,7 +329,7 @@ A.connect(function(err, details) {
 
 - [Tasks](https://docs.actionherojs.com/tutorial-tasks.html)
 
-ActionHero comes with a robust task system for delayed/recurring tasks. For our example, we are going to create a task which will log some stats to the command line every 30 seconds. You can do much more with ActionHero's task system, including distributed tasks, recurring tasks, and more.
+Actionhero comes with a robust task system for delayed/recurring tasks. For our example, we are going to create a task which will log some stats to the command line every 30 seconds. You can do much more with Actionhero's task system, including distributed tasks, recurring tasks, and more.
 
 `npx actionhero generate task --name=stats --queue=default --frequency=30000`
 
