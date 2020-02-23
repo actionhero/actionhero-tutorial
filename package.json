@@ -1,46 +1,45 @@
 {
-  "author": "evan <evan@evantahler.com>",
+  "author": "evan <evan@actionherojs.com>",
   "name": "actionhero_tutorial",
-  "description": "actionhero tutorial",
-  "license": "Apache-2.0",
-  "version": "0.0.1",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/actionhero/actionhero-tutorial.git"
-  },
+  "description": "actionhero tutorial project",
+  "version": "0.1.0",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=12.0.0"
   },
   "dependencies": {
-    "actionhero": "^19.2.2",
-    "bcrypt": "^3.0.6",
-    "fakeredis": "latest",
-    "ioredis": "^4.14.0",
-    "ws": "^7.1.2"
+    "actionhero": "^22.0.0",
+    "bcrypt": "^4.0.0",
+    "ioredis": "^4.16.0",
+    "winston": "^3.2.1",
+    "ws": "^7.2.1"
   },
   "devDependencies": {
-    "jest": "24.9.0",
-    "request-promise-native": "^1.0.7",
-    "standard": "^14.1.0"
+    "@types/axios": "^0.14.0",
+    "@types/bcrypt": "^3.0.0",
+    "@types/jest": "^25.1.3",
+    "@types/node": "^13.7.4",
+    "axios": "^0.19.2",
+    "jest": "^25.1.0",
+    "prettier": "^1.19.1",
+    "ts-jest": "^25.2.1",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.8.2"
   },
   "scripts": {
-    "start": "actionhero start",
+    "postinstall": "npm run build",
+    "dev": "ts-node-dev --no-deps --transpile-only ./src/server.ts",
+    "start": "node ./dist/server.js",
     "actionhero": "actionhero",
-    "pretest": "standard",
-    "test": "jest"
+    "test": "jest",
+    "pretest": "npm run build && npm run lint",
+    "build": "tsc --declaration",
+    "lint": "prettier --check src/*/** __test__/*/**",
+    "pretty": "prettier --write src/*/** __test__/*/**"
   },
-  "standard": {
-    "ignore": [
-      "public/javascript/actionheroClient.*"
-    ],
-    "globals": [
-      "expect",
-      "describe",
-      "beforeAll",
-      "beforeEach",
-      "afterAll",
-      "afterEach",
-      "test"
-    ]
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    }
   }
 }
