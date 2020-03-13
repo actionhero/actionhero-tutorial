@@ -7,23 +7,23 @@
     "node": ">=12.0.0"
   },
   "dependencies": {
-    "actionhero": "^22.0.0",
-    "bcrypt": "^4.0.0",
+    "actionhero": "^22.0.5",
+    "bcrypt": "^4.0.1",
     "ioredis": "^4.16.0",
     "winston": "^3.2.1",
-    "ws": "^7.2.1"
+    "ws": "^7.2.3"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/bcrypt": "^3.0.0",
-    "@types/jest": "^25.1.3",
-    "@types/node": "^13.7.4",
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.1",
     "axios": "^0.19.2",
     "jest": "^25.1.0",
     "prettier": "^1.19.1",
     "ts-jest": "^25.2.1",
     "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "^3.8.2"
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "postinstall": "npm run build",
