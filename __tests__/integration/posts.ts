@@ -15,7 +15,7 @@ describe("integration", () => {
 
       await axios.post(`${url}/user`, {
         userName: "testPoster",
-        password: "password"
+        password: "password",
       });
     });
 
@@ -27,7 +27,7 @@ describe("integration", () => {
       const response = await axios.post(`${url}/post/testPoster`, {
         password: "password",
         title: "test post title",
-        content: "post content"
+        content: "post content",
       });
 
       expect(response.data.error).toBeUndefined();

@@ -21,7 +21,7 @@ describe("integration", () => {
     test("creates a user", async () => {
       const response = await axios.post(`${url}/user`, {
         userName: "evan",
-        password: "password"
+        password: "password",
       });
 
       expect(response.data.error).toBeUndefined();
@@ -31,7 +31,7 @@ describe("integration", () => {
       try {
         await axios.post(`${url}/user`, {
           userName: "evan",
-          password: "password"
+          password: "password",
         });
         throw new Error("should not get here");
       } catch (error) {
@@ -43,7 +43,7 @@ describe("integration", () => {
     test("authenticates with the correct password", async () => {
       const response = await axios.post(`${url}/authenticate`, {
         userName: "evan",
-        password: "password"
+        password: "password",
       });
       expect(response.data.authenticated).toEqual(true);
       expect(response.data.error).toBeUndefined();
@@ -53,7 +53,7 @@ describe("integration", () => {
       try {
         await axios.post(`${url}/authenticate`, {
           userName: "evan",
-          password: "xxx"
+          password: "xxx",
         });
         throw new Error("should not get here");
       } catch (error) {
@@ -66,7 +66,7 @@ describe("integration", () => {
     test("returns a list of users", async () => {
       const response = await axios.post(`${url}/user`, {
         userName: "someoneElse",
-        password: "password"
+        password: "password",
       });
       expect(response.data.error).toBeUndefined();
 

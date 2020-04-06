@@ -23,7 +23,7 @@ export class AuthenticationMiddleware extends Initializer {
             );
           }
         }
-      }
+      },
     };
 
     action.addMiddleware(middleware);

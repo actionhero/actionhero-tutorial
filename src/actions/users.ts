@@ -11,7 +11,7 @@ exports.userAdd = class UserAdd extends AuthenticatedAction {
     this.authenticated = false;
     this.inputs = {
       userName: { required: true },
-      password: { required: true }
+      password: { required: true },
     };
   }
 
@@ -29,7 +29,7 @@ exports.userDelete = class UserDelete extends AuthenticatedAction {
     this.authenticated = true;
     this.inputs = {
       userName: { required: true },
-      password: { required: true }
+      password: { required: true },
     };
   }
 
@@ -50,7 +50,7 @@ exports.usersList = class UsersList extends AuthenticatedAction {
 
   async run({ response, params }) {
     const users = await Users.list();
-    response.users = users.map(user => {
+    response.users = users.map((user) => {
       return user.userName;
     });
   }
@@ -65,7 +65,7 @@ exports.authenticate = class Authenticate extends AuthenticatedAction {
     this.authenticated = false;
     this.inputs = {
       userName: { required: true },
-      password: { required: true }
+      password: { required: true },
     };
   }
 

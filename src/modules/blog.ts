@@ -15,7 +15,7 @@ export async function postAdd(
     title,
     userName,
     createdAt: new Date().getTime(),
-    updatedAt: new Date().getTime()
+    updatedAt: new Date().getTime(),
   };
   await redis().hmset(key, data);
 }
@@ -28,7 +28,7 @@ export async function postView(userName: string, title?: string) {
 export async function postsList(userName: string) {
   const search = [postPrefix, userName, "*"].join(separator);
   const keys = await redis().keys(search);
-  const titles = keys.map(key => {
+  const titles = keys.map((key) => {
     const parts = key.split(separator);
     return parts[parts.length - 1];
   });
@@ -49,7 +49,7 @@ export async function postEdit(
     title,
     userName,
     createdAt: data.createdAt,
-    updatedAt: new Date().getTime()
+    updatedAt: new Date().getTime(),
   };
   await redis().hmset(key, newData);
 }
@@ -73,7 +73,7 @@ export async function commentAdd(
     comment,
     commenterName,
     createdAt: new Date().getTime(),
-    commentId: commentId
+    commentId: commentId,
   };
   await redis().hset(key, commentId, JSON.stringify(data));
 }
@@ -81,7 +81,7 @@ export async function commentAdd(
 export async function commentsView(userName: string, title: string) {
   const key = buildCommentKey(userName, title);
   const data = await redis().hgetall(key);
-  const comments = Object.keys(data).map(key => {
+  const comments = Object.keys(data).map((key) => {
     const comment = data[key];
     return JSON.parse(comment);
   });

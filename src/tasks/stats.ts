@@ -14,7 +14,7 @@ export class Stats extends Task {
     const posts = await api.users.postsList();
     log("*** STATUS ***", "info", {
       users: users.length,
-      posts: posts.length
+      posts: posts.length,
     });
   }
 }

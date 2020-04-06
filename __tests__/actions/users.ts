@@ -14,7 +14,7 @@ describe("actionhero Tests", () => {
   test("can create a user", async () => {
     const response = await specHelper.runAction("userAdd", {
       userName: "evan",
-      password: "password"
+      password: "password",
     });
     expect(response.error).toBeUndefined();
   });
@@ -22,7 +22,7 @@ describe("actionhero Tests", () => {
   test("cannot create a user with an existing name", async () => {
     const response = await specHelper.runAction("userAdd", {
       userName: "evan",
-      password: "password"
+      password: "password",
     });
 
     expect(response.error).toMatch(/userName already exists/);

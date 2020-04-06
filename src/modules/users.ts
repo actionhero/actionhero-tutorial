@@ -13,7 +13,7 @@ export async function add(userName: string, password: string) {
   const data = {
     userName: userName,
     hashedPassword: hashedPassword,
-    createdAt: new Date().getTime()
+    createdAt: new Date().getTime(),
   };
 
   await redis().hset(usersHash, userName, JSON.stringify(data));
@@ -21,7 +21,7 @@ export async function add(userName: string, password: string) {
 
 export async function list() {
   const userData = await redis().hgetall(usersHash);
-  return Object.keys(userData).map(k => {
+  return Object.keys(userData).map((k) => {
     const data = JSON.parse(userData[k]);
     delete data.hashedPassword;
     return data;
