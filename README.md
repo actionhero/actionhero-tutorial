@@ -7,9 +7,7 @@
 - Created: June 22, 2013
 - Updated: Feb 23, 2020
 
-[![Build Status](https://circleci.com/gh/actionhero/actionhero-tutorial.png)](https://circleci.com/gh/actionhero/actionhero-tutorial.png)
-
----
+## ![Node.js CI](https://github.com/actionhero/actionhero-tutorial/workflows/Node.js%20CI/badge.svg)
 
 This guide will walk you through the creation of the application in this repository, and in the process, you will learn some of the basics of [Actionhero](http://actionherojs.com).
 
@@ -297,20 +295,20 @@ Note how we make use of the event libraries of `actionheroWebsocket` and build o
 A = new actionheroWebSocket();
 
 A.events = {
-  say: function(message) {
+  say: function (message) {
     A.log(message);
     appendMessage(message);
   },
-  alert: function(message) {
+  alert: function (message) {
     alert(message.message);
   },
-  welcome: function(message) {
+  welcome: function (message) {
     A.log(message);
     appendMessage(message);
-  }
+  },
 };
 
-A.connect(function(err, details) {
+A.connect(function (err, details) {
   if (err != null) {
     A.log(err);
   } else {
