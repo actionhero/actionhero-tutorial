@@ -20,7 +20,7 @@
     "axios": "^0.19.2",
     "jest": "^26.1.0",
     "prettier": "^2.0.5",
-    "ts-jest": "^26.1.2",
+    "ts-jest": "^26.1.3",
     "ts-node-dev": "^1.0.0-pre.51",
     "typescript": "^3.9.6"
   },
