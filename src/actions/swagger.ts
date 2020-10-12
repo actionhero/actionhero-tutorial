@@ -16,7 +16,7 @@ const responses = {
     description: "Invalid input",
   },
   404: {
-    description: "Not Fount",
+    description: "Not Found",
   },
   422: {
     description: "Missing or invalid params",
@@ -49,7 +49,25 @@ export class Swagger extends Action {
   }
 
   buildSwaggerPaths() {
-    const swaggerPaths = {};
+    const swaggerPaths: {
+      [path: string]: {
+        [method: string]: {
+          tags: string[];
+          summary: string;
+          consumes: string[];
+          produces: string[];
+          parameters: Array<{
+            in: string;
+            name: string;
+            type: string;
+            required: boolean;
+            default: string | number | boolean;
+          }>;
+          responses: typeof responses;
+          security: string[];
+        };
+      };
+    } = {};
     const tags = [];
 
     Object.keys(api.routes.routes).map((method) => {
@@ -63,11 +81,6 @@ export class Swagger extends Action {
         const formattedPath = route.path
           .replace("/v:apiVersion", "")
           .replace(/\/:(\w*)/, "/{$1}");
-
-        // in simpleRouting is enabled, only show the "post" verb for this action, not all 5
-        if (config.servers.web.simpleRouting && method !== "get") {
-          return;
-        }
 
         swaggerPaths[formattedPath] = swaggerPaths[formattedPath] || {};
         swaggerPaths[formattedPath][method] = {
@@ -112,10 +125,10 @@ export class Swagger extends Action {
     return { swaggerPaths, tags };
   }
 
-  async run(data) {
+  async run() {
     const { swaggerPaths, tags } = this.buildSwaggerPaths();
 
-    data.response = {
+    return {
       swagger: SWAGGER_VERSION,
       info: {
         description: parentPackageJSON.description,

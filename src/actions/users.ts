@@ -17,6 +17,7 @@ exports.userAdd = class UserAdd extends AuthenticatedAction {
 
   async run({ params }) {
     await Users.add(params.userName, params.password);
+    return { success: true };
   }
 };
 
@@ -48,11 +49,13 @@ exports.usersList = class UsersList extends AuthenticatedAction {
     this.inputs = {};
   }
 
-  async run({ response, params }) {
+  async run() {
     const users = await Users.list();
-    response.users = users.map((user) => {
-      return user.userName;
-    });
+    return {
+      users: users.map((user) => {
+        return user.userName;
+      }),
+    };
   }
 };
 
@@ -69,13 +72,16 @@ exports.authenticate = class Authenticate extends AuthenticatedAction {
     };
   }
 
-  async run({ response, params }) {
-    response.authenticated = await Users.authenticate(
+  async run({ params }) {
+    const authenticated = await Users.authenticate(
       params.userName,
       params.password
     );
-    if (!response.authenticated) {
+
+    if (!authenticated) {
       throw new Error("unable to log in");
     }
+
+    return { authenticated };
   }
 };
