@@ -35,8 +35,9 @@ export class PostView extends AuthenticatedAction {
     };
   }
 
-  async run({ response, params }) {
-    response.post = await Blog.postView(params.userName, params.title);
+  async run({ params }) {
+    const post = await Blog.postView(params.userName, params.title);
+    return { post };
   }
 }
 
@@ -52,8 +53,9 @@ export class PostsList extends AuthenticatedAction {
     };
   }
 
-  async run({ response, params }) {
-    response.posts = await Blog.postsList(params.userName);
+  async run({ params }) {
+    const posts = await Blog.postsList(params.userName);
+    return { posts };
   }
 }
 
@@ -74,6 +76,7 @@ export class PostEdit extends AuthenticatedAction {
 
   async run({ params }) {
     await Blog.postEdit(params.userName, params.title, params.content);
+    return { success: true };
   }
 }
 
@@ -118,6 +121,7 @@ export class CommentAdd extends AuthenticatedAction {
       params.commenterName,
       params.comment
     );
+    return { success: true };
   }
 }
 
@@ -134,8 +138,9 @@ export class CommentsView extends AuthenticatedAction {
     };
   }
 
-  async run({ response, params }) {
-    response.comments = await Blog.commentsView(params.userName, params.title);
+  async run({ params }) {
+    const comments = await Blog.commentsView(params.userName, params.title);
+    return { comments };
   }
 }
 
@@ -156,5 +161,6 @@ export class CommentDelete extends AuthenticatedAction {
 
   async run({ params }) {
     await Blog.commentDelete(params.userName, params.title, params.commentId);
+    return { success: true };
   }
 }

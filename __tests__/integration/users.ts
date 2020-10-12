@@ -58,7 +58,7 @@ describe("integration", () => {
         throw new Error("should not get here");
       } catch (error) {
         expect(error.response.status).toEqual(400);
-        expect(error.response.data.authenticated).toEqual(false);
+        expect(error.response.data.authenticated).toBeUndefined();
         expect(error.response.data.error).toEqual("unable to log in");
       }
     });
@@ -70,7 +70,7 @@ describe("integration", () => {
       });
       expect(response.data.error).toBeUndefined();
 
-      const usersResponse = await axios.get(`${url}/usersList`);
+      const usersResponse = await axios.get(`${url}/users`);
       expect(usersResponse.data.users.length).toBeGreaterThan(1);
       expect(usersResponse.data.users).toContain("evan");
       expect(usersResponse.data.users).toContain("someoneElse");
