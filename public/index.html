@@ -30,7 +30,7 @@
       <div class="jumbotron">
         <div class="row">
           <div class="col-md-4">
-            <img src="/public/logo/actionhero.png" style="max-width: 100%;" />
+            <img src="/public/logo/actionhero.png" style="max-width: 100%" />
           </div>
           <div class="col-md-8">
             <h1>Your Actionhero Server is working.</h1>
@@ -95,13 +95,9 @@
 
     <script type="text/javascript">
       var populateStatus = function (data) {
-        if (data.serverInformation) {
-          document.getElementById("serverVersion").innerHTML =
-            data.serverInformation.apiVersion;
-          document.getElementById("serverName").innerHTML =
-            data.serverInformation.serverName;
-          document.getElementById("serverId").innerHTML = data.id;
-        }
+        document.getElementById("serverVersion").innerHTML = data.version;
+        document.getElementById("serverName").innerHTML = data.name;
+        document.getElementById("serverId").innerHTML = data.id;
         document.getElementById("actionheroVersion").innerHTML =
           data.actionheroVersion;
         document.getElementById("uptime").innerHTML = Math.round(

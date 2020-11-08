@@ -2,6 +2,8 @@ export const DEFAULT = {
   routes: (config) => {
     return {
       get: [
+        { path: "/status", action: "status" },
+        { path: "/swagger", action: "swagger" },
         { path: "/users", action: "usersList" },
         { path: "/comments/:userName/:title", action: "commentsView" },
         { path: "/post/:userName/:title", action: "postView" },

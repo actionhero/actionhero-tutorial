@@ -35,7 +35,8 @@ export async function authenticate(
   try {
     const dataString = await redis().hget(usersHash, userName);
     const data = JSON.parse(dataString);
-    return comparePassword(data.hashedPassword, password);
+    if (!data.hashedPassword) throw new Error();
+    return comparePassword(data?.hashedPassword, password);
   } catch (error) {
     throw new Error(`userName does not exist (${error})`);
   }

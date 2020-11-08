@@ -1,4 +1,3 @@
-import { api } from "actionhero";
 import { AuthenticatedAction } from "./../classes/authenticatedAction";
 import * as Users from "./../modules/users";
 
