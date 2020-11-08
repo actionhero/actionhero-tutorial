@@ -197,6 +197,10 @@ Now that we've defined our Actions, we want to expose them via the HTTP server. 
 - Another user could add a comment with: `curl -X POST -d "comment=cool%20post" -d "commenterName=Someone_Else" "http://localhost:8080/api/comment/evan/first-post"`
 - And we can see the comments with: `curl -X GET "http://localhost:8080/api/comments/evan/first-post"`
 
+Once you define your routes, you can visit the Swagger page (`http://localhost:8080/swagger`) to see the automatic documentation of your HTTP API Actions!
+
+<img src="https://raw.github.com/actionhero/actionhero-tutorial/master/images/swagger.html.png"/>
+
 ## Middleware and Initializers
 
 **files discussed in this section:**
