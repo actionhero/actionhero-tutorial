@@ -90,7 +90,7 @@ Try to boot the Actionhero server in development mode
 
 You should see the default Actionhero welcome page at `http://localhost:8080/public` (visit in your browser)
 
-The port `8080` is defined in `/config/servers/web.ts`, along with all other settings for Actionhero. Actionhero has two types of HTTP routes: static files and api routes. static files are served from `/public` and the API is served from `/api`. These routes are configurable from files within `/src/config`. Actionhero also picks one of these to be the default root route. This is defined by `config.servers.web.rootEndpointType` in `src/config/servers/web.ts`. As we want to make a website, let's change that from `api` to `file`.
+The port `8080` is defined in `/config/servers/web.ts`, along with all other settings for Actionhero. Actionhero has two types of HTTP routes: static files and api routes. static files are served from `/public` and the API is served from `/api`. These routes are configurable from files within `/src/config`. Actionhero also picks one of these to be the default root route. This is defined by `config.servers.web.rootEndpointType` in `src/config/servers/web.ts`. We want our default route to serve our `index.html` file from `/public`, so we can leave this setting as "file".
 
 Since you are running in development mode (`npm run dev`), Actionhero will notice you made a change to a config file and reboot the server automatically for you. Now, visit `http://localhost:8080/` and you should see the welcome page. You will note that the setting we just changed was under the `servers.web` section. This is because this setting is only relevant to HTTP clients, and not the others (websocket, etc). We will talk about these more later.
 
