@@ -19,6 +19,8 @@ export class PostAdd extends AuthenticatedAction {
 
   async run({ params }) {
     await Blog.postAdd(params.userName, params.title, params.content);
+    const post = await Blog.postView(params.userName, params.title);
+    return { post };
   }
 }
 
