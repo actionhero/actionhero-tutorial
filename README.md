@@ -59,7 +59,7 @@ You will become comfortable with the following topics:
 
 **files discussed in this section:**
 
-- [config](https://github.com/actionhero/actionhero-tutorial/blob/master/config)
+- [config](https://github.com/actionhero/actionhero-tutorial/blob/master/src/config)
 
 **relevant documentation section:**
 
@@ -104,8 +104,8 @@ Actionhero uses the variable `NODE_ENV` to determine which modification file to 
 
 **files discussed in this section:**
 
-- [modules/users.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/initializers/users.ts)
-- [modules/blog.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/initializers/blog.ts)
+- [modules/users.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/src/modules/users.ts)
+- [modules/blog.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/src/modules/blog.ts)
 
 **relevant documentation section:**
 
@@ -152,11 +152,11 @@ A few things to note:
 
 **files discussed in this section:**
 
-- [initializers/middleware.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/initializers/middleware.ts)
+- [initializers/middleware.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/src/initializers/middleware.ts)
 
 **relevant documentation section:**
 
-- [Middleware](https://docs.actionherojs.com/tutorial-middleware.html)
+- [Middleware](https://www.actionherojs.com/tutorials/middleware)
 
 In the steps above, we created a `users.authenticate` method, but didn't use it anywhere. There are actions which should be protected (like adding a post, or deleting a user), but we need to safeguard them somehow.
 
@@ -176,12 +176,12 @@ Middleware are stored to the api by adding them via `api.actions.addMiddleware(a
 
 **files discussed in this section:**
 
-- [actions/users.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/actions/users.ts)
-- [actions/blog.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/actions/blog.ts)
+- [actions/users.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/src/actions/users.ts)
+- [actions/blog.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/src/actions/blog.ts)
 
 **relevant documentation section:**
 
-- [Actions](https://docs.actionherojs.com/tutorial-actions.html)
+- [Actions](https://www.actionherojs.com/tutorials/actions)
 
 Now that we have our helpers for getting and setting blog posts, how can we allow users to use them? Actions!
 
@@ -221,11 +221,11 @@ Now we can use CURL to test out our API! Note that right now, all HTTP methods w
 
 **files discussed in this section:**
 
-- [routes.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/config/routes.ts)
+- [routes.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/src/config/routes.ts)
 
 **relevant documentation section:**
 
-- [Web](https://docs.actionherojs.com/tutorial-web-server.html)
+- [Routes](https://www.actionherojs.com/tutorials/web-server#Routes)
 
 We have the basics of our API working, but it might be tedious to keep using GET and POST params. It's time to set up routes. Routes allow different HTTP verbs to preform a different action on the same URL. We'll use a `config/routes.ts` file to transform our API into restful resources for users, comments, and posts. You can derive input variables from the structure of URLs with routing as well.
 
@@ -239,16 +239,16 @@ Now we can get the list of posts for user `evan` with `curl -X GET "http://local
 
 **files discussed in this section:**
 
-- [package.tson](https://github.com/actionhero/actionhero-tutorial/blob/master/package.tson)
-- [test/integration (folder)](https://github.com/actionhero/actionhero-tutorial/tree/master/__tests__/integration)
+- [package.json](https://github.com/actionhero/actionhero-tutorial/blob/master/package.json)
+- [\_\_tests\_\_/integration (folder)](https://github.com/actionhero/actionhero-tutorial/tree/master/__tests__/integration)
 
 There are many testing tools and packages which exist for nodejs. Actionhero is not opinionated about which testing framework you should use, but nonetheless, testing is important! Actionhero exposes a number of utilities to make it easy to boot up a server with configuration overrides to make testing easier.
 
 Let's set up a test with the `jest` package. We'll use the `request` package to make HTTP requests simpler in our tests.
 
-`npm install --save-dev jest request` (and add them to your `package.tson` in the `devDependencies` section).
+`npm install --save-dev jest request` (and add them to your `package.json` in the `devDependencies` section).
 
-We can now run the test with the `jest` command. In our `package.tson` we can also set up `npm test` to run the test suite how we would like it: `"test": "jest"`. Jest will automatically set `NODE_ENV=test` for us, to tell Actionhero we are running this command in the 'test' environment this will signal Actionhero load any config changes from the `/config/environments/test.ts` file. Here we setup redis and the servers how we want for testing.
+We can now run the test with the `jest` command. In our `package.json` we can also set up `npm test` to run the test suite how we would like it: `"test": "jest"`. Jest will automatically set `NODE_ENV=test` for us, to tell Actionhero we are running this command in the 'test' environment this will signal Actionhero load any config changes from the `/config/environments/test.ts` file. Here we setup redis and the servers how we want for testing.
 
 A successful test run looks like this:
 
@@ -264,7 +264,7 @@ We also use the npm lifecycle command `pretest` to run a linter, `standard`. Thi
 
 **relevant documentation section:**
 
-- [Web](https://docs.actionherojs.com/tutorial-web-server.html)
+- [Web](https://www.actionherojs.com/tutorials/web-server)
 
 <img src="https://raw.github.com/actionhero/actionhero-tutorial/master/images/index.html.png"/>
 
@@ -277,17 +277,14 @@ Provided in `index.html` is a simple page that demonstrates how simple it is to 
 **files discussed in this section:**
 
 - [public/chat.html](https://github.com/actionhero/actionhero-tutorial/blob/master/public/chat.html)
-- [public/javascripts/actionheroWebSocket.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/public/javascript/actionheroWebSocket.ts)
 
 **relevant documentation section:**
 
-- [Websocket](https://docs.actionherojs.com/tutorial-websocket-server.html)
+- [Websocket](https://www.actionherojs.com/tutorials/websocket-server)
 
 <img src="https://raw.github.com/actionhero/actionhero-tutorial/master/images/chat.html.png"/>
 
-`/public/chat.ts` demonstrates how to use Actionhero's websockets. The `websocket` is a first-class protocol in Actionhero and has all the capabilities of `web` and `socket`. Like `socket`, it is a persistent connection which also enables Actionhero's chat room features. We will make use of them here.
-
-Note that we include both the javascript `actionheroWebSocket.ts`
+`/public/chat.html` demonstrates how to use Actionhero's websockets. The `websocket` is a first-class protocol in Actionhero and has all the capabilities of `web` and `socket`. Like `socket`, it is a persistent connection which also enables Actionhero's chat room features. We will make use of them here.
 
 Note how we make use of the event libraries of `actionheroWebsocket` and build our events around it. This library is accessed by including `/public/javascript/actionHeroClient.min.ts` in your html page.:
 
@@ -321,7 +318,7 @@ A.connect(function (err, details) {
 
 **files discussed in this section:**
 
-- [tasks/stats.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/tasks/stats.ts)
+- [tasks/stats.ts](https://github.com/actionhero/actionhero-tutorial/blob/master/src/tasks/stats.ts)
 
 **relevant documentation section:**
 
