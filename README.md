@@ -16,11 +16,10 @@ You will become comfortable with the following topics:
 **A simple Blogging API & site:**
 
 - [Getting Started with a new Actionhero Project](#getting-started-with-a-new-actionhero-project)
-- [Creating Initializers](#creating-initializers)
-- [Users & Authentication](#users--authentication)
-- [Public and Private actions with Middleware](#public-and-private-actions-with-middleware)
+- [Users & Authentication - Creating Modules](#creating-modules)
 - [Creating Actions](#creating-actions)
 - [Routes](#routes)
+- [Middleware and Initializers](#middleware-and-initializers)
 - [Testing](#testing)
 - [Consuming the API via the Web](#consuming-the-api-via-the-web)
 
@@ -198,7 +197,7 @@ Now that we've defined our Actions, we want to expose them via the HTTP server. 
 - Another user could add a comment with: `curl -X POST -d "comment=cool%20post" -d "commenterName=Someone_Else" "http://localhost:8080/api/comment/evan/first-post"`
 - And we can see the comments with: `curl -X GET "http://localhost:8080/api/comments/evan/first-post"`
 
-## Public and Private actions with Middleware and Initializers
+## Middleware and Initializers
 
 **files discussed in this section:**
 
