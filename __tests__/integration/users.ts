@@ -35,7 +35,7 @@ describe("integration", () => {
         });
         throw new Error("should not get here");
       } catch (error) {
-        expect(error.response.status).toEqual(400);
+        expect(error.response.status).toEqual(500);
         expect(error.response.data.error).toEqual("userName already exists");
       }
     });
@@ -57,7 +57,7 @@ describe("integration", () => {
         });
         throw new Error("should not get here");
       } catch (error) {
-        expect(error.response.status).toEqual(400);
+        expect(error.response.status).toEqual(500);
         expect(error.response.data.authenticated).toBeUndefined();
         expect(error.response.data.error).toEqual("unable to log in");
       }
