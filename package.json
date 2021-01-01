@@ -31,7 +31,7 @@
     "actionhero": "actionhero",
     "test": "jest",
     "pretest": "npm run build && npm run lint",
-    "build": "tsc --declaration",
+    "build": "tsc --declaration ",
     "lint": "prettier --check src __tests__",
     "pretty": "prettier --write src __tests__"
   },
