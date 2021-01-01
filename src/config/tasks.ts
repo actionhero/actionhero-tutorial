@@ -1,10 +1,16 @@
 export const DEFAULT = {
   tasks: (config) => {
     return {
+      _toExpand: false,
+
       // Should this node run a scheduler to promote delayed tasks?
       scheduler: false,
+
       // what queues should the taskProcessors work?
       queues: ["*"],
+      // Or, rather than providing a static list of `queues`, you can define a method that returns the list of queues.
+      // queues: async () => { return ["queueA", "queueB"]; },
+
       // Logging levels of task workers
       workerLogging: {
         failure: "error", // task failure
@@ -41,6 +47,8 @@ export const DEFAULT = {
       maxEventLoopDelay: 5,
       // how long before we mark a resque worker / task processor as stuck/dead?
       stuckWorkerTimeout: 1000 * 60 * 60,
+      // should the scheduler automatically try to retry failed tasks which were failed due to being 'stuck'?
+      retryStuckJobs: false,
       // Customize Resque primitives, replace null with required replacement.
       resque_overrides: {
         queue: null,

@@ -1,8 +1,13 @@
-const path = require("path");
+import * as path from "path";
+import * as fs from "fs";
 
 export const DEFAULT = {
   general: (config) => {
-    const packageJSON = require("./../../package.json");
+    const packageJSON = JSON.parse(
+      fs
+        .readFileSync(path.join(__dirname, "..", "..", "package.json"))
+        .toString()
+    );
 
     return {
       apiVersion: packageJSON.version,
@@ -21,8 +26,12 @@ export const DEFAULT = {
       enforceConnectionProperties: true,
       // disables the whitelisting of client params
       disableParamScrubbing: false,
+      // enable action response to logger
+      enableResponseLogging: false,
       // params you would like hidden from any logs
       filteredParams: [],
+      // responses you would like hidden from any logs
+      filteredResponse: [],
       // values that signify missing params
       missingParamChecks: [null, "", undefined],
       // The default filetype to server when a user requests a directory
