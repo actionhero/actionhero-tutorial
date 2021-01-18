@@ -5,7 +5,7 @@
 </div>
 
 - Created: June 22, 2013
-- Updated: Nov 8, 2020
+- Updated: Jan 18, 2021
 
 ## ![Node.js CI](https://github.com/actionhero/actionhero-tutorial/workflows/Node.js%20CI/badge.svg)
 
@@ -160,8 +160,8 @@ Now that we have our helpers for getting and setting blog posts, how can we allo
 
 The files in `/src/actions` can define a one or more Actions each, so let's create one for comments and one for posts.
 
-- `npx actionhero generate action --name=users`
-- `npx actionhero generate action --name=blog`
+- `npx actionhero generate-action --name=users`
+- `npx actionhero generate-action --name=blog`
 
 ### Extending the `Action` Class
 
@@ -215,7 +215,7 @@ In the steps above, we created a `users.authenticate` method, but didn't use it 
 
 First, Let's create a new initializer for this:
 
-- `npx actionhero generate initializer --name=middleware`
+- `npx actionhero generate-initializer --name=middleware`
 
 Middleware can run before and after every action (global), or just those actions that opt into them. In our case, we'll make a global middleware which applies to all actions and check if the action being run should be authenticated or not. The `preProcessor` lifecycle hook we are using will run before the Action, but will have access to the params sent by the user - like `userName` and `password` so we can check if they are correct.
 
@@ -321,7 +321,7 @@ client.connect(function (error, details) {
 
 Actionhero comes with a robust task system for delayed/recurring tasks. For our example, we are going to create a task which will log some stats to the command line every 30 seconds. You can do much more with Actionhero's task system, including distributed tasks, recurring tasks, and more.
 
-`npx actionhero generate task --name=stats --queue=default --frequency=30000`
+`npx actionhero generate-task --name=stats --queue=default --frequency=30000`
 
 - note how we set the `task.frequency` to run every 30 seconds
 - to enable our server to run tasks, we need to configure 'workers' to run. You can enable `minTaskProcessors` and `maxTaskProcesssors` in `/src/config/tasks.ts` (set them both to 1).
