@@ -54,7 +54,7 @@ async function cryptPassword(password: string) {
   return bcrypt.hash(password, saltRounds);
 }
 
-async function comparePassword(hashedPassword: string, userPassword: String) {
+async function comparePassword(hashedPassword: string, userPassword: string) {
   return bcrypt.compare(userPassword, hashedPassword);
 }
 
