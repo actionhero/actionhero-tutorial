@@ -14,7 +14,7 @@
     "ws": "^7.4.5"
   },
   "devDependencies": {
-    "@types/bcrypt": "^3.0.1",
+    "@types/bcrypt": "^5.0.0",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.0.2",
     "axios": "^0.21.1",
