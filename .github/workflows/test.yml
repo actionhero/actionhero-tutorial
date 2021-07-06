@@ -22,7 +22,7 @@ jobs:
       - name: Install Redis
         run: sudo apt-get install redis-server
       - run: npm ci
-      - run: npm run build --if-present
+#       - run: npm run build --if-present
       - run: npm test
       
   complete:
