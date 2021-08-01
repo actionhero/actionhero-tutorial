@@ -9,7 +9,7 @@
   "dependencies": {
     "actionhero": "^26.1.0",
     "bcrypt": "^5.0.1",
-    "ioredis": "^4.27.6",
+    "ioredis": "^4.27.7",
     "winston": "^3.3.3",
     "ws": "^7.5.2"
   },
