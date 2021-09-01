@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
-    "@types/jest": "^26.0.24",
+    "@types/jest": "^27.0.1",
     "@types/node": "^16.7.10",
     "axios": "^0.21.1",
     "jest": "^27.1.0",
