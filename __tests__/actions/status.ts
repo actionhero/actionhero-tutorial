@@ -1,24 +1,18 @@
-import { Process, env, id, specHelper } from "actionhero";
-const actionhero = new Process();
-let api;
+import { Process, specHelper } from "actionhero";
+import { Status } from "../../src/actions/status";
 
-describe("actionhero Tests", () => {
-  beforeAll(async () => {
-    api = await actionhero.start();
-  });
+describe("Action: status", () => {
+  const actionhero = new Process();
+  beforeAll(async () => await actionhero.start());
+  afterAll(async () => await actionhero.stop());
 
-  afterAll(async () => {
-    await actionhero.stop();
-  });
-
-  test("should have booted into the test env", () => {
-    expect(process.env.NODE_ENV).toEqual("test");
-    expect(env).toEqual("test");
-    expect(id).toBeTruthy();
-  });
-
-  test("can retrieve server uptime via the status action", async () => {
-    const { uptime } = await specHelper.runAction("status");
-    expect(uptime).toBeGreaterThan(0);
+  test("returns node status", async () => {
+    const { id, problems, name, error } = await specHelper.runAction<Status>(
+      "status"
+    );
+    expect(error).toBeUndefined();
+    expect(problems).toHaveLength(0);
+    expect(id).toEqual(`test-server-${process.env.JEST_WORKER_ID || 0}`);
+    expect(name).toEqual("actionhero_tutorial");
   });
 });

@@ -5,7 +5,7 @@
 </div>
 
 - Created: June 22, 2013
-- Updated: Jan 18, 2021
+- Updated: Sept 02, 2021
 
 ## ![Node.js CI](https://github.com/actionhero/actionhero-tutorial/workflows/Node.js%20CI/badge.svg)
 
