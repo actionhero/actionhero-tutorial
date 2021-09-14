@@ -17,7 +17,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.10",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "jest": "^27.1.0",
     "prettier": "^2.3.2",
     "ts-jest": "^27.0.5",
