@@ -30,28 +30,36 @@ describe("integration", () => {
         content: "post content",
       });
 
-      expect(response.data.error).toBeUndefined();
+      expect((response.data as Record<string, any>).error).toBeUndefined();
     });
 
     test("views a post", async () => {
       const response = await axios.get(
         `${url}/post/testPoster/${encodeURI("test post title")}`
       );
-      expect(response.data.post.title).toEqual("test post title");
-      expect(response.data.post.content).toEqual("post content");
-      expect(response.data.error).toBeUndefined();
+      expect((response.data as Record<string, any>).post.title).toEqual(
+        "test post title"
+      );
+      expect((response.data as Record<string, any>).post.content).toEqual(
+        "post content"
+      );
+      expect((response.data as Record<string, any>).error).toBeUndefined();
     });
 
     test("lists posts by user", async () => {
       const response = await axios.get(`${url}/posts/testPoster`);
-      expect(response.data.posts).toContain("test post title");
-      expect(response.data.error).toBeUndefined();
+      expect((response.data as Record<string, any>).posts).toContain(
+        "test post title"
+      );
+      expect((response.data as Record<string, any>).error).toBeUndefined();
     });
 
     test("does not mix posts for other users", async () => {
       const response = await axios.get(`${url}/posts/someoneElse`);
-      expect(response.data.posts).not.toContain("test post title");
-      expect(response.data.error).toBeUndefined();
+      expect((response.data as Record<string, any>).posts).not.toContain(
+        "test post title"
+      );
+      expect((response.data as Record<string, any>).error).toBeUndefined();
     });
   });
 });

@@ -24,7 +24,7 @@ describe("integration", () => {
         password: "password",
       });
 
-      expect(response.data.error).toBeUndefined();
+      expect((response.data as Record<string, any>).error).toBeUndefined();
     });
 
     test("prevents duplicate users from being created", async () => {
@@ -45,8 +45,10 @@ describe("integration", () => {
         userName: "evan",
         password: "password",
       });
-      expect(response.data.authenticated).toEqual(true);
-      expect(response.data.error).toBeUndefined();
+      expect((response.data as Record<string, any>).authenticated).toEqual(
+        true
+      );
+      expect((response.data as Record<string, any>).error).toBeUndefined();
     });
 
     test("does not authenticate with the correct password", async () => {
@@ -68,13 +70,19 @@ describe("integration", () => {
         userName: "someoneElse",
         password: "password",
       });
-      expect(response.data.error).toBeUndefined();
+      expect((response.data as Record<string, any>).error).toBeUndefined();
 
       const usersResponse = await axios.get(`${url}/users`);
-      expect(usersResponse.data.users.length).toBeGreaterThan(1);
-      expect(usersResponse.data.users).toContain("evan");
-      expect(usersResponse.data.users).toContain("someoneElse");
-      expect(usersResponse.data.error).toBeUndefined();
+      expect(
+        (usersResponse.data as Record<string, any>).users.length
+      ).toBeGreaterThan(1);
+      expect((usersResponse.data as Record<string, any>).users).toContain(
+        "evan"
+      );
+      expect((usersResponse.data as Record<string, any>).users).toContain(
+        "someoneElse"
+      );
+      expect((usersResponse.data as Record<string, any>).error).toBeUndefined();
     });
   });
 });
