@@ -1,9 +1,19 @@
 import * as path from "path";
 import * as fs from "fs";
+import { PackageJson } from "type-fest";
+import { ActionheroLogLevel } from "actionhero";
+
+const namespace = "general";
+
+declare module "actionhero" {
+  export interface ActionheroConfigInterface {
+    [namespace]: ReturnType<typeof DEFAULT[typeof namespace]>;
+  }
+}
 
 export const DEFAULT = {
-  general: (config) => {
-    const packageJSON = JSON.parse(
+  [namespace]: () => {
+    const packageJSON: PackageJson = JSON.parse(
       fs
         .readFileSync(path.join(__dirname, "..", "..", "package.json"))
         .toString()
@@ -12,6 +22,9 @@ export const DEFAULT = {
     return {
       apiVersion: packageJSON.version,
       serverName: packageJSON.name,
+      // you can manually set the server id (not recommended)
+      id: undefined as string,
+      welcomeMessage: `Welcome to the ${packageJSON.name} api`,
       // A unique token to your application that servers will use to authenticate to each other
       serverToken: "change-me",
       // the redis prefix for Actionhero cache objects
@@ -28,16 +41,16 @@ export const DEFAULT = {
       disableParamScrubbing: false,
       // enable action response to logger
       enableResponseLogging: false,
-      // params you would like hidden from any logs
-      filteredParams: [],
-      // responses you would like hidden from any logs
-      filteredResponse: [],
+      // params you would like hidden from any logs. Can be an array of strings or a method that returns an array of strings.
+      filteredParams: [] as string[] | (() => string[]),
+      // responses you would like hidden from any logs. Can be an array of strings or a method that returns an array of strings.
+      filteredResponse: [] as string[] | (() => string[]),
       // values that signify missing params
       missingParamChecks: [null, "", undefined],
       // The default filetype to server when a user requests a directory
       directoryFileType: "index.html",
       // What log-level should we use for file requests?
-      fileRequestLogLevel: "info",
+      fileRequestLogLevel: "info" as ActionheroLogLevel,
       // The default priority level given to middleware of all types (action, connection, say, and task)
       defaultMiddlewarePriority: 100,
       // Which channel to use on redis pub/sub for RPC communication
@@ -57,7 +70,6 @@ export const DEFAULT = {
         pid: [path.join(process.cwd(), "pids")],
         log: [path.join(process.cwd(), "log")],
         plugin: [path.join(process.cwd(), "node_modules")],
-        locale: [path.join(process.cwd(), "locales")],
         test: [path.join(process.cwd(), "__tests__")],
         // for the src and dist paths, assume we are running in compiled mode from `dist`
         src: path.join(process.cwd(), "src"),
@@ -74,15 +86,12 @@ export const DEFAULT = {
 };
 
 export const test = {
-  general: (config) => {
+  [namespace]: () => {
     return {
       serverToken: `serverToken-${process.env.JEST_WORKER_ID || 0}`,
       startingChatRooms: {
         defaultRoom: {},
         otherRoom: {},
-      },
-      paths: {
-        locale: [path.join(process.cwd(), "locales")],
       },
       rpcTimeout: 3000,
     };
@@ -90,7 +99,7 @@ export const test = {
 };
 
 export const production = {
-  general: (config) => {
+  [namespace]: () => {
     return {
       fileRequestLogLevel: "debug",
     };

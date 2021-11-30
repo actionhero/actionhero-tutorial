@@ -15,13 +15,21 @@ You will become comfortable with the following topics:
 
 **A simple Blogging API & site:**
 
-- [Getting Started with a new Actionhero Project](#getting-started-with-a-new-actionhero-project)
-- [Users & Authentication - Creating Modules](#creating-modules)
-- [Creating Actions](#creating-actions)
-- [Routes](#routes)
-- [Middleware and Initializers](#middleware-and-initializers)
-- [Testing](#testing)
-- [Consuming the API via the Web](#consuming-the-api-via-the-web)
+- [Actionhero Tutorial](#actionhero-tutorial)
+  - [!Node.js CI](#)
+  - [Actionhero Resources](#actionhero-resources)
+  - [Notes](#notes)
+  - [Getting Started with a new actionhero Project](#getting-started-with-a-new-actionhero-project)
+  - [Creating Modules](#creating-modules)
+  - [Creating Actions](#creating-actions)
+    - [Extending the `Action` Class](#extending-the-action-class)
+  - [Routes](#routes)
+  - [Middleware and Initializers](#middleware-and-initializers)
+  - [Testing](#testing)
+  - [Consuming the API via the Web](#consuming-the-api-via-the-web)
+  - [Websockets](#websockets)
+  - [Tasks](#tasks)
+  - [Next Steps / TODO](#next-steps--todo)
 
 **Adding a chat room**
 
@@ -89,7 +97,7 @@ Try to boot the Actionhero server in development mode
 
 You should see the default Actionhero welcome page at `http://localhost:8080/public` (visit in your browser)
 
-The port `8080` is defined in `/config/servers/web.ts`, along with all other settings for Actionhero. Actionhero has two types of HTTP routes: static files and api routes. static files are served from `/public` and the API is served from `/api`. These routes are configurable from files within `/src/config`. Actionhero also picks one of these to be the default root route. This is defined by `config.servers.web.rootEndpointType` in `src/config/servers/web.ts`. We want our default route to serve our `index.html` file from `/public`, so we can leave this setting as "file".
+The port `8080` is defined in `src/config/web.ts`, along with all other settings for Actionhero. Actionhero has two types of HTTP routes: static files and api routes. static files are served from `/public` and the API is served from `/api`. These routes are configurable from files within `/src/config`. Actionhero also picks one of these to be the default root route. This is defined by `config.web.rootEndpointType` in `src/config/web.ts`. We want our default route to serve our `index.html` file from `/public`, so we can leave this setting as "file".
 
 Since you are running in development mode (`npm run dev`), Actionhero will notice you made a change to a config file and reboot the server automatically for you. Now, visit `http://localhost:8080/` and you should see the welcome page. You will note that the setting we just changed was under the `servers.web` section. This is because this setting is only relevant to HTTP clients, and not the others (websocket, etc). We will talk about these more later.
 

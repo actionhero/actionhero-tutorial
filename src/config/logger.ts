@@ -1,7 +1,18 @@
 import * as winston from "winston";
+import { ActionheroConfigInterface } from "actionhero";
+
+const namespace = "logger";
+
+declare module "actionhero" {
+  export interface ActionheroConfigInterface {
+    [namespace]: ReturnType<typeof DEFAULT[typeof namespace]>;
+  }
+}
 
 /*
 The loggers defined here will eventually be available via `import { loggers } from "actionhero"`
+
+You may want to customize how Actionhero sets the log level.  By default, you can use `process.env.LOG_LEVEL` to change each logger's level (default: 'info')
 
 learn more about winston v3 loggers @
  - https://github.com/winstonjs/winston
@@ -13,26 +24,27 @@ type ActionheroConfigLoggerBuilderArray = Array<
 >;
 
 export const DEFAULT = {
-  logger: (config) => {
+  [namespace]: (config: ActionheroConfigInterface) => {
     const loggers: ActionheroConfigLoggerBuilderArray = [];
-    loggers.push(buildConsoleLogger());
-    config.general.paths.log.forEach((p) => {
-      loggers.push(buildFileLogger(p));
+    loggers.push(buildConsoleLogger(process.env.LOG_LEVEL));
+    config.general.paths.log.forEach((p: string) => {
+      loggers.push(buildFileLogger(p, process.env.LOG_LEVEL));
     });
 
     return {
       loggers,
       maxLogStringLength: 100, // the maximum length of param to log (we will truncate)
+      maxLogArrayLength: 10, // the maximum number of items in an array to log before collapsing into one message
     };
   },
 };
 
 export const test = {
-  logger: (config) => {
+  [namespace]: (config: ActionheroConfigInterface) => {
     const loggers: ActionheroConfigLoggerBuilderArray = [];
-    loggers.push(buildConsoleLogger("crit"));
-    config.general.paths.log.forEach((p) => {
-      loggers.push(buildFileLogger(p, "debug", 1));
+    loggers.push(buildConsoleLogger(process.env.LOG_LEVEL ?? "crit"));
+    config.general.paths.log.forEach((path: string) => {
+      loggers.push(buildFileLogger(path, "debug", 1));
     });
 
     return { loggers };
@@ -42,7 +54,7 @@ export const test = {
 // helpers for building the winston loggers
 
 function buildConsoleLogger(level = "info") {
-  return function (config) {
+  return function () {
     return winston.createLogger({
       format: winston.format.combine(
         winston.format.timestamp(),
@@ -60,26 +72,8 @@ function buildConsoleLogger(level = "info") {
   };
 }
 
-function stringifyExtraMessagePropertiesForConsole(info) {
-  const skippedProperties = ["message", "timestamp", "level"];
-  let response = "";
-
-  for (const key in info) {
-    const value = info[key];
-    if (skippedProperties.includes(key)) {
-      continue;
-    }
-    if (value === undefined || value === null || value === "") {
-      continue;
-    }
-    response += `${key}=${value} `;
-  }
-
-  return response;
-}
-
-function buildFileLogger(path, level = "info", maxFiles = undefined) {
-  return function (config) {
+function buildFileLogger(path: string, level = "info", maxFiles?: number) {
+  return function (config: ActionheroConfigInterface) {
     const filename = `${path}/${config.process.id}-${config.process.env}.log`;
     return winston.createLogger({
       format: winston.format.combine(
@@ -96,4 +90,24 @@ function buildFileLogger(path, level = "info", maxFiles = undefined) {
       ],
     });
   };
+}
+
+function stringifyExtraMessagePropertiesForConsole(
+  info: winston.Logform.TransformableInfo
+) {
+  const skippedProperties = ["message", "timestamp", "level"];
+  let response = "";
+
+  for (const key in info) {
+    const value = info[key];
+    if (skippedProperties.includes(key)) {
+      continue;
+    }
+    if (value === undefined || value === null || value === "") {
+      continue;
+    }
+    response += `${key}=${value} `;
+  }
+
+  return response;
 }
