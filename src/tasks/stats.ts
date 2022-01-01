@@ -1,13 +1,10 @@
 import { log, api, Task } from "actionhero";
 
 export class Stats extends Task {
-  constructor() {
-    super();
-    this.name = "stats task";
-    this.description = "I report the stats";
-    this.frequency = 30 * 1000;
-    this.queue = "default";
-  }
+  name = "stats task";
+  description = "I report the stats";
+  frequency = 30 * 1000;
+  queue = "default";
 
   async run() {
     const users = await api.users.list();

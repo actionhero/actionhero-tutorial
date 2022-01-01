@@ -1,4 +1,4 @@
-import { Initializer, action } from "actionhero";
+import { Initializer, action, Action } from "actionhero";
 import * as Users from "./../modules/users";
 
 export class AuthenticationMiddleware extends Initializer {
@@ -11,7 +11,13 @@ export class AuthenticationMiddleware extends Initializer {
     const middleware = {
       name: this.name,
       global: true,
-      preProcessor: async ({ actionTemplate, params }) => {
+      preProcessor: async ({
+        actionTemplate,
+        params,
+      }: {
+        actionTemplate: Action & { authenticated: boolean };
+        params: { userName: string; password: string };
+      }) => {
         if (actionTemplate.authenticated === true) {
           const match = await Users.authenticate(
             params.userName,

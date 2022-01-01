@@ -1,52 +1,44 @@
+import { ParamsFrom } from "actionhero";
 import { AuthenticatedAction } from "./../classes/authenticatedAction";
 import * as Users from "./../modules/users";
 
-exports.userAdd = class UserAdd extends AuthenticatedAction {
-  constructor() {
-    super();
-    this.name = "userAdd";
-    this.description = "I add a user";
-    this.outputExample = {};
-    this.authenticated = false;
-    this.inputs = {
-      userName: { required: true },
-      password: { required: true },
-    };
-  }
+export class UserAdd extends AuthenticatedAction {
+  name = "userAdd";
+  description = "I add a user";
+  outputExample = {};
+  authenticated = false;
+  inputs = {
+    userName: { required: true },
+    password: { required: true },
+  };
 
-  async run({ params }) {
+  async run({ params }: { params: ParamsFrom<UserAdd> }) {
     await Users.add(params.userName, params.password);
     return { success: true };
   }
-};
+}
 
-exports.userDelete = class UserDelete extends AuthenticatedAction {
-  constructor() {
-    super();
-    this.name = "userDelete";
-    this.description = "I delete a user";
-    this.outputExample = {};
-    this.authenticated = true;
-    this.inputs = {
-      userName: { required: true },
-      password: { required: true },
-    };
-  }
+export class UserDelete extends AuthenticatedAction {
+  name = "userDelete";
+  description = "I delete a user";
+  outputExample = {};
+  authenticated = true;
+  inputs = {
+    userName: { required: true },
+    password: { required: true },
+  };
 
-  async run({ params }) {
+  async run({ params }: { params: ParamsFrom<UserDelete> }) {
     await Users.del(params.userName);
   }
-};
+}
 
-exports.usersList = class UsersList extends AuthenticatedAction {
-  constructor() {
-    super();
-    this.name = "usersList";
-    this.description = "I list all the users";
-    this.outputExample = {};
-    this.authenticated = false;
-    this.inputs = {};
-  }
+export class UsersList extends AuthenticatedAction {
+  name = "usersList";
+  description = "I list all the users";
+  outputExample = {};
+  authenticated = false;
+  inputs = {};
 
   async run() {
     const users = await Users.list();
@@ -56,22 +48,19 @@ exports.usersList = class UsersList extends AuthenticatedAction {
       }),
     };
   }
-};
+}
 
-exports.authenticate = class Authenticate extends AuthenticatedAction {
-  constructor() {
-    super();
-    this.name = "authenticate";
-    this.description = "I authenticate a user";
-    this.outputExample = {};
-    this.authenticated = false;
-    this.inputs = {
-      userName: { required: true },
-      password: { required: true },
-    };
-  }
+export class Authenticate extends AuthenticatedAction {
+  name = "authenticate";
+  description = "I authenticate a user";
+  outputExample = {};
+  authenticated = false;
+  inputs = {
+    userName: { required: true },
+    password: { required: true },
+  };
 
-  async run({ params }) {
+  async run({ params }: { params: ParamsFrom<Authenticate> }) {
     const authenticated = await Users.authenticate(
       params.userName,
       params.password
@@ -83,4 +72,4 @@ exports.authenticate = class Authenticate extends AuthenticatedAction {
 
     return { authenticated };
   }
-};
+}

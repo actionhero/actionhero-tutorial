@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Process, config, api } from "actionhero";
 const actionhero = new Process();
-let url;
+let url: string;
 
 describe("integration", () => {
   describe("posts", () => {
