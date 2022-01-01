@@ -1,4 +1,5 @@
 import { api, id, task, Action, actionheroVersion } from "actionhero";
+import { PackageJson } from "type-fest";
 import * as path from "path";
 import * as fs from "fs";
 
@@ -11,7 +12,7 @@ enum StatusMessages {
   unhealthy = "Node Unhealthy",
 }
 
-const packageJSON = JSON.parse(
+const packageJSON: PackageJson = JSON.parse(
   fs
     .readFileSync(
       path.normalize(path.join(__dirname, "..", "..", "package.json"))
@@ -20,16 +21,13 @@ const packageJSON = JSON.parse(
 );
 
 export class Status extends Action {
-  constructor() {
-    super();
-    this.name = "status";
-    this.description = "I will return some basic information about the API";
-    this.outputExample = {
-      id: "192.168.2.11",
-      actionheroVersion: "9.4.1",
-      uptime: 10469,
-    };
-  }
+  name = "status";
+  description = "I will return some basic information about the API";
+  outputExample = {
+    id: "192.168.2.11",
+    actionheroVersion: "9.4.1",
+    uptime: 10469,
+  };
 
   async run() {
     let nodeStatus = StatusMessages.healthy;
