@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [16.x, 18.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -22,9 +22,9 @@ jobs:
       - name: Install Redis
         run: sudo apt-get install redis-server
       - run: npm ci
-#       - run: npm run build --if-present
+      #       - run: npm run build --if-present
       - run: npm test
-      
+
   complete:
     runs-on: ubuntu-latest
     needs: [test]
