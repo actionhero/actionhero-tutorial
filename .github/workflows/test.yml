@@ -24,6 +24,8 @@ jobs:
       - run: npm ci
       #       - run: npm run build --if-present
       - run: npm test
+        env:
+          LOG_LEVEL: info
 
   complete:
     runs-on: ubuntu-latest
