@@ -6,8 +6,7 @@ let url: string;
 describe("integration", () => {
   beforeAll(async () => {
     await actionhero.start();
-    url = `http://localhost:${config.web.port}/api`;
-    console.log(`TESTING URL: ${url}`);
+    url = `http://${config.web.bindIP}:${config.web.port}/api`;
   });
 
   beforeAll(async () => {

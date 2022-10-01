@@ -7,7 +7,7 @@ describe("integration", () => {
   describe("posts", () => {
     beforeAll(async () => {
       await actionhero.start();
-      url = `http://localhost:${config.web.port}/api`;
+      url = `http://${config.web.bindIP}:${config.web.port}/api`;
     });
 
     beforeAll(async () => {
