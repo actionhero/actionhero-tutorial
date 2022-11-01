@@ -11,7 +11,7 @@
     "bcrypt": "^5.0.1",
     "ioredis": "^5.2.3",
     "winston": "^3.8.2",
-    "ws": "^8.9.0"
+    "ws": "^8.10.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
