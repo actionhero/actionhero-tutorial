@@ -4,7 +4,7 @@ const namespace = "redis";
 
 declare module "actionhero" {
   export interface ActionheroConfigInterface {
-    [namespace]: ReturnType<typeof DEFAULT[typeof namespace]>;
+    [namespace]: ReturnType<(typeof DEFAULT)[typeof namespace]>;
   }
 }
 
