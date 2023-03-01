@@ -7,7 +7,7 @@
     "node": ">=12.0.0"
   },
   "dependencies": {
-    "actionhero": "^v28.3.0",
+    "actionhero": "^v28.3.1",
     "bcrypt": "^5.1.0",
     "ioredis": "^5.3.0",
     "winston": "^3.8.2",
