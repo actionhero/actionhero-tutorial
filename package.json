@@ -17,7 +17,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.2",
-    "@types/node": "^20.2.5",
+    "@types/node": "^20.3.3",
     "axios": "^1.4.0",
     "jest": "^29.5.0",
     "prettier": "^2.8.8",
