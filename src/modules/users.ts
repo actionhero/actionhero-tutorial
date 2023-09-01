@@ -30,7 +30,7 @@ export async function list() {
 
 export async function authenticate(
   userName: string,
-  password: string
+  password: string,
 ): Promise<boolean> {
   try {
     const dataString = await redis().hget(usersHash, userName);

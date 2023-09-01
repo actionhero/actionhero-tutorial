@@ -35,13 +35,13 @@ describe("integration", () => {
 
     test("views a post", async () => {
       const response = await axios.get(
-        `${url}/post/testPoster/${encodeURI("test post title")}`
+        `${url}/post/testPoster/${encodeURI("test post title")}`,
       );
       expect((response.data as Record<string, any>).post.title).toEqual(
-        "test post title"
+        "test post title",
       );
       expect((response.data as Record<string, any>).post.content).toEqual(
-        "post content"
+        "post content",
       );
       expect((response.data as Record<string, any>).error).toBeUndefined();
     });
@@ -49,7 +49,7 @@ describe("integration", () => {
     test("lists posts by user", async () => {
       const response = await axios.get(`${url}/posts/testPoster`);
       expect((response.data as Record<string, any>).posts).toContain(
-        "test post title"
+        "test post title",
       );
       expect((response.data as Record<string, any>).error).toBeUndefined();
     });
@@ -57,7 +57,7 @@ describe("integration", () => {
     test("does not mix posts for other users", async () => {
       const response = await axios.get(`${url}/posts/someoneElse`);
       expect((response.data as Record<string, any>).posts).not.toContain(
-        "test post title"
+        "test post title",
       );
       expect((response.data as Record<string, any>).error).toBeUndefined();
     });
