@@ -46,7 +46,7 @@ describe("integration", () => {
         password: "password",
       });
       expect((response.data as Record<string, any>).authenticated).toEqual(
-        true
+        true,
       );
       expect((response.data as Record<string, any>).error).toBeUndefined();
     });
@@ -74,13 +74,13 @@ describe("integration", () => {
 
       const usersResponse = await axios.get(`${url}/users`);
       expect(
-        (usersResponse.data as Record<string, any>).users.length
+        (usersResponse.data as Record<string, any>).users.length,
       ).toBeGreaterThan(1);
       expect((usersResponse.data as Record<string, any>).users).toContain(
-        "evan"
+        "evan",
       );
       expect((usersResponse.data as Record<string, any>).users).toContain(
-        "someoneElse"
+        "someoneElse",
       );
       expect((usersResponse.data as Record<string, any>).error).toBeUndefined();
     });

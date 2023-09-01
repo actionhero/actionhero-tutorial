@@ -103,7 +103,7 @@ export class CommentAdd extends AuthenticatedAction {
       params.userName,
       params.title,
       params.commenterName,
-      params.comment
+      params.comment,
     );
     return { success: true };
   }

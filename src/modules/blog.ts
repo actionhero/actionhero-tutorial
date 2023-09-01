@@ -7,7 +7,7 @@ const commentPrefix = "comments:";
 export async function postAdd(
   userName: string,
   title: string,
-  content: string
+  content: string,
 ) {
   const key = buildTitleKey(userName, title);
   const data = {
@@ -40,7 +40,7 @@ export async function postsList(userName: string) {
 export async function postEdit(
   userName: string,
   title: string,
-  content: string
+  content: string,
 ) {
   const key = buildTitleKey(userName, title);
   const data = await postView(key);
@@ -65,7 +65,7 @@ export async function commentAdd(
   userName: string,
   title: string,
   commenterName: string,
-  comment: string
+  comment: string,
 ) {
   const key = buildCommentKey(userName, title);
   const commentId = buildCommentId(commenterName);
@@ -91,7 +91,7 @@ export async function commentsView(userName: string, title: string) {
 export async function commentDelete(
   userName: string,
   title: string,
-  commentId: string
+  commentId: string,
 ) {
   const key = buildCommentKey(userName, title);
   await redis().hdel(key, commentId);

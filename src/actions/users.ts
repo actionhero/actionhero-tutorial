@@ -63,7 +63,7 @@ export class Authenticate extends AuthenticatedAction {
   async run({ params }: { params: ParamsFrom<Authenticate> }) {
     const authenticated = await Users.authenticate(
       params.userName,
-      params.password
+      params.password,
     );
 
     if (!authenticated) {

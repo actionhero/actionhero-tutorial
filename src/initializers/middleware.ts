@@ -21,11 +21,11 @@ export class AuthenticationMiddleware extends Initializer {
         if (actionTemplate.authenticated === true) {
           const match = await Users.authenticate(
             params.userName,
-            params.password
+            params.password,
           );
           if (!match) {
             throw Error(
-              "Authentication Failed.  userName and password required"
+              "Authentication Failed.  userName and password required",
             );
           }
         }
