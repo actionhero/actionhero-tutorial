@@ -14,7 +14,7 @@
     "ws": "^8.14.2"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.0",
+    "@types/bcrypt": "^5.0.1",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.4",
     "@types/node": "^20.8.0",
